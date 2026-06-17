@@ -10,36 +10,46 @@
   <header class="site-header">
     <div class="container header-grid">
       <div>
-        <p class="eyebrow">クラウド運用 / AWS Cloud Operations</p>
-        <h1>John Trollinski</h1>
-        <p class="lead">
-          Japanese-English bilingual cloud operations candidate in Japan, focused on AWS,
-          Linux, Git, deployment workflows, documentation, and practical troubleshooting.
+        <div class="top-line">
+          <p class="eyebrow" data-i18n="hero.eyebrow">クラウド運用 / AWS Cloud Operations</p>
+          <div class="language-switch" aria-label="Language selection">
+            <button type="button" class="lang-button active" data-lang="en">EN</button>
+            <button type="button" class="lang-button" data-lang="ja">日本語</button>
+          </div>
+        </div>
+
+        <h1 data-i18n="hero.name">John Trollinski</h1>
+
+        <p class="lead" data-i18n="hero.lead">
+          AWS-certified cloud operations candidate in Japan combining technical support fundamentals,
+          bilingual communication ability, and hands-on deployment practice across Linux, Git/GitHub,
+          AWS services, documentation, and troubleshooting.
         </p>
+
         <div class="hero-actions">
-          <a href="#project" class="button primary">View Current Project</a>
-          <a href="#contact" class="button secondary">Contact / Links</a>
+          <a href="#project" class="button primary" data-i18n="hero.primaryButton">View Current Project</a>
+          <a href="#contact" class="button secondary" data-i18n="hero.secondaryButton">Contact / Links</a>
         </div>
       </div>
 
       <aside class="profile-card">
-        <h2>Profile Summary</h2>
+        <h2 data-i18n="profile.heading">Profile Summary</h2>
         <dl>
           <div>
-            <dt>Target</dt>
-            <dd>Junior Cloud / IT Infrastructure / Technical Support</dd>
+            <dt data-i18n="profile.targetLabel">Target</dt>
+            <dd data-i18n="profile.targetValue">Junior Cloud Operations / IT Infrastructure / Technical Support</dd>
           </div>
           <div>
-            <dt>Location</dt>
-            <dd>Japan / Tokyo-Kanto area</dd>
+            <dt data-i18n="profile.locationLabel">Location</dt>
+            <dd data-i18n="profile.locationValue">Japan / Tokyo-Kanto area</dd>
           </div>
           <div>
-            <dt>Languages</dt>
-            <dd>English, Japanese, Swedish</dd>
+            <dt data-i18n="profile.languagesLabel">Languages</dt>
+            <dd data-i18n="profile.languagesValue">English, Japanese, Swedish</dd>
           </div>
           <div>
-            <dt>Japanese</dt>
-            <dd>JLPT N2</dd>
+            <dt data-i18n="profile.japaneseLabel">Japanese</dt>
+            <dd data-i18n="profile.japaneseValue">JLPT N2 / Daily Japanese communication</dd>
           </div>
         </dl>
       </aside>
@@ -50,19 +60,18 @@
     <section class="section">
       <div class="container two-column">
         <div>
-          <p class="section-label">ABOUT</p>
-          <h2>Reliable technical communicator building practical cloud skills</h2>
+          <p class="section-label" data-i18n="about.label">ABOUT</p>
+          <h2 data-i18n="about.heading">AWS-certified junior cloud / infrastructure candidate focused on practical operations</h2>
         </div>
         <div>
-          <p>
-            I am transitioning into cloud operations and infrastructure support with a focus on
-            practical, job-shaped workflows: working in Linux, using Git/GitHub, deploying small
-            systems, reading logs, documenting failures, and improving through structured debugging.
+          <p data-i18n="about.paragraph1">
+            I bring AWS certification, CompTIA technical support fundamentals, Japanese-English communication ability,
+            and a professional background in structured explanation and problem diagnosis. This portfolio demonstrates practical cloud operations work through Linux, Git/GitHub, AWS deployment planning, documentation, troubleshooting, and controlled project iteration.
           </p>
-          <p>
-            My background in education gives me strong communication, explanation, and diagnostic
-            skills. My current goal is to combine that with hands-on AWS operations so I can
-            contribute safely and clearly in a junior cloud or infrastructure role.
+          <p data-i18n="about.paragraph2">
+            My focus is not only on knowing cloud concepts, but on using them in job-shaped workflows:
+            working in Linux, managing code with Git/GitHub, deploying small systems, reading logs,
+            documenting failures, and improving systems through structured troubleshooting.
           </p>
         </div>
       </div>
@@ -70,28 +79,28 @@
 
     <section class="section muted">
       <div class="container">
-        <p class="section-label">CERTIFICATIONS</p>
-        <h2>Credentials</h2>
+        <p class="section-label" data-i18n="certs.label">CERTIFICATIONS</p>
+        <h2 data-i18n="certs.heading">Credentials</h2>
 
         <div class="card-grid">
           <article class="card">
-            <h3>AWS Solutions Architect – Associate</h3>
-            <p>Architecture, reliability, security, networking, and AWS service design fundamentals.</p>
+            <h3 data-i18n="certs.saaTitle">AWS Solutions Architect – Associate</h3>
+            <p data-i18n="certs.saaText">AWS architecture, reliability, security, networking, storage, and service design fundamentals.</p>
           </article>
 
           <article class="card">
-            <h3>AWS Cloud Practitioner</h3>
-            <p>Cloud concepts, AWS core services, billing, security, and shared responsibility.</p>
+            <h3 data-i18n="certs.cpTitle">AWS Cloud Practitioner</h3>
+            <p data-i18n="certs.cpText">Cloud concepts, AWS core services, pricing, security, and shared responsibility.</p>
           </article>
 
           <article class="card">
-            <h3>CompTIA A+</h3>
-            <p>Operating systems, hardware, troubleshooting, networking, and technical support basics.</p>
+            <h3 data-i18n="certs.aplusTitle">CompTIA A+</h3>
+            <p data-i18n="certs.aplusText">Operating systems, hardware, troubleshooting, networking, and technical support foundations.</p>
           </article>
 
           <article class="card">
-            <h3>JLPT N2</h3>
-            <p>Japanese language ability suitable for daily professional communication and continued growth.</p>
+            <h3 data-i18n="certs.n2Title">JLPT N2</h3>
+            <p data-i18n="certs.n2Text">Japanese ability supported by certification and long-term daily Japanese communication experience.</p>
           </article>
         </div>
       </div>
@@ -99,35 +108,54 @@
 
     <section class="section" id="project">
       <div class="container">
-        <p class="section-label">CURRENT PROJECT</p>
-        <h2>Cloud Operations Sprint Portfolio</h2>
-        <p class="section-intro">
-          This website is the visible front end of an 8-week practical cloud operations sprint.
-          The goal is to build, deploy, debug, automate, and document a small AWS-hosted system.
+        <p class="section-label" data-i18n="project.label">CURRENT PROJECT</p>
+        <h2 data-i18n="project.heading">Cloud Operations Sprint Portfolio</h2>
+        <p class="section-intro" data-i18n="project.intro">
+          This site is the visible front end of a practical cloud operations project. The goal is to build,
+          deploy, debug, automate, and document a small AWS-hosted system while keeping the full workflow
+          visible through GitHub history and project notes.
         </p>
 
         <div class="project-layout">
           <article class="project-main">
-            <h3>Planned Architecture</h3>
+            <h3 data-i18n="project.archHeading">Planned Architecture</h3>
             <ul class="check-list">
-              <li><strong>Static site:</strong> HTML/CSS/JavaScript hosted on Amazon S3</li>
-              <li><strong>CDN:</strong> CloudFront distribution for global delivery</li>
-              <li><strong>Backend:</strong> API Gateway triggering Python Lambda</li>
-              <li><strong>Database:</strong> DynamoDB visitor counter / project metadata</li>
-              <li><strong>Observability:</strong> CloudWatch logs for debugging</li>
-              <li><strong>Automation:</strong> GitHub Actions deployment pipeline</li>
+              <li>
+                <strong data-i18n="project.staticLabel">Static site:</strong>
+                <span data-i18n="project.staticText">HTML/CSS/JavaScript hosted on Amazon S3</span>
+              </li>
+              <li>
+                <strong data-i18n="project.cdnLabel">CDN:</strong>
+                <span data-i18n="project.cdnText">CloudFront distribution for secure global delivery</span>
+              </li>
+              <li>
+                <strong data-i18n="project.backendLabel">Backend:</strong>
+                <span data-i18n="project.backendText">API Gateway triggering a Python Lambda function</span>
+              </li>
+              <li>
+                <strong data-i18n="project.databaseLabel">Database:</strong>
+                <span data-i18n="project.databaseText">DynamoDB visitor counter and project metadata</span>
+              </li>
+              <li>
+                <strong data-i18n="project.logsLabel">Observability:</strong>
+                <span data-i18n="project.logsText">CloudWatch logs used for debugging and verification</span>
+              </li>
+              <li>
+                <strong data-i18n="project.automationLabel">Automation:</strong>
+                <span data-i18n="project.automationText">GitHub Actions deployment pipeline</span>
+              </li>
             </ul>
           </article>
 
           <aside class="status-card">
-            <h3>Build Status</h3>
+            <h3 data-i18n="status.heading">Build Status</h3>
             <ol class="timeline">
-              <li class="done">Ubuntu VM setup</li>
-              <li class="done">Git/GitHub workflow</li>
-              <li class="done">Local portfolio page</li>
-              <li>Static AWS hosting</li>
-              <li>Serverless backend</li>
-              <li>CI/CD deployment</li>
+              <li class="done" data-i18n="status.vm">Ubuntu VM setup</li>
+              <li class="done" data-i18n="status.git">Git/GitHub workflow</li>
+              <li class="done" data-i18n="status.localSite">Local portfolio page</li>
+              <li data-i18n="status.awsHosting">Static AWS hosting</li>
+              <li data-i18n="status.backend">Serverless backend</li>
+              <li data-i18n="status.cicd">CI/CD deployment</li>
             </ol>
           </aside>
         </div>
@@ -136,25 +164,25 @@
 
     <section class="section muted">
       <div class="container">
-        <p class="section-label">TECHNICAL FOCUS</p>
-        <h2>Skills being developed through practical work</h2>
+        <p class="section-label" data-i18n="skills.label">TECHNICAL FOCUS</p>
+        <h2 data-i18n="skills.heading">Operational skills developed through practical work</h2>
 
         <div class="skill-list">
           <div>
-            <h3>Cloud / AWS</h3>
-            <p>S3, CloudFront, Route 53, API Gateway, Lambda, DynamoDB, IAM, CloudWatch</p>
+            <h3 data-i18n="skills.cloudTitle">Cloud / AWS</h3>
+            <p data-i18n="skills.cloudText">S3, CloudFront, Route 53, API Gateway, Lambda, DynamoDB, IAM, CloudWatch</p>
           </div>
           <div>
-            <h3>Operations</h3>
-            <p>Linux terminal workflow, package management, file structure, logs, troubleshooting</p>
+            <h3 data-i18n="skills.opsTitle">Operations</h3>
+            <p data-i18n="skills.opsText">Linux terminal workflow, package management, file structure, logs, troubleshooting</p>
           </div>
           <div>
-            <h3>Development Workflow</h3>
-            <p>Git, GitHub, commits, branches, repository structure, README documentation</p>
+            <h3 data-i18n="skills.workflowTitle">Development Workflow</h3>
+            <p data-i18n="skills.workflowText">Git, GitHub, commits, repository structure, README documentation, controlled changes</p>
           </div>
           <div>
-            <h3>Automation</h3>
-            <p>GitHub Actions, deployment workflows, environment variables, controlled releases</p>
+            <h3 data-i18n="skills.automationTitle">Automation</h3>
+            <p data-i18n="skills.automationText">GitHub Actions, deployment workflows, environment variables, repeatable releases</p>
           </div>
         </div>
       </div>
@@ -163,16 +191,16 @@
     <section class="section">
       <div class="container two-column">
         <div>
-          <p class="section-label">WORK STYLE</p>
-          <h2>What I want this project to demonstrate</h2>
+          <p class="section-label" data-i18n="evidence.label">WORK STYLE</p>
+          <h2 data-i18n="evidence.heading">What this project is designed to demonstrate</h2>
         </div>
         <div>
           <ul class="plain-list">
-            <li>Ability to build visible working systems instead of only studying theory</li>
-            <li>Ability to document confusion, errors, fixes, and lessons learned</li>
-            <li>Ability to explain technical decisions clearly to non-specialists</li>
-            <li>Ability to work carefully inside real operational workflows</li>
-            <li>Ability to improve steadily through Git history and project evidence</li>
+            <li data-i18n="evidence.item1">Ability to turn theory into visible, working systems</li>
+            <li data-i18n="evidence.item2">Ability to document errors, fixes, and lessons learned</li>
+            <li data-i18n="evidence.item3">Ability to explain technical decisions clearly and practically</li>
+            <li data-i18n="evidence.item4">Ability to work carefully inside real operational workflows</li>
+            <li data-i18n="evidence.item5">Ability to build evidence through Git history, README quality, and project documentation</li>
           </ul>
         </div>
       </div>
@@ -180,25 +208,23 @@
 
     <section class="section muted">
       <div class="container">
-        <p class="section-label">BACKGROUND</p>
-        <h2>Professional background</h2>
+        <p class="section-label" data-i18n="background.label">BACKGROUND</p>
+        <h2 data-i18n="background.heading">Professional background</h2>
 
         <div class="background-card">
-          <h3>Education / Communication</h3>
-          <p>
-            Former high school English teacher with experience explaining complex material,
-            evaluating written work, identifying misunderstandings, and communicating clearly.
-            This background supports technical documentation, user support, and structured
-            troubleshooting.
+          <h3 data-i18n="background.educationTitle">Education / Communication</h3>
+          <p data-i18n="background.educationText">
+            Former high school English teacher with experience explaining complex material, evaluating written work,
+            identifying misunderstandings, and communicating clearly. This background supports technical documentation,
+            user support, structured troubleshooting, and clear reporting.
           </p>
         </div>
 
         <div class="background-card">
-          <h3>Japan / Language</h3>
-          <p>
-            Long-term Japanese study and daily Japanese communication experience, supported by
-            JLPT N2 certification. Comfortable continuing to improve toward stronger professional
-            Japanese in technical environments.
+          <h3 data-i18n="background.japanTitle">Japan / Language</h3>
+          <p data-i18n="background.japanText">
+            Long-term Japanese study and daily Japanese communication experience, supported by JLPT N2 certification.
+            Currently building stronger professional Japanese for technical and cloud infrastructure environments.
           </p>
         </div>
       </div>
@@ -207,18 +233,18 @@
     <section class="section" id="contact">
       <div class="container contact-panel">
         <div>
-          <p class="section-label">CONTACT</p>
-          <h2>Links and contact</h2>
-          <p>
-            This section will later include the live GitHub repository, deployed AWS site,
-            and professional contact details.
+          <p class="section-label" data-i18n="contact.label">CONTACT</p>
+          <h2 data-i18n="contact.heading">Links and contact</h2>
+          <p data-i18n="contact.text">
+            This section will include the live GitHub repository, deployed AWS site, LinkedIn profile,
+            and downloadable CV once the project is ready for external review.
           </p>
         </div>
 
         <div class="contact-links">
-          <a href="https://github.com/lisochronal-glitch" target="_blank">GitHub</a>
-          <a href="#" target="_blank">LinkedIn / Placeholder</a>
-          <a href="#" target="_blank">Download CV / Placeholder</a>
+          <a href="https://github.com/lisochronal-glitch" target="_blank" data-i18n="contact.github">GitHub</a>
+          <a href="#" target="_blank" data-i18n="contact.linkedin">LinkedIn / Placeholder</a>
+          <a href="#" target="_blank" data-i18n="contact.cv">Download CV / Placeholder</a>
         </div>
       </div>
     </section>
@@ -227,8 +253,9 @@
   <footer class="site-footer">
     <div class="container">
       <p>
-        Built as part of a practical AWS / cloud operations portfolio project.
-        Last updated: <span id="last-updated"></span>
+        <span data-i18n="footer.text">Built as part of a practical AWS / cloud operations portfolio project.</span>
+        <span data-i18n="footer.updated">Last updated:</span>
+        <span id="last-updated"></span>
       </p>
     </div>
   </footer>
