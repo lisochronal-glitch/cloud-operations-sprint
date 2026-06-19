@@ -33,8 +33,9 @@ const translations = {
     "certs.aplusText": "Operating systems, hardware, troubleshooting, networking, and technical support foundations.",
     "certs.n2Title": "JLPT N2",
     "certs.n2Text": "Japanese ability supported by certification and long-term daily Japanese communication experience.",
+    "certs.badgeLink": "View verified badge ↗",
 
-    "project.label": "CURRENT PROJECT",
+ "project.label": "CURRENT PROJECT",
     "project.heading": "Cloud Operations Portfolio",
     "project.intro": "This site is the visible front end of a practical cloud operations project. The goal is to build, deploy, debug, automate, and document a small AWS-hosted system while keeping the full workflow visible through GitHub history and project notes.",
     "project.archHeading": "Planned Architecture",
@@ -130,6 +131,7 @@ const translations = {
     "certs.aplusText": "OS、ハードウェア、トラブルシューティング、ネットワーク、テクニカルサポートの基礎。",
     "certs.n2Title": "JLPT N2",
     "certs.n2Text": "資格と長期的な日常日本語コミュニケーション経験に基づく日本語力。",
+    "certs.badgeLink": "認定バッジを見る ↗",
 
     "project.label": "現在のプロジェクト",
     "project.heading": "クラウド運用ポートフォリオ",

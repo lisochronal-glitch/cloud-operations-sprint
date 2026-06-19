@@ -468,3 +468,16 @@ p {
     margin-top: 2px;
   }
 }
+
+.badge-link {
+    display: inline-flex;
+    margin-top: 1rem;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #2563eb;
+    text-decoration: none;
+}
+
+.badge-link:hover {
+    text-decoration: underline;
+}
