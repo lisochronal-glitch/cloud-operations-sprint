@@ -23,6 +23,15 @@ The project is also used as a practical operations lab: deployment, permissions,
 * CloudFront caching remains enabled for normal operation.
 * When files are updated in S3, a one-time CloudFront invalidation is created to refresh the deployed site.
 
+## Hosting Decision
+
+S3 static website hosting is intentionally disabled for this project.
+
+This site is delivered through CloudFront using a private S3 bucket as the origin. This keeps the S3 bucket private while CloudFront provides the public HTTPS endpoint.
+
+AWS Amplify Hosting is also not used for this project. Amplify would be a convenient managed hosting option, but this project intentionally uses S3 and CloudFront directly in order to demonstrate the underlying cloud operations work: private bucket access, CloudFront delivery, bucket policy configuration, cache invalidation, IAM guardrails, and future deployment automation.
+
+
 ## IAM and Permissions Model
 
 This project no longer uses the AWS root account for normal console work.
@@ -153,6 +162,7 @@ docs/
 * Static website development
 * AWS S3 private object storage
 * AWS CloudFront HTTPS delivery
+* Hosting architecture decision-making: private S3 origin with CloudFront instead of S3 static website hosting or Amplify
 * IAM user, group, and policy setup
 * Root account protection and MFA
 * S3 bucket policy guardrails
