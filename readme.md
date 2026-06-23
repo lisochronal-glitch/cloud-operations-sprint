@@ -56,6 +56,193 @@ Current access model:
   * Intended for the Python deployment tool and later GitHub Actions workflow.
   * Deployment permissions should be scoped to the required actions only, such as uploading website files to S3 and creating CloudFront invalidations.
 
+## Deployment Authentication Model
+
+The project uses a deliberately separated deployment authentication model.
+
+For local deployment testing, the deploy chain is:
+
+```text
+Local AWS profile
+→ IAM user credentials
+→ AssumeRole
+→ temporary deploy role credentials
+→ S3 upload
+→ CloudFront invalidation
+```
+
+This is more complex than giving one IAM user direct deployment permissions, but it is intentional. The goal is to separate **authentication source** from **deployment permission set**, so the deploy role can later be reused by GitHub Actions.
+
+### Components
+
+| Component               | Type                  | Purpose                                                                              |
+| ----------------------- | --------------------- | ------------------------------------------------------------------------------------ |
+| `portfolio-role-runner` | AWS IAM user          | Local bootstrap identity with a long-lived access key                                |
+| `portfolio-runner`      | Local AWS CLI profile | Local Ubuntu profile that stores/uses the IAM user credentials                       |
+| `PortfolioDeployRole`   | AWS IAM role          | Temporary deployment identity with S3 upload and CloudFront invalidation permissions |
+| `portfolio-deploy`      | Local AWS CLI profile | Local Ubuntu profile that uses `portfolio-runner` to assume `PortfolioDeployRole`    |
+
+The similarly named components are different things:
+
+```text
+portfolio-role-runner = AWS IAM user
+portfolio-runner      = local AWS profile using that user's access key
+PortfolioDeployRole   = AWS IAM role with deployment permissions
+portfolio-deploy      = local AWS profile that assumes the deploy role
+```
+
+### Why the IAM user does not deploy directly
+
+A simpler local-only design would be:
+
+```text
+IAM user access key
+→ S3 upload
+→ CloudFront invalidation
+```
+
+That would work, and for a small local-only project it would be simpler.
+
+This project instead uses:
+
+```text
+IAM user access key
+→ assume deploy role
+→ temporary role credentials
+→ S3 upload
+→ CloudFront invalidation
+```
+
+The IAM user `portfolio-role-runner` is not intended to own the deployment permissions directly. Its purpose is only to authenticate locally and request temporary credentials for `PortfolioDeployRole`.
+
+The actual deployment permissions live on `PortfolioDeployRole`.
+
+This means the deployment permission set is attached to a role, not permanently tied to one local IAM user. Later, GitHub Actions can assume the same role using OIDC, replacing the local IAM user access key as the deployment source.
+
+### Local profile flow
+
+The local profile `portfolio-runner` contains the starting credentials.
+
+The local profile `portfolio-deploy` contains the role-assumption recipe:
+
+```text
+source_profile = portfolio-runner
+role_arn       = PortfolioDeployRole
+```
+
+When Python/boto3 uses the `portfolio-deploy` profile, boto3 performs the following chain:
+
+```text
+Python deploy script starts
+        ↓
+boto3 uses local profile: portfolio-deploy
+        ↓
+portfolio-deploy points to source_profile: portfolio-runner
+        ↓
+boto3 loads portfolio-runner credentials
+        ↓
+AWS authenticates the IAM user: portfolio-role-runner
+        ↓
+AWS checks whether the user may call sts:AssumeRole
+        ↓
+AWS checks whether PortfolioDeployRole trusts that user
+        ↓
+AWS returns temporary credentials for PortfolioDeployRole
+        ↓
+boto3 uses the temporary role credentials
+        ↓
+Python uploads files to S3
+        ↓
+Python creates a CloudFront invalidation
+```
+
+The important point is:
+
+```text
+The role does not authenticate directly.
+The IAM user authenticates first.
+AWS then issues temporary credentials for the role.
+```
+
+### Required permissions
+
+The IAM user `portfolio-role-runner` only needs permission to call:
+
+```text
+sts:AssumeRole
+```
+
+on:
+
+```text
+PortfolioDeployRole
+```
+
+The role `PortfolioDeployRole` contains the actual deployment permissions:
+
+```text
+s3:PutObject
+cloudfront:CreateInvalidation
+```
+
+These are scoped to the portfolio S3 bucket and CloudFront distribution.
+
+The deploy identity does not require:
+
+```text
+s3:DeleteObject
+s3:DeleteBucket
+s3:PutBucketPolicy
+s3:DeleteBucketPolicy
+s3:PutLifecycleConfiguration
+```
+
+### Tradeoff
+
+For local-only deployment, this design is more complicated than necessary.
+
+A direct IAM user with narrowly scoped `s3:PutObject` and `cloudfront:CreateInvalidation` permissions would also be valid.
+
+This project uses the role-based design anyway because it better matches the intended final architecture:
+
+```text
+today:
+Local IAM user key
+→ assume PortfolioDeployRole
+→ run Python deployment
+
+future:
+GitHub Actions OIDC
+→ assume PortfolioDeployRole
+→ run Python deployment
+```
+
+The local IAM user is therefore temporary scaffolding for learning and local testing. The long-term goal is not to depend on a permanent local IAM user access key for deployment.
+
+### Desired final deployment flow
+
+The intended final workflow is:
+
+```text
+git push
+→ GitHub Actions starts
+→ GitHub assumes PortfolioDeployRole
+→ Python deployment script runs
+→ files are uploaded to S3
+→ CloudFront invalidation is created
+```
+
+At that point, routine deployment should require only:
+
+```bash
+git add .
+git commit -m "Update portfolio"
+git push
+```
+
+No manual AWS Console login should be required for normal deployment.
+
+
 ## S3 Protection Guardrail
 
 S3 Bucket Versioning is intentionally not enabled for this small static deployment bucket.
