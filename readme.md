@@ -50,11 +50,11 @@ Current access model:
   * Added to an admin group with broad permissions for learning and project build work.
   * MFA should be enabled for normal use.
 
-* Future deployment automation:
+* Deployment automation:
 
-  * Planned to use role-based access and temporary permissions where possible.
-  * Intended for the Python deployment tool and later GitHub Actions workflow.
-  * Deployment permissions should be scoped to the required actions only, such as uploading website files to S3 and creating CloudFront invalidations.
+  * Uses role-based access and temporary permissions where possible.
+  * Python deployment tool and GitHub Actions workflow.
+  * Deployment permissions are scoped to the required actions only, such as uploading website files to S3 and creating CloudFront invalidations.
 
 ## Deployment Authentication Model
 
@@ -211,13 +211,13 @@ Local IAM user key
 → assume PortfolioDeployRole
 → run Python deployment
 
-future:
+CI/CD:
 GitHub Actions OIDC
 → assume PortfolioDeployRole
 → run Python deployment
 ```
 
-The local IAM user is therefore temporary scaffolding for learning and local testing. The long-term goal is not to depend on a permanent local IAM user access key for deployment.
+The local IAM user is temporary scaffolding for learning and local testing has been replaced to not depend on a permanent local IAM user access key for deployment.
 
 ### Desired final deployment flow
 
@@ -416,7 +416,6 @@ The deployment workflow evolved in stages:
 
 This progression was intentional: first understand the manual process, then automate it locally, then move the workflow into a CI/CD pattern.
 
-
 ## Repository Structure
 
 ```text
@@ -426,20 +425,28 @@ website/
 └── script.js
 ```
 
-Planned structure:
-
-```text
-website/
-├── index.html
-├── style.css
-└── script.js
 
 tools/
 └── deploy.py
 
 docs/
 └── IAM_AND_PERMISSIONS.md
-```
+```## Repository Structure
+
+```text
+.github/
+  workflows/
+    deploy.yml
+
+tools/
+  deploy.py
+
+website/
+  index.html
+  style.css
+  script.js
+
+readme.md
 
 ## Skills Demonstrated
 
@@ -456,9 +463,9 @@ docs/
 * Operational documentation
 * Bilingual English/Japanese site content
 * Documentation of real project progress
-* Python Deployment with Boto3
-* Github Actions CI/CD workflow
-* OIDC-Based AWS role assumption from Github Actions
+* Python deployment automation with `boto3`
+* GitHub Actions CI/CD workflow
+* OIDC-based AWS role assumption from GitHub Actions
 * Automated S3 upload and CloudFront invalidation
 
 ## Certifications
