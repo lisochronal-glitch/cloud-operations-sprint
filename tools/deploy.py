@@ -2,20 +2,29 @@ import os
 import boto3
 import datetime
 
+#variables
 bucket_name = "john-trollinski-cloud-portfolio"
 cloud_id = "E2H6IDE9B5VP3Y"
-website_folder = "/home/johnj/projects/cloud-operations-sprint/website"
 upload_success = True
 
+#path logic
+script_path = os.path.abspath(__file__)
+tools_folder = os.path.dirname(script_path)
+project_root = os.path.dirname(tools_folder)
+website_folder = os.path.join(project_root, "website")
+
+#types of files that can be uploaded
 content_types = {
     ".html": "text/html",
     ".css": "text/css",
     ".js": "application/javascript"
 }
 
+#logic for finding files
 list_of_files = os.listdir(website_folder)
 s3 = boto3.client("s3")
 
+#logic for uploading files
 print("Files found in website folder:")
 for file in list_of_files:
     try:
@@ -28,6 +37,7 @@ for file in list_of_files:
         print(f"Upload failed: {error}")
         upload_success = False
 
+#logic for creating invalidation if the upload was successful
 if upload_success:
     cloudfront = boto3.client("cloudfront")
     try:
