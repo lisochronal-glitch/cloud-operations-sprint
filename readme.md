@@ -272,51 +272,70 @@ Completed:
 * Ubuntu VM setup
 * Git/GitHub workflow
 * Local portfolio page
-* Static AWS hosting with S3 and CloudFront
+* Static AWS hosting with private S3 and CloudFront
 * Verified certification badge links
 * Root MFA setup
 * IAM admin user setup
 * S3 bucket deletion guardrail
+* Local Python deployment script
+* Automated S3 upload and CloudFront invalidation
+* GitHub Actions CI/CD deployment workflow
 
 Planned:
 
-* Python deployment CLI
-* Automated S3 upload and CloudFront invalidation
-* GitHub Actions deployment workflow
 * Serverless backend
 * API Gateway + Lambda
 * DynamoDB visitor counter or project metadata
 * CloudWatch logging and troubleshooting
 
-## Manual Deployment Workflow
+## Deployment Workflow
 
-Current deployment is manual:
+Routine deployment is now automated through GitHub Actions.
 
-1. Edit website files locally.
-2. Test changes locally.
-3. Commit and push changes to GitHub.
-4. Upload updated files to S3.
-5. Create a one-time CloudFront invalidation using `/*`.
-6. Verify the live CloudFront site.
+Current deployment flow:
 
-CloudFront invalidation is not a permanent setting. It is a one-time cache-clearing job used after a new version is uploaded. Caching remains enabled during normal operation.
+```text
+git push to main
+→ GitHub Actions workflow starts
+→ GitHub Actions assumes PortfolioDeployRole through OIDC
+→ Python deployment script runs
+→ website files are uploaded to S3
+→ CloudFront invalidation is created
+→ live CloudFront site is updated
+```
 
-The next improvement is a Python deployment CLI that automates the S3 upload and CloudFront invalidation steps.
+The workflow file is located at:
 
-## Local Python Deployment Test
+```text
+.github/workflows/deploy.yml
+```
 
-The local Python deployment tool has been tested successfully.
-
-The deployment script is located at:
+The Python deployment script is located at:
 
 ```text
 tools/deploy.py
 ```
 
+For normal deployment, no manual AWS Console upload is required.
+
+Routine deployment command flow:
+
+```bash
+git add .
+git commit -m "Update portfolio"
+git push
+```
+
+After the push, GitHub Actions runs the deployment workflow automatically.
+
+## Local Python Deployment Test
+
+Before moving deployment into GitHub Actions, the Python deployment script was tested locally.
+
 The script performs two deployment actions:
 
 ```text
-1. Upload local website files from website/ to the private S3 bucket
+1. Upload website files from website/ to the private S3 bucket
 2. Create a CloudFront invalidation for /*
 ```
 
@@ -328,13 +347,13 @@ For the local test, AWS credentials were provided through the local AWS profile:
 portfolio-deploy
 ```
 
-This profile uses the local `portfolio-runner` source profile to assume the AWS role:
+This profile used the local `portfolio-runner` source profile to assume the AWS role:
 
 ```text
 PortfolioDeployRole
 ```
 
-The script was run with:
+The script was run locally with:
 
 ```bash
 AWS_PROFILE=portfolio-deploy python tools/deploy.py
@@ -352,57 +371,51 @@ Uploaded: index.html (text/html)
 Cache invalidated: IAY301RL9CHESDUIISB7RBYPYM
 ```
 
-This confirms that the local deployment chain works:
+This confirmed that the local deployment chain worked before moving the workflow into GitHub Actions.
+
+## GitHub Actions CI/CD Deployment
+
+GitHub Actions is now used for automated deployment.
+
+The workflow runs when changes are pushed to the `main` branch. It checks out the repository, sets up Python, installs `boto3`, configures temporary AWS credentials, and runs the Python deployment script.
+
+The GitHub Actions workflow uses OpenID Connect (OIDC) to assume:
 
 ```text
-local project files
-→ Python deployment script
+PortfolioDeployRole
+```
+
+No long-lived AWS access key is stored in GitHub.
+
+The GitHub Actions deployment chain is:
+
+```text
+GitHub Actions job
+→ OIDC identity token
+→ AWS STS
+→ temporary PortfolioDeployRole credentials
 → boto3
-→ portfolio-deploy profile
-→ assumed PortfolioDeployRole
-→ S3 object upload
+→ S3 upload
 → CloudFront invalidation
 ```
 
-The local deployment workflow is currently:
+This replaces the earlier manual deployment workflow and the local-only deployment step.
 
-```text
-1. Save website changes locally
-2. Commit and push changes to GitHub
-3. Run the Python deployment script locally
-4. Verify the CloudFront site
-```
+## Automation Progression
 
-The commit/push step should happen before running the local deploy script, because the script uploads files from the local `website/` directory directly to S3. Until GitHub Actions is implemented, this keeps the local files, GitHub repository, and deployed CloudFront version aligned.
-
-This local deployment test is an intermediate stage. The long-term goal is to move deployment into GitHub Actions so that deployment happens automatically after changes are pushed to the main branch.
-
-Target final workflow:
-
-```text
-git push
-→ GitHub Actions
-→ assume PortfolioDeployRole
-→ run Python deployment script
-→ upload files to S3
-→ create CloudFront invalidation
-```
-
-
-## Planned Automation Progression
-
-The deployment workflow is intended to evolve in stages:
+The deployment workflow evolved in stages:
 
 1. Manual deployment
-   Files are uploaded to S3 manually, and CloudFront invalidation is created manually.
+   Files were uploaded to S3 manually, and CloudFront invalidation was created manually.
 
 2. Local Python automation
-   A Python CLI will upload the site files to S3 and create the CloudFront invalidation.
+   A Python deployment script uploaded the site files to S3 and created the CloudFront invalidation from the local machine.
 
 3. GitHub Actions CI/CD
-   The deployment workflow will later run from GitHub Actions after changes are pushed to the main branch.
+   The same deployment logic now runs automatically from GitHub Actions after changes are pushed to the `main` branch.
 
-This progression is intentional: first understand the manual process, then automate it locally, then move the same workflow into a more professional CI/CD pattern.
+This progression was intentional: first understand the manual process, then automate it locally, then move the workflow into a CI/CD pattern.
+
 
 ## Repository Structure
 
@@ -443,6 +456,10 @@ docs/
 * Operational documentation
 * Bilingual English/Japanese site content
 * Documentation of real project progress
+* Python Deployment with Boto3
+* Github Actions CI/CD workflow
+* OIDC-Based AWS role assumption from Github Actions
+* Automated S3 upload and CloudFront invalidation
 
 ## Certifications
 
