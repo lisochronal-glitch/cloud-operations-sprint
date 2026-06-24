@@ -217,7 +217,7 @@ GitHub Actions OIDC
 → run Python deployment
 ```
 
-The local IAM user is temporary scaffolding for learning and local testing has been replaced to not depend on a permanent local IAM user access key for deployment.
+The local IAM user was temporary scaffolding for learning and local testing. Routine deployment has now moved to GitHub Actions, so normal deployment no longer depends on a permanent local IAM user access key.
 
 ### Desired final deployment flow
 
@@ -419,35 +419,20 @@ This progression was intentional: first understand the manual process, then auto
 ## Repository Structure
 
 ```text
-website/
-├── index.html
-├── style.css
-└── script.js
-```
-
+.github/
+└── workflows/
+    └── deploy.yml
 
 tools/
 └── deploy.py
 
-docs/
-└── IAM_AND_PERMISSIONS.md
-```## Repository Structure
-
-```text
-.github/
-  workflows/
-    deploy.yml
-
-tools/
-  deploy.py
-
 website/
-  index.html
-  style.css
-  script.js
+├── index.html
+├── style.css
+└── script.js
 
 readme.md
-
+```
 ## Skills Demonstrated
 
 * Linux terminal workflow
