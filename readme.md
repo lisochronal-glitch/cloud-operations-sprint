@@ -303,6 +303,92 @@ CloudFront invalidation is not a permanent setting. It is a one-time cache-clear
 
 The next improvement is a Python deployment CLI that automates the S3 upload and CloudFront invalidation steps.
 
+## Local Python Deployment Test
+
+The local Python deployment tool has been tested successfully.
+
+The deployment script is located at:
+
+```text
+tools/deploy.py
+```
+
+The script performs two deployment actions:
+
+```text
+1. Upload local website files from website/ to the private S3 bucket
+2. Create a CloudFront invalidation for /*
+```
+
+The script uses `boto3` and does not contain AWS access keys or secret credentials.
+
+For the local test, AWS credentials were provided through the local AWS profile:
+
+```text
+portfolio-deploy
+```
+
+This profile uses the local `portfolio-runner` source profile to assume the AWS role:
+
+```text
+PortfolioDeployRole
+```
+
+The script was run with:
+
+```bash
+AWS_PROFILE=portfolio-deploy python tools/deploy.py
+```
+
+The deployment completed successfully.
+
+Observed output:
+
+```text
+Files found in website folder:
+Uploaded: style.css (text/css)
+Uploaded: script.js (application/javascript)
+Uploaded: index.html (text/html)
+Cache invalidated: IAY301RL9CHESDUIISB7RBYPYM
+```
+
+This confirms that the local deployment chain works:
+
+```text
+local project files
+→ Python deployment script
+→ boto3
+→ portfolio-deploy profile
+→ assumed PortfolioDeployRole
+→ S3 object upload
+→ CloudFront invalidation
+```
+
+The local deployment workflow is currently:
+
+```text
+1. Save website changes locally
+2. Commit and push changes to GitHub
+3. Run the Python deployment script locally
+4. Verify the CloudFront site
+```
+
+The commit/push step should happen before running the local deploy script, because the script uploads files from the local `website/` directory directly to S3. Until GitHub Actions is implemented, this keeps the local files, GitHub repository, and deployed CloudFront version aligned.
+
+This local deployment test is an intermediate stage. The long-term goal is to move deployment into GitHub Actions so that deployment happens automatically after changes are pushed to the main branch.
+
+Target final workflow:
+
+```text
+git push
+→ GitHub Actions
+→ assume PortfolioDeployRole
+→ run Python deployment script
+→ upload files to S3
+→ create CloudFront invalidation
+```
+
+
 ## Planned Automation Progression
 
 The deployment workflow is intended to evolve in stages:
