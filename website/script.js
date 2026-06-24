@@ -1,9 +1,9 @@
 const translations = {
   en: {
-    pageTitle: "John Trollinski | AWS / Cloud Operations Portfolio",
+    pageTitle: "Sebastian Hoglund | AWS / Cloud Operations Portfolio",
 
     "hero.eyebrow": "クラウド運用 / AWS Cloud Operations",
-    "hero.name": "John Trollinski",
+    "hero.name": "Sebastian Hoglund",
     "hero.lead": "AWS-certified cloud operations candidate in Japan combining technical support fundamentals, bilingual communication ability, and hands-on deployment practice across Linux, Git/GitHub, AWS services, documentation, and troubleshooting.",
     "hero.primaryButton": "View Current Project",
     "hero.secondaryButton": "Contact / Links",
@@ -37,7 +37,7 @@ const translations = {
 
  "project.label": "CURRENT PROJECT",
     "project.heading": "Cloud Operations Portfolio",
-    "project.intro": "This site is the visible front end of a practical cloud operations project. The goal is to build, deploy, debug, automate, and document a small AWS-hosted system while keeping the full workflow visible through GitHub history and project notes.",
+    "project.intro": "This site is the visible front end of a practical cloud operations project. The static site is hosted on private Amazon S3, delivered through CloudFront, and deployed automatically through GitHub Actions running a Python deployment script. The next phase is a serverless backend using API Gateway, Lambda, DynamoDB, and CloudWatch.",
     "project.archHeading": "Planned Architecture",
     "project.staticLabel": "Static site:",
     "project.staticText": "HTML/CSS/JavaScript stored in a private Amazon S3 bucket",
@@ -57,8 +57,8 @@ const translations = {
     "status.git": "Git/GitHub workflow",
     "status.localSite": "Local portfolio page",
     "status.awsHosting": "Static AWS hosting",
+    "status.cicd": "GitHub Actions CI/CD deployment",
     "status.backend": "Serverless backend",
-    "status.cicd": "CI/CD deployment",
 
     "skills.label": "TECHNICAL FOCUS",
     "skills.heading": "Operational skills developed through practical work",
@@ -98,10 +98,10 @@ const translations = {
   },
 
   ja: {
-    pageTitle: "John Trollinski | AWS・クラウド運用ポートフォリオ",
+    pageTitle: "Sebastian Hoglund | AWS・クラウド運用ポートフォリオ",
 
     "hero.eyebrow": "クラウド運用 / AWS Cloud Operations",
-    "hero.name": "John Trollinski",
+    "hero.name": "Sebastian Hoglund",
     "hero.lead": "日本在住のAWS認定クラウド運用志望者です。テクニカルサポートの基礎、日本語・英語でのコミュニケーション力、Linux、Git/GitHub、AWSサービス、ドキュメント作成、トラブルシューティングを含む実践的なデプロイ経験を組み合わせて、クラウド運用・インフラサポート領域での実務力を高めています。",
     "hero.primaryButton": "現在のプロジェクトを見る",
     "hero.secondaryButton": "連絡先 / リンク",
@@ -135,7 +135,7 @@ const translations = {
 
     "project.label": "現在のプロジェクト",
     "project.heading": "クラウド運用ポートフォリオ",
-    "project.intro": "このサイトは、実践的なクラウド運用プロジェクトのフロントエンドです。小規模なAWSホスト型システムを構築、デプロイ、デバッグ、自動化、文書化し、その過程をGitHubの履歴とプロジェクトメモで見える形にすることを目的としています。",
+    "project.intro": "このサイトは、実践的なクラウド運用プロジェクトのフロントエンドです。静的サイトはプライベートAmazon S3でホストし、CloudFrontで配信しています。デプロイはGitHub ActionsからPythonデプロイスクリプトを実行して自動化しています。次の段階では、API Gateway、Lambda、DynamoDB、CloudWatchを使ったサーバーレスバックエンドを追加します。",
     "project.archHeading": "予定している構成",
     "project.staticLabel": "静的サイト：",
     "project.staticText": "Amazon S3でホストするHTML/CSS/JavaScript",
@@ -155,8 +155,8 @@ const translations = {
     "status.git": "Git/GitHubワークフロー",
     "status.localSite": "ローカルポートフォリオページ",
     "status.awsHosting": "AWS静的ホスティング",
+    "status.cicd": "GitHub Actions CI/CDデプロイ",
     "status.backend": "サーバーレスバックエンド",
-    "status.cicd": "CI/CDデプロイ",
 
     "skills.label": "技術領域",
     "skills.heading": "実践を通じて伸ばしている運用スキル",

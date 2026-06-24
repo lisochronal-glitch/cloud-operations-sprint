@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>John Trollinski | AWS / Cloud Operations Portfolio</title>
+  <title>Sebastian Hoglund | AWS / Cloud Operations Portfolio</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -18,7 +18,7 @@
           </div>
         </div>
 
-        <h1 data-i18n="hero.name">John Trollinski</h1>
+        <h1 data-i18n="hero.name">Sebastian Hoglund</h1>
 
         <p class="lead" data-i18n="hero.lead">
           AWS-certified cloud operations candidate in Japan combining technical support fundamentals,
@@ -114,10 +114,8 @@
         <p class="section-label" data-i18n="project.label">CURRENT PROJECT</p>
         <h2 data-i18n="project.heading">Cloud Operations Portfolio</h2>
         <p class="section-intro" data-i18n="project.intro">
-          This site is the visible front end of a practical cloud operations project. The goal is to build,
-          deploy, debug, automate, and document a small AWS-hosted system while keeping the full workflow
-          visible through GitHub history and project notes.
-        </p>
+  		This site is the visible front end of a practical cloud operations project. The static site is hosted on private Amazon S3, delivered through CloudFront, and deployed automatically through GitHub Actions running a Python deployment script. The next phase is a serverless backend using API Gateway, Lambda, DynamoDB, and CloudWatch.
+	</p>
 
         <div class="project-layout">
           <article class="project-main">
@@ -153,13 +151,13 @@
           <aside class="status-card">
             <h3 data-i18n="status.heading">Build Status</h3>
             <ol class="timeline">
-              <li class="done" data-i18n="status.vm">Ubuntu VM setup</li>
-              <li class="done" data-i18n="status.git">Git/GitHub workflow</li>
-              <li class="done" data-i18n="status.localSite">Local portfolio page</li>
-              <li class="done" data-i18n="status.awsHosting">Static AWS hosting</li>
-              <li data-i18n="status.backend">Serverless backend</li>
-              <li data-i18n="status.cicd">CI/CD deployment</li>
-            </ol>
+  		<li class="done" data-i18n="status.vm">Ubuntu VM setup</li>
+ 		 <li class="done" data-i18n="status.git">Git/GitHub workflow</li>
+ 		 <li class="done" data-i18n="status.localSite">Local portfolio page</li>
+  		<li class="done" data-i18n="status.awsHosting">Static AWS hosting</li>
+  		<li class="done" data-i18n="status.cicd">GitHub Actions CI/CD deployment</li>
+  		<li data-i18n="status.backend">Serverless backend</li>
+	    </ol>
           </aside>
         </div>
       </div>
