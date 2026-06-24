@@ -71,7 +71,7 @@ Local AWS profile
 → CloudFront invalidation
 ```
 
-This is more complex than giving one IAM user direct deployment permissions, but it is intentional. The goal is to separate **authentication source** from **deployment permission set**, so the deploy role can later be reused by GitHub Actions.
+This is more complex than giving one IAM user direct deployment permissions, but it is intentional. The goal is to separate **authentication source** from **deployment permission set**, so the deploy role could be reused by GitHub Actions.
 
 ### Components
 
@@ -117,7 +117,7 @@ The IAM user `portfolio-role-runner` is not intended to own the deployment permi
 
 The actual deployment permissions live on `PortfolioDeployRole`.
 
-This means the deployment permission set is attached to a role, not permanently tied to one local IAM user. Later, GitHub Actions can assume the same role using OIDC, replacing the local IAM user access key as the deployment source.
+This means the deployment permission set is attached to a role, not permanently tied to one local IAM user. GitHub Actions now assumes the same role using OIDC, replacing the local IAM user access key as the deployment source.
 
 ### Local profile flow
 
@@ -433,6 +433,7 @@ website/
 
 readme.md
 ```
+
 ## Skills Demonstrated
 
 * Linux terminal workflow
