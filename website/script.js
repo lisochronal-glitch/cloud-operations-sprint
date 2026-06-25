@@ -46,7 +46,7 @@ const translations = {
     "project.backendLabel": "Backend:",
     "project.backendText": "API Gateway triggering a Python Lambda function",
     "project.databaseLabel": "Database:",
-    "project.databaseText": "DynamoDB visitor counter and project metadata""project.databaseText": "DynamoDB visitor records and global counter totals",
+    "project.databaseText": "DynamoDB visitor records and global counter totals",
     "project.logsLabel": "Observability:",
     "project.logsText": "CloudWatch logs used for debugging and verification",
     "project.automationLabel": "Automation:",
