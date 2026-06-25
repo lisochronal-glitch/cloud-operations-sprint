@@ -95,6 +95,8 @@ const translations = {
 
     "footer.text": "Built as part of a practical AWS / cloud operations portfolio project.",
     "footer.updated": "Last updated:"
+    "footer.visits": "Visits:",
+    "footer.uniqueVisitors": "Unique visitors:"
   },
 
   ja: {
@@ -193,6 +195,8 @@ const translations = {
 
     "footer.text": "実践的なAWS / クラウド運用ポートフォリオプロジェクトとして作成。",
     "footer.updated": "最終更新："
+    "footer.visits": "訪問数：",
+    "footer.uniqueVisitors": "ユニーク訪問者："
   }
 };
 

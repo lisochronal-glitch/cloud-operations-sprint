@@ -426,6 +426,16 @@ p {
   margin: 0;
 }
 
+.footer-counter {
+  margin-left: 0.75rem;
+  white-space: nowrap;
+}
+
+.footer-separator {
+  opacity: 0.5;
+  margin: 0 0.35rem;
+}
+
 @media (max-width: 860px) {
   .header-grid,
   .two-column,
