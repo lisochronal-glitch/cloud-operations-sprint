@@ -205,6 +205,9 @@ const VISIT_API_URL = "https://i3vjsl5oil.execute-api.ap-northeast-1.amazonaws.c
 const updatedElement = document.getElementById("last-updated");
 const languageButtons = document.querySelectorAll(".lang-button");
 const translatableElements = document.querySelectorAll("[data-i18n]");
+const totalVisitsElement = document.getElementById("total-visits");
+const uniqueVisitorsElement = document.getElementById("unique-visitors");
+
 
 function getInitialLanguage() {
   const savedLanguage = localStorage.getItem("preferredLanguage");
@@ -272,7 +275,16 @@ async function recordVisit() {
     }
 
     const data = await response.json();
-    console.log("Visit recorded:", data);
+
+	if (totalVisitsElement) {
+ 	 totalVisitsElement.textContent = data.total_visits;
+	}
+
+	if (uniqueVisitorsElement) {
+  	uniqueVisitorsElement.textContent = data.unique_visitors;
+	}
+
+console.log("Visit recorded:", data);
   } catch (error) {
     console.error("Visit counter failed:", error);
   }
