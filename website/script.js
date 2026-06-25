@@ -196,6 +196,8 @@ const translations = {
   }
 };
 
+const VISIT_API_URL = "https://i3vjsl5oil.execute-api.ap-northeast-1.amazonaws.com/visit";
+
 const updatedElement = document.getElementById("last-updated");
 const languageButtons = document.querySelectorAll(".lang-button");
 const translatableElements = document.querySelectorAll("[data-i18n]");
@@ -255,6 +257,23 @@ function applyLanguage(language) {
   renderDate(language);
 }
 
+async function recordVisit() {
+  try {
+    const response = await fetch(VISIT_API_URL, {
+      method: "POST"
+    });
+
+    if (!response.ok) {
+      throw new Error(`Visit API returned ${response.status}`);
+    }
+
+    const data = await response.json();
+    console.log("Visit recorded:", data);
+  } catch (error) {
+    console.error("Visit counter failed:", error);
+  }
+}
+
 languageButtons.forEach((button) => {
   button.addEventListener("click", () => {
     applyLanguage(button.dataset.lang);
@@ -262,5 +281,6 @@ languageButtons.forEach((button) => {
 });
 
 applyLanguage(getInitialLanguage());
+recordVisit();
 
 console.log("Cloud Operations portfolio loaded.");
