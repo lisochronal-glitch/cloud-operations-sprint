@@ -23,6 +23,75 @@ The project is also used as a practical operations lab: deployment, permissions,
 * CloudFront caching remains enabled for normal operation.
 * When files are updated in S3, a one-time CloudFront invalidation is created to refresh the deployed site.
 
+## Serverless Visitor Counter Backend
+
+This portfolio site now includes a small serverless backend feature: a visible visitor counter displayed in the site footer.
+
+When the site loads, browser JavaScript sends a `POST` request to an API Gateway HTTP API route:
+
+```text
+POST /visit
+```
+
+API Gateway invokes a Python Lambda function. The Lambda function extracts the visitor source IP from the API Gateway request metadata, combines it with a salt stored as a Lambda environment variable, hashes it with SHA-256, and stores only the resulting hash in DynamoDB.
+
+The raw IP address is not stored.
+
+The DynamoDB table stores two types of records:
+
+```text
+visitor_hash = hashed visitor identifier
+visitor_hash = "__stats__"
+```
+
+Normal visitor records track:
+
+```text
+first_seen
+last_seen
+visit_count
+```
+
+The `__stats__` record tracks global site totals:
+
+```text
+total_visits
+unique_visitors
+last_updated
+```
+
+The Lambda function updates both the per-visitor record and the global stats record, then returns the latest totals to the frontend. JavaScript receives the response and updates the footer visitor counter on the live site.
+
+Current backend flow:
+
+```text
+Browser loads CloudFront site
+→ script.js sends POST request to API Gateway /visit
+→ API Gateway invokes VisitorCounterFunction
+→ Lambda hashes visitor identifier
+→ Lambda updates DynamoDB visitor record
+→ Lambda updates DynamoDB __stats__ record
+→ Lambda returns total_visits and unique_visitors
+→ JavaScript displays the counter in the footer
+```
+
+This feature demonstrates:
+
+* API Gateway HTTP API routing
+* Lambda integration
+* Python Lambda backend logic
+* DynamoDB state management
+* conditional writes for new visitor detection
+* atomic counter updates
+* Lambda environment variables
+* IAM least-privilege access from Lambda to DynamoDB
+* CORS configuration for browser-to-API communication
+* frontend/backend integration using JavaScript `fetch`
+* CloudWatch logging and troubleshooting during development
+
+The footer counter is intentionally visible on the site. It acts as a small proof surface for the underlying backend stack: the displayed number is not hardcoded, but returned from DynamoDB through the API Gateway and Lambda path.
+
+
 ## Hosting Decision
 
 S3 static website hosting is intentionally disabled for this project.
@@ -265,6 +334,7 @@ The IAM admin user can still update deployed files, but is denied actions such a
 
 This was tested by attempting to delete `script.js` and attempting to delete the bucket policy from the IAM admin user session. Both actions were denied.
 
+
 ## Current Build Status
 
 Completed:
@@ -280,13 +350,22 @@ Completed:
 * Local Python deployment script
 * Automated S3 upload and CloudFront invalidation
 * GitHub Actions CI/CD deployment workflow
+* Serverless backend
+* API Gateway HTTP API
+* Lambda visitor counter function
+* DynamoDB visitor counter table
+* Visible footer visitor counter
+* Browser-to-API CORS configuration
+* CloudWatch logging and troubleshooting verification
 
 Planned:
 
-* Serverless backend
-* API Gateway + Lambda
-* DynamoDB visitor counter or project metadata
-* CloudWatch logging and troubleshooting
+* Backend documentation cleanup
+* Architecture diagram
+* Cost and operational guardrail notes
+* Additional project screenshots
+* Next project: VPC / networking / security operations lab
+
 
 ## Deployment Workflow
 
@@ -453,6 +532,18 @@ readme.md
 * GitHub Actions CI/CD workflow
 * OIDC-based AWS role assumption from GitHub Actions
 * Automated S3 upload and CloudFront invalidation
+* API Gateway HTTP API route configuration
+* Python Lambda function development
+* DynamoDB table design for visitor records and aggregate stats
+* DynamoDB conditional writes and atomic counter updates
+* Lambda environment variable configuration
+* IAM least-privilege permissions for Lambda-to-DynamoDB access
+* CORS configuration for frontend-to-backend browser requests
+* Frontend/backend integration using JavaScript `fetch`
+* CloudWatch-based Lambda/API troubleshooting
+* Visible serverless backend feature connected to the live portfolio site
+
+
 
 ## Certifications
 
