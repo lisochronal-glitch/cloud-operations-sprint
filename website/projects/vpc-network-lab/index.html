@@ -1,138 +1,201 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Secure VPC Foundation | Cloud Operations Portfolio</title>
-  <link rel="stylesheet" href="../../style.css" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Secure VPC Foundation | AWS / Cloud Operations Portfolio</title>
+  <link rel="stylesheet" href="../../style.css">
 </head>
 <body>
   <header class="site-header">
-    <nav class="nav">
-      <a class="logo" href="../../index.html">Cloud Operations Portfolio</a>
-      <div class="nav-links">
-        <a href="../../index.html">Home</a>
-        <a href="../../index.html#projects">Projects</a>
-        <a href="../../index.html#skills">Skills</a>
-        <a href="../../index.html#contact">Contact</a>
+    <div class="container">
+      <p class="eyebrow">AWS Networking Project</p>
+
+      <h1>Secure VPC Foundation</h1>
+
+      <p class="lead">
+        This project designs a secure AWS network foundation for a small web application.
+        The scenario is a company migrating from a local hosting provider to AWS. Customers
+        must be able to access the public website from the internet, while the backend
+        application and future database must remain isolated from direct public access.
+      </p>
+
+      <p class="lead">
+        The design separates the application into a public web tier and a private backend tier.
+        The public tier is built for internet-facing access, while backend resources are placed
+        in a private subnet and protected through route table separation and Security Group rules.
+        The infrastructure will be implemented with CloudFormation, verified through testing, and
+        removed after the lab is complete for cost control.
+      </p>
+
+      <div class="hero-actions">
+        <a href="../../index.html#projects" class="button secondary">Back to Projects</a>
+        <a href="#github" class="button primary">GitHub coming soon</a>
       </div>
-    </nav>
+    </div>
   </header>
 
   <main>
-    <section class="project-detail-hero">
-      <p class="eyebrow">AWS Networking Project</p>
-      <h1>Secure VPC Foundation</h1>
-      <p class="project-lead">
-        Designed a secure AWS network foundation for a small web application,
-        separating a public web tier from a private backend tier using VPC subnets,
-        route tables, Security Groups, and CloudFormation.
-      </p>
+    <section class="section muted">
+      <div class="container">
+        <p class="section-label">SOLUTION</p>
+        <h2>Public web tier with isolated private backend tier</h2>
 
-      <div class="project-actions">
-        <a class="button" href="#github">GitHub</a>
-        <a class="button secondary" href="../../index.html#projects">Back to Projects</a>
+        <p class="section-intro">
+          The solution uses an Amazon VPC with separate public and private subnets. The public
+          subnet supports internet-facing resources, while the private subnet is reserved for
+          backend components that should not be directly reachable from the internet.
+        </p>
+
+        <p>
+          An Internet Gateway is attached to the VPC so the public subnet can route traffic to
+          and from the internet. The private subnet uses a separate route table without a direct
+          internet route. Security Groups are used to restrict allowed traffic and enforce a clear
+          boundary between the public and private tiers.
+        </p>
       </div>
     </section>
 
-    <section class="project-summary-grid">
-      <div class="summary-card">
-        <h2>Role</h2>
-        <p>Cloud Engineer</p>
+    <section class="section">
+      <div class="container">
+        <p class="section-label">ARCHITECTURE DIAGRAM</p>
+        <h2>Network design</h2>
+
+        <p class="section-intro">
+          An AWS architecture diagram will be added here after the network design is finalized.
+          The diagram will show the VPC, public subnet, private subnet, route tables, Internet
+          Gateway, Security Groups, and test resources used to verify the design.
+        </p>
+
+        <div class="background-card">
+          <h3>Diagram placeholder</h3>
+          <p>
+            Final diagram will be exported from diagrams.net / draw.io using AWS architecture
+            icons and added after the lab is built.
+          </p>
+        </div>
       </div>
+    </section>
 
-      <div class="summary-card">
-        <h2>Scenario</h2>
-        <p>Small company migration to AWS</p>
+    <section class="section muted">
+      <div class="container">
+        <p class="section-label">AWS SERVICES / FEATURES USED</p>
+        <h2>Core networking components</h2>
+
+        <ul class="check-list">
+          <li>Amazon VPC for isolated network foundation</li>
+          <li>Public subnet for internet-facing web resources</li>
+          <li>Private subnet for backend application and future database resources</li>
+          <li>Route tables for separating public and private network paths</li>
+          <li>Internet Gateway for public web tier access</li>
+          <li>Security Groups for controlled inbound and internal traffic</li>
+          <li>EC2 test resources for connectivity verification</li>
+          <li>CloudFormation for repeatable infrastructure provisioning</li>
+        </ul>
       </div>
+    </section>
 
-      <div class="summary-card">
-        <h2>Technologies</h2>
-        <p>AWS VPC, EC2, Security Groups, Route Tables, Internet Gateway, CloudFormation</p>
+    <section class="section">
+      <div class="container">
+        <p class="section-label">SECURITY DECISIONS</p>
+        <h2>Backend resources are not directly exposed to the internet</h2>
+
+        <p class="section-intro">
+          The main security goal is to expose only the resources that must be public. The web tier
+          is placed in a public subnet so customers can reach the application, but backend resources
+          are placed in a private subnet with no direct public route.
+        </p>
+
+        <ul class="check-list">
+          <li>The public subnet is used only for internet-facing web access.</li>
+          <li>The private subnet is reserved for backend resources.</li>
+          <li>Route tables separate public internet access from private backend networking.</li>
+          <li>Security Groups restrict traffic between tiers.</li>
+          <li>The design can be extended later with additional private resources or a database tier.</li>
+        </ul>
       </div>
+    </section>
 
-      <div class="summary-card">
-        <h2>Skills Demonstrated</h2>
-        <p>Network design, infrastructure as code, security, verification, documentation</p>
+    <section class="section muted">
+      <div class="container">
+        <p class="section-label">VERIFICATION</p>
+        <h2>Testing public access and private isolation</h2>
+
+        <p class="section-intro">
+          After the CloudFormation stack is deployed, the environment will be tested to confirm
+          that the original requirements are met.
+        </p>
+
+        <ul class="check-list">
+          <li>Confirm that the VPC, subnets, route tables, and Internet Gateway are created correctly.</li>
+          <li>Confirm that the public web tier is reachable from the internet.</li>
+          <li>Confirm that the private backend tier is not directly reachable from the internet.</li>
+          <li>Capture AWS Console screenshots as evidence.</li>
+          <li>Document any troubleshooting steps and corrections.</li>
+        </ul>
       </div>
     </section>
 
-    <section class="project-section">
-      <h2>Scenario</h2>
-      <p>
-        This section will describe the business problem, customer requirements,
-        and reason for designing a secure AWS network foundation for a small web application.
-      </p>
+    <section class="section">
+      <div class="container">
+        <p class="section-label">SCREENSHOTS / EVIDENCE</p>
+        <h2>Visual proof of the deployed network</h2>
+
+        <p class="section-intro">
+          Screenshots will be added after the lab is built and tested. These will show both the
+          deployed AWS resources and the verification results.
+        </p>
+
+        <div class="background-card">
+          <h3>Evidence to add later</h3>
+          <ul class="check-list">
+            <li>VPC resource view</li>
+            <li>Public and private subnet configuration</li>
+            <li>Route table associations</li>
+            <li>Internet Gateway attachment</li>
+            <li>Security Group rules</li>
+            <li>Public web access test</li>
+            <li>Private backend isolation test</li>
+          </ul>
+        </div>
+      </div>
     </section>
 
-    <section class="project-section">
-      <h2>Solution</h2>
-      <p>
-        This section will explain the AWS network design, including the public web tier,
-        private backend tier, routing model, and security boundaries.
-      </p>
+    <section class="section muted">
+      <div class="container">
+        <p class="section-label">COST CONTROL / CLEANUP</p>
+        <h2>Temporary lab environment removed after verification</h2>
+
+        <p class="section-intro">
+          This project is designed as a temporary lab. The environment will be deployed only long
+          enough to test the network, capture evidence, and document the result.
+        </p>
+
+        <p>
+          After verification is complete, the CloudFormation stack will be deleted and cleanup will
+          be confirmed. This demonstrates controlled use of AWS resources and avoids unnecessary
+          ongoing charges.
+        </p>
+      </div>
     </section>
 
-    <section class="project-section">
-      <h2>Architecture Diagram</h2>
-      <p>
-        This section will include an exported AWS architecture diagram showing the VPC,
-        public subnet, private subnet, route tables, Internet Gateway, Security Groups,
-        and test resources.
-      </p>
-    </section>
+    <section class="section" id="github">
+      <div class="container">
+        <p class="section-label">GITHUB</p>
+        <h2>Repository</h2>
 
-    <section class="project-section">
-      <h2>AWS Services / Features Used</h2>
-      <ul>
-        <li>Amazon VPC</li>
-        <li>Public and private subnets</li>
-        <li>Route tables</li>
-        <li>Internet Gateway</li>
-        <li>Security Groups</li>
-        <li>EC2 test instances</li>
-        <li>CloudFormation</li>
-        <li>CloudWatch, if used for logs or verification</li>
-      </ul>
-    </section>
-
-    <section class="project-section">
-      <h2>Security Decisions</h2>
-      <p>
-        This section will document how the backend tier is kept private, how Security Groups
-        restrict traffic, and how the design separates internet-facing resources from internal resources.
-      </p>
-    </section>
-
-    <section class="project-section">
-      <h2>Verification</h2>
-      <p>
-        This section will show evidence that the public web tier is reachable from the internet
-        while the private backend tier is not directly accessible.
-      </p>
-    </section>
-
-    <section class="project-section">
-      <h2>Cost Control / Cleanup</h2>
-      <p>
-        This section will document that the lab environment was temporary, deployed for testing,
-        and deleted after verification to avoid unnecessary AWS charges.
-      </p>
-    </section>
-
-    <section class="project-section" id="github">
-      <h2>GitHub</h2>
-      <p>
-        The GitHub repository link will be added after the CloudFormation template,
-        documentation, and verification evidence are completed.
-      </p>
+        <p class="section-intro">
+          The GitHub repository link will be added after the CloudFormation template, README,
+          architecture diagram, and verification evidence are completed.
+        </p>
+      </div>
     </section>
   </main>
 
   <footer class="site-footer">
-    <p>Powered by Amazon CloudFront</p>
+    <div class="container">
+      <p>Powered by Amazon CloudFront</p>
+    </div>
   </footer>
-
-  <script src="../../script.js"></script>
 </body>
 </html>
