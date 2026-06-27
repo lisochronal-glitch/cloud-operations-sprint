@@ -14,15 +14,14 @@
       <h1>Secure VPC Foundation</h1>
 
       <p class="lead">
-        A small company is migrating a simple web application to AWS. Customers need to access
-        the website from the internet, but the backend application and future database must not
-        be directly reachable from the public internet.
+        A small company wants to migrate a simple web application to AWS. Customers must be able
+        to access the website from the internet, but the backend application and future database
+        must not be directly reachable from the public internet.
       </p>
 
       <p class="lead">
-        This project designs and provisions a secure VPC foundation with a public web tier,
-        a private backend tier, separated routing, controlled Security Group rules, and
-        CloudFormation-based deployment.
+        This project designs a secure AWS network foundation that separates public web access
+        from private backend resources.
       </p>
 
       <div class="hero-actions">
@@ -35,106 +34,48 @@
   <main>
     <section class="section muted">
       <div class="container">
-        <p class="section-label">TECHNICAL SCOPE</p>
-        <h2>AWS network design, implementation, and verification</h2>
+        <p class="section-label">SOLUTION</p>
+        <h2>Public web tier with private backend isolation</h2>
 
         <p class="section-intro">
-          Amazon VPC · Public subnet · Private subnet · Route tables · Internet Gateway ·
-          Security Groups · EC2 test resources · CloudFormation
+          The <strong>Amazon VPC</strong> is split into a <strong>public subnet</strong> for the
+          web tier and a <strong>private subnet</strong> for backend resources. The public subnet
+          uses an <strong>Internet Gateway</strong> and public <strong>route table</strong> so
+          customers can reach the website from the internet.
         </p>
 
-        <ul class="check-list">
-          <li>Designed a public/private AWS network for a small web application.</li>
-          <li>Kept backend resources isolated from direct internet access.</li>
-          <li>Implemented the network with CloudFormation instead of manual-only configuration.</li>
-          <li>Verified public web reachability and private backend isolation.</li>
-          <li>Deleted the temporary lab environment after testing to control cost.</li>
-        </ul>
+        <p>
+          The private subnet has no direct public internet route, keeping backend resources isolated.
+          <strong>Security Groups</strong> restrict inbound traffic and control communication between
+          the public and private tiers. The infrastructure is provisioned with
+          <strong>CloudFormation</strong> so the network can be recreated, tested, and removed cleanly.
+        </p>
       </div>
     </section>
 
     <section class="section">
       <div class="container">
-        <p class="section-label">SOLUTION</p>
-        <h2>Public web tier, private backend tier</h2>
-
-        <p class="section-intro">
-          The VPC is split into a public subnet and a private subnet. The public subnet has a route
-          to an Internet Gateway and is used for internet-facing web resources. The private subnet
-          uses separate routing and is reserved for backend resources that should not receive direct
-          public traffic.
-        </p>
-
-        <p>
-          Security Groups control which traffic is allowed into the web tier and between tiers.
-          This creates a simple, expandable foundation for a future web application and database
-          without exposing backend resources unnecessarily.
-        </p>
-      </div>
-    </section>
-
-    <section class="section muted">
-      <div class="container">
-        <p class="section-label">DIAGRAM / SCREENSHOTS</p>
-        <h2>Visual evidence will be added during the build</h2>
+        <p class="section-label">ARCHITECTURE DIAGRAM</p>
+        <h2>VPC network design</h2>
 
         <div class="background-card">
-          <h3>Planned evidence</h3>
-          <ul class="check-list">
-            <li>Architecture diagram using AWS icons</li>
-            <li>VPC and subnet configuration</li>
-            <li>Route table associations</li>
-            <li>Internet Gateway attachment</li>
-            <li>Security Group rules</li>
-            <li>Public web access test</li>
-            <li>Private backend isolation test</li>
-          </ul>
+          <h3>Diagram placeholder</h3>
+          <p>
+            Final diagram will show the VPC, public subnet, private subnet, route tables,
+            Internet Gateway, Security Groups, and test EC2 resources.
+          </p>
         </div>
       </div>
     </section>
 
-    <section class="section">
-      <div class="container">
-        <p class="section-label">VERIFICATION</p>
-        <h2>Proving the requirements were met</h2>
-
-        <ul class="check-list">
-          <li>The public web tier can be reached from the internet.</li>
-          <li>The private backend tier cannot be reached directly from the internet.</li>
-          <li>Route tables match the intended public/private design.</li>
-          <li>Security Groups allow only the required traffic.</li>
-          <li>CloudFormation can recreate the environment consistently.</li>
-        </ul>
-      </div>
-    </section>
-
-    <section class="section muted">
-      <div class="container">
-        <p class="section-label">SECURITY / COST CONTROL</p>
-        <h2>Limited exposure, temporary resources</h2>
-
-        <p class="section-intro">
-          Only the web tier is designed for public access. Backend resources remain private, and
-          the lab environment is removed after verification.
-        </p>
-
-        <ul class="check-list">
-          <li>No direct public access to backend resources.</li>
-          <li>No NAT Gateway in the initial design unless private outbound access becomes necessary.</li>
-          <li>Temporary EC2 test resources used only for verification.</li>
-          <li>CloudFormation stack deleted after screenshots and testing are complete.</li>
-        </ul>
-      </div>
-    </section>
-
-    <section class="section" id="github">
+    <section class="section muted" id="github">
       <div class="container">
         <p class="section-label">GITHUB</p>
-        <h2>Repository</h2>
+        <h2>Implementation details</h2>
 
         <p class="section-intro">
-          The repository will include the CloudFormation template, README, architecture diagram,
-          verification screenshots, and cleanup notes after the lab is completed.
+          The repository will contain the CloudFormation template, README, screenshots,
+          testing notes, and cleanup steps after the lab is completed.
         </p>
       </div>
     </section>
