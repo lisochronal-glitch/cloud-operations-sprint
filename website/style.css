@@ -385,11 +385,11 @@ p {
 }
 
 .contact-panel {
-  padding: 32px;
+  padding: 28px 32px;
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 24px;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 20px;
 }
 
 .contact-panel h2 {
@@ -399,7 +399,7 @@ p {
 .contact-links {
   display: flex;
   flex-wrap: wrap;
-  justify-content: flex-end;
+  justify-content: flex-start;
   gap: 10px;
 }
 
@@ -460,14 +460,6 @@ p {
     padding: 44px 0;
   }
 
-  .contact-panel {
-  flex-direction: column;
-  align-items: stretch;
-}
-
-.contact-links {
-  justify-content: flex-start;
-}
 }
 
 @media (max-width: 520px) {
