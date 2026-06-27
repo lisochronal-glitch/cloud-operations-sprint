@@ -503,3 +503,78 @@ p {
 .badge-link:hover {
     text-decoration: underline;
 }
+
+/* Project detail pages */
+
+.project-detail-hero {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 5rem 1.5rem 3rem;
+}
+
+.project-detail-hero h1 {
+  margin-bottom: 1rem;
+}
+
+.project-lead {
+  max-width: 760px;
+  font-size: 1.1rem;
+  line-height: 1.7;
+}
+
+.project-actions {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-top: 2rem;
+}
+
+.project-summary-grid {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 0 1.5rem 2rem;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.summary-card {
+  padding: 1.25rem;
+  border-radius: 1rem;
+  border: 1px solid rgba(148, 163, 184, 0.25);
+  background: rgba(15, 23, 42, 0.35);
+}
+
+.summary-card h2 {
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.project-section {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem;
+}
+
+.project-section h2 {
+  margin-bottom: 0.75rem;
+}
+
+.project-section p,
+.project-section li {
+  line-height: 1.7;
+}
+
+.project-section ul {
+  padding-left: 1.25rem;
+}
+
+@media (max-width: 700px) {
+  .project-summary-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .project-detail-hero {
+    padding-top: 3rem;
+  }
+}
