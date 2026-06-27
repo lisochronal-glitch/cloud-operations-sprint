@@ -253,6 +253,10 @@ p {
   padding: 44px 0;
 }
 
+#contact .container {
+  max-width: 760px;
+}
+
 .two-column {
   display: grid;
   grid-template-columns: 0.9fr 1.4fr;
@@ -447,10 +451,6 @@ p {
   .header-grid,
   .two-column,
   .project-layout,
-  .contact-panel {
-    grid-template-columns: 1fr;
-  }
-
   .card-grid,
   .skill-list {
     grid-template-columns: 1fr;
