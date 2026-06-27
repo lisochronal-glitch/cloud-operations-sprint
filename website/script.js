@@ -121,7 +121,7 @@ const translations = {
     "background.label": "BACKGROUND",
     "background.heading": "Professional background",
     "background.educationTitle": "Education / Communication",
-    "background.educationText": "Former high school English teacher with experience explaining complex material, evaluating written work, identifying misunderstandings, and communicating clearly. This background supports technical documentation, user support, structured troubleshooting, and clear reporting.",
+    "background.educationText": "Former high school English teacher with professional experience explaining complex material, identifying misunderstandings, giving structured feedback, adapting explanations to different learners, and communicating clearly with students, colleagues, and guardians.",
     "background.japanTitle": "Japan / Language",
     "background.japanText": "Long-term Japanese study and daily Japanese communication experience, supported by JLPT N2 certification. Currently building stronger professional Japanese for technical and cloud infrastructure environments.",
 
@@ -130,7 +130,7 @@ const translations = {
     "contact.text": "This section will include the live GitHub repository, deployed AWS site, LinkedIn profile, and downloadable CV once the project is ready for external review.",
     "contact.github": "GitHub",
     "contact.linkedin": "LinkedIn / Placeholder",
-    "contact.cv": "Download CV / Placeholder",
+    "contact.cv": "CV available on request",
 
     "footer.text": "Built as part of a practical AWS / cloud operations portfolio project.",
     "footer.updated": "Last updated:",
@@ -262,14 +262,14 @@ const translations = {
     "background.educationTitle": "教育 / コミュニケーション",
     "background.educationText": "元高校英語教員として、複雑な内容の説明、文章評価、誤解や理解不足の特定、明確なコミュニケーションに携わってきました。この経験は、技術ドキュメント、ユーザーサポート、構造的なトラブルシューティング、明確な報告に活かせます。",
     "background.japanTitle": "日本 / 言語",
-    "background.japanText": "長期的な日本語学習と日常的な日本語コミュニケーション経験があり、JLPT N2を取得しています。現在は、技術・クラウドインフラ環境でより強い専門的な日本語運用力を高めています。",
+    "background.educationText": "元高校英語教員として、複雑な内容の説明、理解不足の特定、構造的なフィードバック、相手に合わせた説明、学生・同僚・保護者との明確なコミュニケーションに携わってきました。",
 
     "contact.label": "連絡先",
     "contact.heading": "リンクと連絡先",
     "contact.text": "このセクションには、外部レビューに出せる段階になった時点で、GitHubリポジトリ、デプロイ済みのAWSサイト、LinkedInプロフィール、ダウンロード可能なCVを掲載します。",
     "contact.github": "GitHub",
     "contact.linkedin": "LinkedIn / 準備中",
-    "contact.cv": "CVダウンロード / 準備中",
+    "contact.cv": "履歴書・職務経歴書は依頼に応じて共有",
 
     "footer.text": "実践的なAWS / クラウド運用ポートフォリオプロジェクトとして作成。",
     "footer.updated": "最終更新：",
