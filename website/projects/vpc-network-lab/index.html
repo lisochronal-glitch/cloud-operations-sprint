@@ -21,11 +21,11 @@
       </p>
 
       <p class="lead">
-        The design separates the application into a public web tier and a private backend tier.
-        The public tier is built for internet-facing access, while backend resources are placed
-        in a private subnet and protected through route table separation and Security Group rules.
-        The infrastructure will be implemented with CloudFormation, verified through testing, and
-        removed after the lab is complete for cost control.
+        The network is designed around a separated public web tier and private backend tier.
+        The public subnet supports internet-facing resources, while the private subnet is reserved
+        for backend components that should not be directly reachable from the internet. The design
+        will be implemented with CloudFormation, verified through testing, documented with evidence,
+        and removed after the lab is complete for cost control.
       </p>
 
       <div class="hero-actions">
@@ -38,28 +38,49 @@
   <main>
     <section class="section muted">
       <div class="container">
-        <p class="section-label">SOLUTION</p>
-        <h2>Public web tier with isolated private backend tier</h2>
+        <p class="section-label">PROJECT SUMMARY</p>
+        <h2>Secure public access with private backend isolation</h2>
 
         <p class="section-intro">
-          The solution uses an Amazon VPC with separate public and private subnets. The public
-          subnet supports internet-facing resources, while the private subnet is reserved for
-          backend components that should not be directly reachable from the internet.
+          Technologies used: Amazon VPC, public subnet, private subnet, route tables,
+          Internet Gateway, Security Groups, EC2 test resources, and CloudFormation.
         </p>
 
-        <p>
-          An Internet Gateway is attached to the VPC so the public subnet can route traffic to
-          and from the internet. The private subnet uses a separate route table without a direct
-          internet route. Security Groups are used to restrict allowed traffic and enforce a clear
-          boundary between the public and private tiers.
-        </p>
+        <ul class="check-list">
+          <li>Designed a public/private AWS network foundation for a small web application.</li>
+          <li>Separated internet-facing web resources from private backend resources.</li>
+          <li>Used route tables and an Internet Gateway to control public internet access.</li>
+          <li>Used Security Groups to restrict traffic between network tiers.</li>
+          <li>Planned CloudFormation provisioning so the environment can be recreated and removed safely.</li>
+          <li>Will verify public web reachability and private backend isolation with screenshots and tests.</li>
+        </ul>
       </div>
     </section>
 
     <section class="section">
       <div class="container">
+        <p class="section-label">SOLUTION</p>
+        <h2>Public web tier with isolated private backend tier</h2>
+
+        <p class="section-intro">
+          The solution uses an Amazon VPC with separate public and private subnets.
+          The public subnet is connected to the internet through an Internet Gateway and
+          is used for the web tier. The private subnet uses a separate route table and is
+          reserved for backend components that should not be directly reachable from the internet.
+        </p>
+
+        <p>
+          This design follows a simple but realistic AWS networking pattern: expose only the
+          resources that must receive customer traffic, keep backend resources private, and use
+          Security Groups to control allowed communication between tiers.
+        </p>
+      </div>
+    </section>
+
+    <section class="section muted">
+      <div class="container">
         <p class="section-label">ARCHITECTURE DIAGRAM</p>
-        <h2>Network design</h2>
+        <h2>Network design visual</h2>
 
         <p class="section-intro">
           An AWS architecture diagram will be added here after the network design is finalized.
@@ -77,69 +98,30 @@
       </div>
     </section>
 
-    <section class="section muted">
-      <div class="container">
-        <p class="section-label">AWS SERVICES / FEATURES USED</p>
-        <h2>Core networking components</h2>
-
-        <ul class="check-list">
-          <li>Amazon VPC for isolated network foundation</li>
-          <li>Public subnet for internet-facing web resources</li>
-          <li>Private subnet for backend application and future database resources</li>
-          <li>Route tables for separating public and private network paths</li>
-          <li>Internet Gateway for public web tier access</li>
-          <li>Security Groups for controlled inbound and internal traffic</li>
-          <li>EC2 test resources for connectivity verification</li>
-          <li>CloudFormation for repeatable infrastructure provisioning</li>
-        </ul>
-      </div>
-    </section>
-
     <section class="section">
       <div class="container">
-        <p class="section-label">SECURITY DECISIONS</p>
-        <h2>Backend resources are not directly exposed to the internet</h2>
+        <p class="section-label">VERIFICATION EVIDENCE</p>
+        <h2>Proof that the network meets the requirements</h2>
 
         <p class="section-intro">
-          The main security goal is to expose only the resources that must be public. The web tier
-          is placed in a public subnet so customers can reach the application, but backend resources
-          are placed in a private subnet with no direct public route.
-        </p>
-
-        <ul class="check-list">
-          <li>The public subnet is used only for internet-facing web access.</li>
-          <li>The private subnet is reserved for backend resources.</li>
-          <li>Route tables separate public internet access from private backend networking.</li>
-          <li>Security Groups restrict traffic between tiers.</li>
-          <li>The design can be extended later with additional private resources or a database tier.</li>
-        </ul>
-      </div>
-    </section>
-
-    <section class="section muted">
-      <div class="container">
-        <p class="section-label">VERIFICATION</p>
-        <h2>Testing public access and private isolation</h2>
-
-        <p class="section-intro">
-          After the CloudFormation stack is deployed, the environment will be tested to confirm
-          that the original requirements are met.
+          After deployment, this section will show evidence that the public web tier is reachable
+          from the internet and that the private backend tier is not directly reachable.
         </p>
 
         <ul class="check-list">
           <li>Confirm that the VPC, subnets, route tables, and Internet Gateway are created correctly.</li>
-          <li>Confirm that the public web tier is reachable from the internet.</li>
-          <li>Confirm that the private backend tier is not directly reachable from the internet.</li>
-          <li>Capture AWS Console screenshots as evidence.</li>
+          <li>Confirm that the public web tier can be accessed from the internet.</li>
+          <li>Confirm that the private backend tier cannot be accessed directly from the internet.</li>
+          <li>Capture screenshots of the AWS Console configuration.</li>
           <li>Document any troubleshooting steps and corrections.</li>
         </ul>
       </div>
     </section>
 
-    <section class="section">
+    <section class="section muted">
       <div class="container">
-        <p class="section-label">SCREENSHOTS / EVIDENCE</p>
-        <h2>Visual proof of the deployed network</h2>
+        <p class="section-label">SCREENSHOTS</p>
+        <h2>Visual proof to be added after deployment</h2>
 
         <p class="section-intro">
           Screenshots will be added after the lab is built and tested. These will show both the
@@ -147,7 +129,7 @@
         </p>
 
         <div class="background-card">
-          <h3>Evidence to add later</h3>
+          <h3>Evidence planned</h3>
           <ul class="check-list">
             <li>VPC resource view</li>
             <li>Public and private subnet configuration</li>
@@ -161,14 +143,35 @@
       </div>
     </section>
 
+    <section class="section">
+      <div class="container">
+        <p class="section-label">SECURITY DECISIONS</p>
+        <h2>Only the web tier is designed for public access</h2>
+
+        <p class="section-intro">
+          The main security decision is to separate the public and private parts of the application.
+          The web tier can receive customer traffic, but backend resources are not placed in the
+          public subnet and do not have direct public internet exposure.
+        </p>
+
+        <ul class="check-list">
+          <li>The public subnet is used for internet-facing web resources.</li>
+          <li>The private subnet is reserved for backend application and future database resources.</li>
+          <li>Route table separation prevents the backend tier from having direct public internet access.</li>
+          <li>Security Groups restrict inbound traffic and communication between tiers.</li>
+          <li>No NAT Gateway is planned for the initial lab unless outbound private-subnet access becomes required.</li>
+        </ul>
+      </div>
+    </section>
+
     <section class="section muted">
       <div class="container">
         <p class="section-label">COST CONTROL / CLEANUP</p>
         <h2>Temporary lab environment removed after verification</h2>
 
         <p class="section-intro">
-          This project is designed as a temporary lab. The environment will be deployed only long
-          enough to test the network, capture evidence, and document the result.
+          This project is designed as a temporary AWS lab. The environment will be deployed only
+          long enough to test the network, capture evidence, and document the result.
         </p>
 
         <p>
