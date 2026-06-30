@@ -83,21 +83,25 @@ No automatic scaling policy was configured in the console lab. A future version 
 
 ## Verification
 
-The application was successfully accessed through the public ALB DNS name.
+The application was successfully accessed through the public Application Load Balancer DNS name.
 
-The test page confirmed that traffic reached a private EC2 instance behind the Application Load Balancer.
+The browser test confirmed that traffic reached a private EC2 instance behind the public ALB. The target group also showed healthy targets, confirming that the ALB could route traffic to the private application tier.
 
-Evidence captured includes:
+Key evidence screenshots are stored in the [`evidence/`](./evidence/) folder.
 
-* VPC resource map
-* Public route table with Internet Gateway route
-* Private application route table with NAT Gateway route
-* Private database route table with local-only routing
-* Security group rules between ALB, app, and database tiers
-* RDS database with public access disabled
-* Healthy target group
-* Auto Scaling Group configuration
-* Browser test through the ALB DNS name
+Selected evidence:
+
+- [VPC resource map](./evidence/project2-vpc-resource-map.png)
+- [Subnet layout](./evidence/project2-subnets.png)
+- [Public route table with Internet Gateway route](./evidence/project2-public-route-table-igw.png)
+- [Private database route table with local-only routing](./evidence/project2-private-db-route-table-local-only.png)
+- [Application security group allowing traffic only from the ALB security group](./evidence/project2-alb-sg-public-http.png)
+- [Database security group allowing PostgreSQL only from the app security group](./evidence/project2-db-sg-source-app-sg.png)
+- [RDS database with public access disabled](./evidence/project2-rds-private-no-public-access.png)
+- [Healthy target group](./evidence/project2-target-group-healthy.png)
+- [Auto Scaling Group across private app subnets](./evidence/project2-auto-scaling-group.png)
+- [Launch-before-terminate maintenance policy](./evidence/project2-asg-launch-before-terminating.png)
+- [Successful browser test through the ALB](./evidence/project2-alb-browser-success.png)
 
 ## Cleanup
 
