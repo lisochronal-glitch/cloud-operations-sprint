@@ -54,9 +54,13 @@ const translations = {
     "projects.project1Title": "Cloud Operations Portfolio",
     "projects.project1Text": "A live AWS-hosted portfolio site using private S3, CloudFront, GitHub Actions deployment, API Gateway, Lambda, DynamoDB, CORS, and a visible footer visitor counter.",
     "projects.project1Link": "View repository ↗",
-    "projects.project2Status": "Next",
+
+    "projects.project2Status": "Completed console lab",
     "projects.project2Title": "Secure VPC Foundation",
-    "projects.project2Text": "Designed a secure AWS network for a small web application, separating a public web tier from a private backend tier using VPC subnets, route tables, Security Groups, and CloudFormation.",
+    "projects.project2Text": "Built and verified a secure AWS network for a small web application using a public Application Load Balancer, private EC2 application instances, private RDS configuration, route tables, security groups, Auto Scaling, NAT Gateway, and S3 Gateway Endpoint.",
+    "projects.project2ViewProject": "View project ↗",
+    "projects.project2Github": "GitHub ↗",
+
     "projects.project3Status": "Planned",
     "projects.project3Title": "Event-Driven Workflow Lab",
     "projects.project3Text": "Planned serverless workflow using SNS, SQS, Lambda, dead-letter queues, CloudWatch logs, retries, and operational visibility.",
@@ -73,7 +77,7 @@ const translations = {
     "certs.n2Text": "Japanese ability supported by certification and long-term daily Japanese communication experience.",
     "certs.badgeLink": "View verified badge ↗",
 
- "project.label": "CURRENT PROJECT",
+    "project.label": "CURRENT PROJECT",
     "project.heading": "Cloud Operations Portfolio",
     "project.intro": "This site is the visible front end of a practical cloud operations project. The static site is hosted on private Amazon S3, delivered through CloudFront, and deployed automatically through GitHub Actions running a Python deployment script. It also includes a serverless visitor counter backend using API Gateway, Lambda, DynamoDB, and CloudWatch, with live totals displayed in the footer.",
     "project.archHeading": "Current Architecture",
@@ -193,9 +197,13 @@ const translations = {
     "projects.project1Title": "クラウド運用ポートフォリオ",
     "projects.project1Text": "プライベートS3、CloudFront、GitHub Actionsデプロイ、API Gateway、Lambda、DynamoDB、CORS、表示されるフッター訪問者カウンターを使用した、AWS上で稼働するポートフォリオサイト。",
     "projects.project1Link": "リポジトリを見る ↗",
-    "projects.project2Status": "次のプロジェクト",
+
+    "projects.project2Status": "コンソール検証済み",
     "projects.project2Title": "セキュアなVPC基盤",
-    "projects.project2Text": "小規模Webアプリケーション向けに、パブリックWeb層とプライベートバックエンド層を分離したAWSネットワークを設計します。VPC、サブネット、ルートテーブル、セキュリティグループ、CloudFormationを使用します。",
+    "projects.project2Text": "小規模Webアプリケーション向けに、パブリックApplication Load Balancer、プライベートEC2アプリケーションインスタンス、プライベートRDS構成、ルートテーブル、セキュリティグループ、Auto Scaling、NAT Gateway、S3 Gateway Endpointを使用した安全なAWSネットワークを構築・検証しました。",
+    "projects.project2ViewProject": "プロジェクトを見る ↗",
+    "projects.project2Github": "GitHub ↗",
+
     "projects.project3Status": "予定",
     "projects.project3Title": "イベント駆動ワークフローラボ",
     "projects.project3Text": "SNS、SQS、Lambda、デッドレターキュー、CloudWatch Logs、リトライ、運用上の可視性を扱うサーバーレスワークフローの予定です。",
@@ -260,9 +268,9 @@ const translations = {
     "background.label": "経歴",
     "background.heading": "職務・学習背景",
     "background.educationTitle": "教育 / コミュニケーション",
-    "background.educationText": "元高校英語教員として、複雑な内容の説明、文章評価、誤解や理解不足の特定、明確なコミュニケーションに携わってきました。この経験は、技術ドキュメント、ユーザーサポート、構造的なトラブルシューティング、明確な報告に活かせます。",
-    "background.japanTitle": "日本 / 言語",
     "background.educationText": "元高校英語教員として、複雑な内容の説明、理解不足の特定、構造的なフィードバック、相手に合わせた説明、学生・同僚・保護者との明確なコミュニケーションに携わってきました。",
+    "background.japanTitle": "日本 / 言語",
+    "background.japanText": "長期的な日本語学習と日常的な日本語コミュニケーション経験があり、JLPT N2を取得しています。現在は、技術・クラウドインフラ環境で使える専門的な日本語力をさらに伸ばしています。",
 
     "contact.label": "連絡先",
     "contact.heading": "リンクと連絡先",
@@ -285,7 +293,6 @@ const languageButtons = document.querySelectorAll(".lang-button");
 const translatableElements = document.querySelectorAll("[data-i18n]");
 const totalVisitsElement = document.getElementById("total-visits");
 const uniqueVisitorsElement = document.getElementById("unique-visitors");
-
 
 function getInitialLanguage() {
   const savedLanguage = localStorage.getItem("preferredLanguage");
@@ -354,15 +361,15 @@ async function recordVisit() {
 
     const data = await response.json();
 
-	if (totalVisitsElement) {
- 	 totalVisitsElement.textContent = data.total_visits;
-	}
+    if (totalVisitsElement) {
+      totalVisitsElement.textContent = data.total_visits;
+    }
 
-	if (uniqueVisitorsElement) {
-  	uniqueVisitorsElement.textContent = data.unique_visitors;
-	}
+    if (uniqueVisitorsElement) {
+      uniqueVisitorsElement.textContent = data.unique_visitors;
+    }
 
-console.log("Visit recorded:", data);
+    console.log("Visit recorded:", data);
   } catch (error) {
     console.error("Visit counter failed:", error);
   }

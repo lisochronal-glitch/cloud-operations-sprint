@@ -15,18 +15,26 @@
 
       <p class="lead">
         A small company wants to migrate a simple web application to AWS. Customers must be able
-        to access the website from the internet, but the backend application and future database
-        must not be directly reachable from the public internet.
+        to access the website from the internet, while the application servers and database remain
+        isolated from direct public access.
       </p>
 
       <p class="lead">
-        This project designs a secure AWS network foundation that separates public web access
-        from private backend resources.
+        This project builds and verifies a secure AWS network foundation using a public load balancer,
+        private application subnets, private database subnets, route tables, security groups, and
+        controlled outbound access.
       </p>
 
       <div class="hero-actions">
         <a href="../../index.html#projects" class="button secondary">Back to Projects</a>
-        <a href="#github" class="button primary">GitHub coming soon</a>
+        <a
+          href="https://github.com/lisocronal-glitch/cloud-operations-sprint/tree/main/projects/secure-vpc-foundation"
+          class="button primary"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          View on GitHub
+        </a>
       </div>
     </div>
   </header>
@@ -35,20 +43,25 @@
     <section class="section muted">
       <div class="container">
         <p class="section-label">SOLUTION</p>
-        <h2>Public web tier with private backend isolation</h2>
+        <h2>Public entry point with private application and database tiers</h2>
 
         <p class="section-intro">
-          The <strong>Amazon VPC</strong> is split into a <strong>public subnet</strong> for the
-          web tier and a <strong>private subnet</strong> for backend resources. The public subnet
-          uses an <strong>Internet Gateway</strong> and public <strong>route table</strong> so
-          customers can reach the website from the internet.
+          The <strong>Amazon VPC</strong> uses public subnets for an
+          <strong>internet-facing Application Load Balancer</strong>, private application subnets
+          for <strong>EC2 instances in an Auto Scaling Group</strong>, and private database subnets
+          for <strong>Amazon RDS</strong>.
         </p>
 
         <p>
-          The private subnet has no direct public internet route, keeping backend resources isolated.
-          <strong>Security Groups</strong> restrict inbound traffic and control communication between
-          the public and private tiers. The infrastructure is provisioned with
-          <strong>CloudFormation</strong> so the network can be recreated, tested, and removed cleanly.
+          Public traffic reaches only the load balancer. The application instances do not have public
+          IPv4 addresses and accept HTTP traffic only from the ALB security group. The database is
+          configured with public access disabled and is placed in a private DB subnet group.
+        </p>
+
+        <p>
+          The private application tier uses a <strong>NAT Gateway</strong> for outbound internet access
+          and an <strong>S3 Gateway Endpoint</strong> for private S3 access. Route tables and security
+          groups separate the public, application, and database layers.
         </p>
       </div>
     </section>
@@ -58,24 +71,51 @@
         <p class="section-label">ARCHITECTURE DIAGRAM</p>
         <h2>VPC network design</h2>
 
-	<img 
-	src="secure-vpc-foundation-diagram.png"
-  	alt="Secure VPC Foundation architecture diagram"
-  	class="project-diagram"
-	>
-
+        <img
+          src="secure-vpc-foundation-diagram.png"
+          alt="Secure VPC Foundation architecture diagram"
+          class="project-diagram"
+        >
       </div>
     </section>
 
-    <section class="section muted" id="github">
+    <section class="section muted">
+      <div class="container">
+        <p class="section-label">EVIDENCE</p>
+        <h2>Console build and verification</h2>
+
+        <p class="section-intro">
+          The environment was built manually in the AWS Console, verified through the public ALB DNS
+          name, documented with screenshots, and then decommissioned to avoid ongoing charges.
+        </p>
+
+        <p>
+          The GitHub repository includes evidence for the VPC resource map, subnet layout, route tables,
+          security groups, private EC2 instances, RDS configuration, healthy target group, Auto Scaling
+          Group, and successful browser test.
+        </p>
+      </div>
+    </section>
+
+    <section class="section" id="github">
       <div class="container">
         <p class="section-label">GITHUB</p>
         <h2>Implementation details</h2>
 
         <p class="section-intro">
-          The repository will contain the CloudFormation template, README, screenshots,
-          testing notes, and cleanup steps after the lab is completed.
+          The repository contains the project README, console build notes, evidence screenshots, and
+          cleanup documentation. A CloudFormation version will be added after the manually validated
+          architecture is converted into infrastructure as code.
         </p>
+
+        <a
+          href="https://github.com/lisocronal-glitch/cloud-operations-sprint/tree/main/projects/secure-vpc-foundation"
+          class="button primary"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          View project on GitHub
+        </a>
       </div>
     </section>
   </main>
