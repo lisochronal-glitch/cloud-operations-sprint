@@ -605,3 +605,7 @@ p {
 .project-links a:hover {
   text-decoration: underline;
 }
+
+.section-bordered {
+  border-top: 1px solid var(--line);
+}
