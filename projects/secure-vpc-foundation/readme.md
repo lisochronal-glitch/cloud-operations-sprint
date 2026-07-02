@@ -2,7 +2,7 @@
 
 This project demonstrates a secure AWS network foundation for a small web application. The application is reachable from the internet through a public Application Load Balancer, while the application servers and database are isolated in private subnets.
 
-The environment was first built manually in the AWS Console to validate the architecture, capture evidence, and confirm the cleanup process. The same architecture will be reproduced with CloudFormation in the infrastructure-as-code phase of the project.
+The environment was first built manually in the AWS Console to validate the architecture, capture evidence, and confirm the cleanup process. The same architecture was then reproduced with CloudFormation so the environment could be deployed, verified, and deleted repeatably as infrastructure as code.
 
 ## Scenario
 
@@ -14,6 +14,7 @@ The requirements are:
 * Application servers must not be directly reachable from the public internet.
 * The database must be isolated from direct public access.
 * The application layer should support availability across two Availability Zones.
+* The infrastructure should be reproducible.
 * Billable resources must be removed after testing.
 
 ## Architecture
@@ -60,6 +61,7 @@ Private RDS database
 * Amazon RDS for PostgreSQL
 * DB subnet group
 * S3 Gateway Endpoint
+* CloudFormation
 
 ## Security Design
 
@@ -80,6 +82,40 @@ The architecture used two Availability Zones.
 The application tier was deployed through an Auto Scaling Group with two EC2 instances across private application subnets. The Auto Scaling Group used a launch-before-terminate maintenance policy to prioritize availability during instance replacement.
 
 No automatic scaling policy was configured during the console validation build. A future version could add target tracking, scheduled scaling, or predictive scaling depending on application traffic requirements.
+
+## Manual Console Build
+
+The first phase of the project was built manually in the AWS Console.
+
+This phase was used to:
+
+* Validate the VPC, subnet, route table, and security group design
+* Confirm that the ALB could route traffic to private EC2 instances
+* Confirm that the EC2 instances did not require public IPv4 addresses
+* Configure a private RDS database tier
+* Capture evidence screenshots
+* Practice safe cleanup of billable AWS resources
+
+The manual build confirmed that the architecture worked before reproducing it as infrastructure as code.
+
+## CloudFormation Reproduction
+
+The second phase reproduced the same architecture with CloudFormation.
+
+Template:
+
+* [`secure-vpc-foundation-template.yaml`](./secure-vpc-foundation-template.yaml)
+
+The CloudFormation deployment created the VPC, six subnets, route tables, Internet Gateway, NAT Gateway, S3 Gateway Endpoint, security groups, Application Load Balancer, target group, launch template, Auto Scaling Group, EC2 instances, DB subnet group, and private RDS PostgreSQL instance.
+
+The stack was deployed successfully and verified with the same operational checks as the manual console build:
+
+* The ALB URL returned the test web page.
+* The target group showed two healthy targets.
+* The EC2 instances had private IP addresses and no public IPv4 addresses.
+* The RDS instance had public access disabled.
+* The CloudFormation stack was deleted after testing.
+* Post-deletion checks confirmed that billable project resources were removed.
 
 ## Verification
 
@@ -116,7 +152,7 @@ Deleted resources included:
 * Application Load Balancer
 * Target group
 * RDS database
-* RDS snapshot
+* RDS snapshot from the manual build
 * NAT Gateway
 * S3 Gateway Endpoint
 * Launch template
@@ -129,6 +165,15 @@ Deleted resources included:
 
 Post-cleanup checks confirmed that no `project2` resources remained in EC2, RDS, VPC, NAT Gateway, Elastic IP, Load Balancer, Target Group, or Auto Scaling Group views.
 
-## Next Step
+The CloudFormation stack was also deleted successfully after the infrastructure-as-code validation. Additional checks confirmed that the NAT Gateway was deleted, no project Elastic IP remained allocated, the RDS instance was removed, and the EC2 instances were terminated.
 
-The next phase is to reproduce this architecture with CloudFormation so the environment can be deployed and deleted repeatably as infrastructure as code.
+## Outcome
+
+This project demonstrates the ability to design, validate, document, reproduce, and clean up a secure AWS network foundation.
+
+The completed project includes both:
+
+* A manual AWS Console build with evidence screenshots
+* A CloudFormation template for repeatable infrastructure deployment
+
+The architecture provides a practical foundation for a small web application where the public entry point is limited to an Application Load Balancer, while the application and database tiers remain private.
