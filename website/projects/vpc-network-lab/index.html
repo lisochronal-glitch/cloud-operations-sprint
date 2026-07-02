@@ -82,12 +82,13 @@
     <section class="section muted">
       <div class="container">
         <p class="section-label">EVIDENCE</p>
-        <h2>Console build and verification</h2>
+        <h2>Console build, CloudFormation, and verification</h2>
 
-        <p class="section-intro">
-          The environment was built manually in the AWS Console, verified through the public ALB DNS
-          name, documented with screenshots, and then decommissioned to avoid ongoing charges.
-        </p>
+	<p class="section-intro">
+  		The environment was built manually in the AWS Console, verified through the public ALB DNS
+  		name, documented with screenshots, reproduced with CloudFormation, and then decommissioned
+  		to avoid ongoing charges.
+	</p>
 
         <p>
           The GitHub repository includes evidence for the VPC resource map, subnet layout, route tables,
@@ -103,9 +104,9 @@
         <h2>Implementation details</h2>
 
         <p class="section-intro">
-          The repository contains the project README, console build notes, evidence screenshots, and
-          cleanup documentation. A CloudFormation version will be added after the manually validated
-          architecture is converted into infrastructure as code.
+  		The repository contains the project README, CloudFormation template, console build notes,
+  		evidence screenshots, and cleanup documentation. The architecture was first validated manually
+  		in the AWS Console, then reproduced with CloudFormation for repeatable deployment and deletion.
         </p>
 
         <a
