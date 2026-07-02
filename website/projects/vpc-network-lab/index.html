@@ -9,29 +9,36 @@
 <body>
   <header class="site-header">
     <div class="container">
-      <p class="eyebrow">AWS Networking Project</p>
+      <div class="top-line">
+        <p class="eyebrow" data-i18n="project.eyebrow">AWS Networking Project</p>
+        <div class="language-switch" aria-label="Language selection">
+          <button type="button" class="lang-button active" data-lang="en">EN</button>
+          <button type="button" class="lang-button" data-lang="ja">日本語</button>
+        </div>
+      </div>
 
-      <h1>Secure VPC Foundation</h1>
+      <h1 data-i18n="project.title">Secure VPC Foundation</h1>
 
-      <p class="lead">
+      <p class="lead" data-i18n="project.lead1">
         A small company wants to migrate a simple web application to AWS. Customers must be able
         to access the website from the internet, while the application servers and database remain
         isolated from direct public access.
       </p>
 
-      <p class="lead">
+      <p class="lead" data-i18n="project.lead2">
         This project builds and verifies a secure AWS network foundation using a public load balancer,
         private application subnets, private database subnets, route tables, security groups, and
         controlled outbound access.
       </p>
 
       <div class="hero-actions">
-        <a href="../../index.html#projects" class="button secondary">Back to Projects</a>
+        <a href="../../index.html#projects" class="button secondary" data-i18n="project.backButton">Back to Projects</a>
         <a
           href="https://github.com/lisochronal-glitch/cloud-operations-sprint/tree/main/projects/secure-vpc-foundation"
           class="button primary"
           target="_blank"
           rel="noopener noreferrer"
+          data-i18n="project.githubButton"
         >
           View on GitHub
         </a>
@@ -42,23 +49,23 @@
   <main>
     <section class="section muted">
       <div class="container">
-        <p class="section-label">SOLUTION</p>
-        <h2>Public entry point with private application and database tiers</h2>
+        <p class="section-label" data-i18n="solution.label">SOLUTION</p>
+        <h2 data-i18n="solution.heading">Public entry point with private application and database tiers</h2>
 
-        <p class="section-intro">
+        <p class="section-intro" data-i18n="solution.intro">
           The <strong>Amazon VPC</strong> uses public subnets for an
           <strong>internet-facing Application Load Balancer</strong>, private application subnets
           for <strong>EC2 instances in an Auto Scaling Group</strong>, and private database subnets
           for <strong>Amazon RDS</strong>.
         </p>
 
-        <p>
+        <p data-i18n="solution.paragraph1">
           Public traffic reaches only the load balancer. The application instances do not have public
           IPv4 addresses and accept HTTP traffic only from the ALB security group. The database is
           configured with public access disabled and is placed in a private DB subnet group.
         </p>
 
-        <p>
+        <p data-i18n="solution.paragraph2">
           The private application tier uses a <strong>NAT Gateway</strong> for outbound internet access
           and an <strong>S3 Gateway Endpoint</strong> for private S3 access. Route tables and security
           groups separate the public, application, and database layers.
@@ -68,29 +75,30 @@
 
     <section class="section">
       <div class="container">
-        <p class="section-label">ARCHITECTURE DIAGRAM</p>
-        <h2>VPC network design</h2>
+        <p class="section-label" data-i18n="diagram.label">ARCHITECTURE DIAGRAM</p>
+        <h2 data-i18n="diagram.heading">VPC network design</h2>
 
         <img
           src="secure-vpc-foundation-diagram.png"
           alt="Secure VPC Foundation architecture diagram"
           class="project-diagram"
+          data-i18n-alt="diagram.alt"
         >
       </div>
     </section>
 
     <section class="section muted">
       <div class="container">
-        <p class="section-label">EVIDENCE</p>
-        <h2>Console build, CloudFormation, and verification</h2>
+        <p class="section-label" data-i18n="evidence.label">EVIDENCE</p>
+        <h2 data-i18n="evidence.heading">Console build, CloudFormation, and verification</h2>
 
-	<p class="section-intro">
-  		The environment was built manually in the AWS Console, verified through the public ALB DNS
-  		name, documented with screenshots, reproduced with CloudFormation, and then decommissioned
-  		to avoid ongoing charges.
-	</p>
+        <p class="section-intro" data-i18n="evidence.intro">
+          The environment was built manually in the AWS Console, verified through the public ALB DNS
+          name, documented with screenshots, reproduced with CloudFormation, and then decommissioned
+          to avoid ongoing charges.
+        </p>
 
-        <p>
+        <p data-i18n="evidence.paragraph">
           The GitHub repository includes evidence for the VPC resource map, subnet layout, route tables,
           security groups, private EC2 instances, RDS configuration, healthy target group, Auto Scaling
           Group, and successful browser test.
@@ -100,13 +108,13 @@
 
     <section class="section" id="github">
       <div class="container">
-        <p class="section-label">GITHUB</p>
-        <h2>Implementation details</h2>
+        <p class="section-label" data-i18n="github.label">GITHUB</p>
+        <h2 data-i18n="github.heading">Implementation details</h2>
 
-        <p class="section-intro">
-  		The repository contains the project README, CloudFormation template, console build notes,
-  		evidence screenshots, and cleanup documentation. The architecture was first validated manually
-  		in the AWS Console, then reproduced with CloudFormation for repeatable deployment and deletion.
+        <p class="section-intro" data-i18n="github.intro">
+          The repository contains the project README, CloudFormation template, console build notes,
+          evidence screenshots, and cleanup documentation. The architecture was first validated manually
+          in the AWS Console, then reproduced with CloudFormation for repeatable deployment and deletion.
         </p>
 
         <a
@@ -114,6 +122,7 @@
           class="button primary"
           target="_blank"
           rel="noopener noreferrer"
+          data-i18n="github.button"
         >
           View project on GitHub
         </a>
@@ -123,8 +132,119 @@
 
   <footer class="site-footer">
     <div class="container">
-      <p>Powered by Amazon CloudFront</p>
+      <p data-i18n="footer.text">Powered by Amazon CloudFront</p>
     </div>
   </footer>
+
+  <script>
+    const translations = {
+      en: {
+        "page.title": "Secure VPC Foundation | AWS / Cloud Operations Portfolio",
+        "project.eyebrow": "AWS Networking Project",
+        "project.title": "Secure VPC Foundation",
+        "project.lead1": "A small company wants to migrate a simple web application to AWS. Customers must be able to access the website from the internet, while the application servers and database remain isolated from direct public access.",
+        "project.lead2": "This project builds and verifies a secure AWS network foundation using a public load balancer, private application subnets, private database subnets, route tables, security groups, and controlled outbound access.",
+        "project.backButton": "Back to Projects",
+        "project.githubButton": "View on GitHub",
+
+        "solution.label": "SOLUTION",
+        "solution.heading": "Public entry point with private application and database tiers",
+        "solution.intro": "The <strong>Amazon VPC</strong> uses public subnets for an <strong>internet-facing Application Load Balancer</strong>, private application subnets for <strong>EC2 instances in an Auto Scaling Group</strong>, and private database subnets for <strong>Amazon RDS</strong>.",
+        "solution.paragraph1": "Public traffic reaches only the load balancer. The application instances do not have public IPv4 addresses and accept HTTP traffic only from the ALB security group. The database is configured with public access disabled and is placed in a private DB subnet group.",
+        "solution.paragraph2": "The private application tier uses a <strong>NAT Gateway</strong> for outbound internet access and an <strong>S3 Gateway Endpoint</strong> for private S3 access. Route tables and security groups separate the public, application, and database layers.",
+
+        "diagram.label": "ARCHITECTURE DIAGRAM",
+        "diagram.heading": "VPC network design",
+        "diagram.alt": "Secure VPC Foundation architecture diagram",
+
+        "evidence.label": "EVIDENCE",
+        "evidence.heading": "Console build, CloudFormation, and verification",
+        "evidence.intro": "The environment was built manually in the AWS Console, verified through the public ALB DNS name, documented with screenshots, reproduced with CloudFormation, and then decommissioned to avoid ongoing charges.",
+        "evidence.paragraph": "The GitHub repository includes evidence for the VPC resource map, subnet layout, route tables, security groups, private EC2 instances, RDS configuration, healthy target group, Auto Scaling Group, and successful browser test.",
+
+        "github.label": "GITHUB",
+        "github.heading": "Implementation details",
+        "github.intro": "The repository contains the project README, CloudFormation template, console build notes, evidence screenshots, and cleanup documentation. The architecture was first validated manually in the AWS Console, then reproduced with CloudFormation for repeatable deployment and deletion.",
+        "github.button": "View project on GitHub",
+
+        "footer.text": "Powered by Amazon CloudFront"
+      },
+
+      ja: {
+        "page.title": "セキュアなVPC基盤 | AWS / Cloud Operations Portfolio",
+        "project.eyebrow": "AWSネットワーキングプロジェクト",
+        "project.title": "セキュアなVPC基盤",
+        "project.lead1": "小規模な会社が、シンプルなWebアプリケーションをAWSへ移行したいという想定です。顧客はインターネットからWebサイトへアクセスできる必要がありますが、アプリケーションサーバーとデータベースは直接のパブリックアクセスから分離する必要があります。",
+        "project.lead2": "このプロジェクトでは、パブリックロードバランサー、プライベートアプリケーションサブネット、プライベートデータベースサブネット、ルートテーブル、セキュリティグループ、制御されたアウトバウンドアクセスを使用して、安全なAWSネットワーク基盤を構築・検証しました。",
+        "project.backButton": "プロジェクト一覧へ戻る",
+        "project.githubButton": "GitHubで見る",
+
+        "solution.label": "SOLUTION",
+        "solution.heading": "パブリックな入口とプライベートなアプリケーション・データベース層",
+        "solution.intro": "<strong>Amazon VPC</strong> では、<strong>インターネット向けApplication Load Balancer</strong> 用のパブリックサブネット、<strong>Auto Scaling Group内のEC2インスタンス</strong> 用のプライベートアプリケーションサブネット、<strong>Amazon RDS</strong> 用のプライベートデータベースサブネットを使用しています。",
+        "solution.paragraph1": "パブリックトラフィックはロードバランサーのみに到達します。アプリケーションインスタンスはパブリックIPv4アドレスを持たず、ALBのセキュリティグループからのHTTPトラフィックのみを受け付けます。データベースはパブリックアクセスを無効化し、プライベートDB subnet groupに配置しました。",
+        "solution.paragraph2": "プライベートアプリケーション層では、アウトバウンドインターネットアクセスに<strong>NAT Gateway</strong>を使用し、プライベートS3アクセスに<strong>S3 Gateway Endpoint</strong>を使用しています。ルートテーブルとセキュリティグループによって、パブリック層、アプリケーション層、データベース層を分離しています。",
+
+        "diagram.label": "ARCHITECTURE DIAGRAM",
+        "diagram.heading": "VPCネットワーク設計",
+        "diagram.alt": "セキュアなVPC基盤のアーキテクチャ図",
+
+        "evidence.label": "EVIDENCE",
+        "evidence.heading": "コンソール構築、CloudFormation、検証",
+        "evidence.intro": "この環境はAWSコンソールで手動構築し、パブリックALBのDNS名を通じて検証し、スクリーンショットで文書化しました。その後、CloudFormationで再現し、継続的な課金を避けるために削除しました。",
+        "evidence.paragraph": "GitHubリポジトリには、VPC resource map、サブネット構成、ルートテーブル、セキュリティグループ、プライベートEC2インスタンス、RDS構成、healthy target group、Auto Scaling Group、ブラウザテスト成功の証跡が含まれています。",
+
+        "github.label": "GITHUB",
+        "github.heading": "実装詳細",
+        "github.intro": "リポジトリには、プロジェクトREADME、CloudFormationテンプレート、コンソール構築メモ、証跡スクリーンショット、クリーンアップ記録が含まれています。アーキテクチャは最初にAWSコンソールで手動検証し、その後CloudFormationで再現して、反復可能なデプロイと削除を確認しました。",
+        "github.button": "GitHubでプロジェクトを見る",
+
+        "footer.text": "Powered by Amazon CloudFront"
+      }
+    };
+
+    function getInitialLanguage() {
+      const savedLanguage = localStorage.getItem("preferredLanguage");
+
+      if (savedLanguage === "en" || savedLanguage === "ja") {
+        return savedLanguage;
+      }
+
+      return navigator.language.startsWith("ja") ? "ja" : "en";
+    }
+
+    function applyLanguage(language) {
+      document.documentElement.lang = language;
+      document.title = translations[language]["page.title"];
+
+      document.querySelectorAll("[data-i18n]").forEach((element) => {
+        const key = element.getAttribute("data-i18n");
+        if (translations[language][key]) {
+          element.innerHTML = translations[language][key];
+        }
+      });
+
+      document.querySelectorAll("[data-i18n-alt]").forEach((element) => {
+        const key = element.getAttribute("data-i18n-alt");
+        if (translations[language][key]) {
+          element.setAttribute("alt", translations[language][key]);
+        }
+      });
+
+      document.querySelectorAll(".lang-button").forEach((button) => {
+        button.classList.toggle("active", button.dataset.lang === language);
+      });
+
+      localStorage.setItem("preferredLanguage", language);
+    }
+
+    document.querySelectorAll(".lang-button").forEach((button) => {
+      button.addEventListener("click", () => {
+        applyLanguage(button.dataset.lang);
+      });
+    });
+
+    applyLanguage(getInitialLanguage());
+  </script>
 </body>
 </html>
