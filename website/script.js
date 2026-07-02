@@ -55,8 +55,8 @@ const translations = {
     "projects.project1Text": "A live AWS-hosted portfolio site using private S3, CloudFront, GitHub Actions deployment, API Gateway, Lambda, DynamoDB, CORS, and a visible footer visitor counter.",
     "projects.project1Link": "View repository ↗",
 
-    "projects.project2Status": "Completed console lab",
-    "projects.project2Title": "Secure VPC Foundation",
+    "projects.project2Status": "Completed AWS networking lab",
+    "projects.project2Text": "Built, verified, and reproduced a secure AWS network for a small web application using a public Application Load Balancer, private EC2 application instances, private RDS configuration, route tables, security groups, Auto Scaling, NAT Gateway, S3 Gateway Endpoint, and CloudFormation.",
     "projects.project2Text": "Built and verified a secure AWS network for a small web application using a public Application Load Balancer, private EC2 application instances, private RDS configuration, route tables, security groups, Auto Scaling, NAT Gateway, and S3 Gateway Endpoint.",
     "projects.project2ViewProject": "View project ↗",
     "projects.project2Github": "GitHub ↗",
@@ -198,8 +198,8 @@ const translations = {
     "projects.project1Text": "プライベートS3、CloudFront、GitHub Actionsデプロイ、API Gateway、Lambda、DynamoDB、CORS、表示されるフッター訪問者カウンターを使用した、AWS上で稼働するポートフォリオサイト。",
     "projects.project1Link": "リポジトリを見る ↗",
 
-    "projects.project2Status": "コンソール検証済み",
-    "projects.project2Title": "セキュアなVPC基盤",
+    "projects.project2Status": "AWSネットワークラボ完了",
+    "projects.project2Text": "小規模Webアプリケーション向けに、パブリックApplication Load Balancer、プライベートEC2アプリケーションインスタンス、プライベートRDS構成、ルートテーブル、セキュリティグループ、Auto Scaling、NAT Gateway、S3 Gateway Endpoint、CloudFormationを使用した安全なAWSネットワークを構築・検証・再現しました。",
     "projects.project2Text": "小規模Webアプリケーション向けに、パブリックApplication Load Balancer、プライベートEC2アプリケーションインスタンス、プライベートRDS構成、ルートテーブル、セキュリティグループ、Auto Scaling、NAT Gateway、S3 Gateway Endpointを使用した安全なAWSネットワークを構築・検証しました。",
     "projects.project2ViewProject": "プロジェクトを見る ↗",
     "projects.project2Github": "GitHub ↗",
