@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Asynchronous SaaS Order Processing Workflow | AWS / Cloud Operations Portfolio</title>
+  <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="container">
+      <p class="eyebrow">AWS Event-Driven Workflow Project</p>
+
+      <h1>Asynchronous SaaS Order Processing Workflow</h1>
+
+      <p class="lead">
+        A SaaS company needs to accept customer orders quickly while slower follow-up work,
+        such as confirmation processing, audit logging, and internal workflow handling,
+        happens reliably in the background.
+      </p>
+
+      <p class="lead">
+        This project will build a live AWS event-driven workflow using API Gateway, Lambda,
+        SNS, SQS, DynamoDB, a dead-letter queue, and CloudWatch.
+      </p>
+
+      <div class="hero-actions">
+        <a href="../../index.html#projects" class="button secondary">Back to Projects</a>
+        <a
+          href="https://github.com/lisochronal-glitch/cloud-operations-sprint/tree/main/projects/event-driven-order-processing-workflow"
+          class="button primary"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          View on GitHub
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="section muted">
+      <div class="container">
+        <p class="section-label">BUSINESS PROBLEM</p>
+        <h2>Customer orders should be accepted quickly, even when background processing takes longer</h2>
+
+        <p class="section-intro">
+          In a SaaS application, the customer-facing request should not wait for every follow-up task
+          to finish. Order confirmation, internal processing, audit logging, and failure handling can
+          happen asynchronously after the order has been accepted.
+        </p>
+
+        <p>
+          The goal of this project is to demonstrate how AWS services can decouple the immediate
+          customer request from slower backend processing work.
+        </p>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <p class="section-label">LIVE DEMO</p>
+        <h2>Test the order workflow</h2>
+
+        <p class="section-intro">
+          This section will contain a live demo button. When clicked, the page will create a safe
+          demo order and send it through the AWS event workflow.
+        </p>
+
+        <div class="hero-actions">
+          <button class="button primary" type="button" disabled>Test order workflow</button>
+        </div>
+
+        <p>
+          Planned result:
+        </p>
+
+        <pre><code>Order accepted.
+Order ID: ORD-EXAMPLE-1234
+Status: Processing...
+Status: Processed successfully.</code></pre>
+      </div>
+    </section>
+
+    <section class="section muted">
+      <div class="container">
+        <p class="section-label">PLANNED ARCHITECTURE</p>
+        <h2>Event-driven order processing with SNS, SQS, Lambda, DynamoDB, and DLQ handling</h2>
+
+        <pre><code>Project page
+  ↓
+API Gateway
+  ↓
+Publisher Lambda
+  ↓
+DynamoDB: order status = ACCEPTED
+  ↓
+SNS Topic
+  ├── SQS processing queue → Processor Lambda → DynamoDB: order status = PROCESSED
+  └── SQS audit queue
+
+Failure path:
+SQS processing queue
+  ↓
+Dead-letter queue
+
+Visibility:
+CloudWatch Logs and metrics</code></pre>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <p class="section-label">AWS SERVICES</p>
+        <h2>Services planned for this project</h2>
+
+        <ul class="check-list">
+          <li>API Gateway for accepting demo order requests from the project page</li>
+          <li>Lambda publisher function for validation and event publishing</li>
+          <li>SNS topic for event fanout</li>
+          <li>SQS processing queue for asynchronous backend work</li>
+          <li>SQS audit queue for retaining an independent copy of order events</li>
+          <li>Processor Lambda for background order handling</li>
+          <li>DynamoDB for order status tracking</li>
+          <li>Dead-letter queue for repeated processing failures</li>
+          <li>CloudWatch Logs and metrics for operational visibility</li>
+          <li>CloudFormation for repeatable deployment and cleanup</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="section muted">
+      <div class="container">
+        <p class="section-label">EVIDENCE TO CAPTURE</p>
+        <h2>Verification plan</h2>
+
+        <p class="section-intro">
+          After the AWS resources are built, this page will be updated with implementation evidence.
+        </p>
+
+        <ul class="check-list">
+          <li>Successful demo order request from the live project page</li>
+          <li>API Gateway request reaching the publisher Lambda</li>
+          <li>SNS topic publishing the order event</li>
+          <li>SQS processing queue receiving the message</li>
+          <li>Processor Lambda handling the message</li>
+          <li>DynamoDB status changing from accepted to processed</li>
+          <li>Audit queue receiving a copy of the event</li>
+          <li>Failed message behavior and DLQ verification</li>
+          <li>CloudWatch logs showing the event flow</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="section" id="github">
+      <div class="container">
+        <p class="section-label">GITHUB</p>
+        <h2>Implementation details</h2>
+
+        <p class="section-intro">
+          The repository will contain the project README, CloudFormation template, Lambda source code,
+          verification notes, evidence screenshots, and cleanup documentation.
+        </p>
+
+        <a
+          href="https://github.com/lisochronal-glitch/cloud-operations-sprint/tree/main/projects/event-driven-order-processing-workflow"
+          class="button primary"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          View project on GitHub
+        </a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p>Powered by Amazon CloudFront</p>
+    </div>
+  </footer>
+</body>
+</html>
