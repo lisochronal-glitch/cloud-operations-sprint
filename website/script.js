@@ -46,6 +46,7 @@ const translations = {
     "proof.statusLambda": "Python Lambda backend",
     "proof.statusDynamo": "DynamoDB visitor counter",
     "proof.statusVisible": "Visible footer counter",
+    "proof.githubButton": "View project on GitHub",
 
     "projects.label": "PROJECTS",
     "projects.heading": "Portfolio projects",
@@ -189,6 +190,7 @@ const translations = {
     "proof.statusLambda": "Python Lambdaバックエンド",
     "proof.statusDynamo": "DynamoDB訪問者カウンター",
     "proof.statusVisible": "表示されるフッターカウンター",
+    "proof.githubButton": "GitHubでプロジェクトを見る",
 
     "projects.label": "プロジェクト",
     "projects.heading": "ポートフォリオプロジェクト",
