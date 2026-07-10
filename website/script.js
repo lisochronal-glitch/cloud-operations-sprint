@@ -58,13 +58,14 @@ const translations = {
 
     "projects.project2Status": "Completed AWS networking lab",
     "projects.project2Text": "Built, verified, and reproduced a secure AWS network for a small web application using a public Application Load Balancer, private EC2 application instances, private RDS configuration, route tables, security groups, Auto Scaling, NAT Gateway, S3 Gateway Endpoint, and CloudFormation.",
-    "projects.project2Text": "Built and verified a secure AWS network for a small web application using a public Application Load Balancer, private EC2 application instances, private RDS configuration, route tables, security groups, Auto Scaling, NAT Gateway, and S3 Gateway Endpoint.",
     "projects.project2ViewProject": "View project ↗",
     "projects.project2Github": "GitHub ↗",
 
     "projects.project3Status": "Planned",
-    "projects.project3Title": "Event-Driven Workflow Lab",
-    "projects.project3Text": "Planned serverless workflow using SNS, SQS, Lambda, dead-letter queues, CloudWatch logs, retries, and operational visibility.",
+    "projects.project3Title": "Event-Driven Notification Workflow",
+    "projects.project3Text": "Planned SaaS-style event workflow using SNS fanout, SQS processing and audit queues, Lambda processing, dead-letter queues, CloudWatch logs, retries, and operational visibility.",
+    "projects.project3ViewProject": "View project ↗",
+    "projects.project3Github": "GitHub ↗",
 
     "certs.label": "CERTIFICATIONS",
     "certs.heading": "Credentials",
@@ -202,13 +203,14 @@ const translations = {
 
     "projects.project2Status": "AWSネットワークラボ完了",
     "projects.project2Text": "小規模Webアプリケーション向けに、パブリックApplication Load Balancer、プライベートEC2アプリケーションインスタンス、プライベートRDS構成、ルートテーブル、セキュリティグループ、Auto Scaling、NAT Gateway、S3 Gateway Endpoint、CloudFormationを使用した安全なAWSネットワークを構築・検証・再現しました。",
-    "projects.project2Text": "小規模Webアプリケーション向けに、パブリックApplication Load Balancer、プライベートEC2アプリケーションインスタンス、プライベートRDS構成、ルートテーブル、セキュリティグループ、Auto Scaling、NAT Gateway、S3 Gateway Endpointを使用した安全なAWSネットワークを構築・検証しました。",
     "projects.project2ViewProject": "プロジェクトを見る ↗",
     "projects.project2Github": "GitHub ↗",
 
     "projects.project3Status": "予定",
-    "projects.project3Title": "イベント駆動ワークフローラボ",
-    "projects.project3Text": "SNS、SQS、Lambda、デッドレターキュー、CloudWatch Logs、リトライ、運用上の可視性を扱うサーバーレスワークフローの予定です。",
+    "projects.project3Title": "イベント駆動型通知ワークフロー",
+    "projects.project3Text": "SNS fanout、SQS処理キューと監査キュー、Lambda処理、dead-letter queue、CloudWatch Logs、リトライ、運用可視性を扱うSaaS形式のイベントワークフロー予定です。",
+    "projects.project3ViewProject": "プロジェクトを見る ↗",
+    "projects.project3Github": "GitHub ↗",
 
     "certs.label": "資格",
     "certs.heading": "保有資格",
