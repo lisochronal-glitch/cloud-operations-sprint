@@ -61,9 +61,9 @@ const translations = {
     "projects.project2ViewProject": "View project ↗",
     "projects.project2Github": "GitHub ↗",
 
-    "projects.project3Status": "Planned",
-    "projects.project3Title": "Event-Driven Notification Workflow",
-    "projects.project3Text": "Planned SaaS-style event workflow using SNS fanout, SQS processing and audit queues, Lambda processing, dead-letter queues, CloudWatch logs, retries, and operational visibility.",
+    "projects.project3Status": "Planned AWS event-driven workflow",
+    "projects.project3Title": "Asynchronous SaaS Order Processing Workflow",
+    "projects.project3Text": "Planned project to build a live order-processing workflow using API Gateway, Lambda, SNS, SQS, DynamoDB, a dead-letter queue, and CloudWatch. The demo will accept a sample order, process it asynchronously, and track status.",
     "projects.project3ViewProject": "View project ↗",
     "projects.project3Github": "GitHub ↗",
 
@@ -206,9 +206,9 @@ const translations = {
     "projects.project2ViewProject": "プロジェクトを見る ↗",
     "projects.project2Github": "GitHub ↗",
 
-    "projects.project3Status": "予定",
-    "projects.project3Title": "イベント駆動型通知ワークフロー",
-    "projects.project3Text": "SNS fanout、SQS処理キューと監査キュー、Lambda処理、dead-letter queue、CloudWatch Logs、リトライ、運用可視性を扱うSaaS形式のイベントワークフロー予定です。",
+    "projects.project3Status": "AWSイベント駆動ワークフロー予定",
+    "projects.project3Title": "非同期SaaS注文処理ワークフロー",
+    "projects.project3Text": "API Gateway、Lambda、SNS、SQS、DynamoDB、dead-letter queue、CloudWatchを使用して、ライブの注文処理ワークフローを構築する予定のプロジェクトです。デモではサンプル注文を受け付け、非同期で処理し、ステータスを追跡します。",
     "projects.project3ViewProject": "プロジェクトを見る ↗",
     "projects.project3Github": "GitHub ↗",
 
