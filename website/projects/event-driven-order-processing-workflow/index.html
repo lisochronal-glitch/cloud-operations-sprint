@@ -84,28 +84,20 @@ Status: Processed successfully.</code></pre>
 
     <section class="section muted">
       <div class="container">
-        <p class="section-label">PLANNED ARCHITECTURE</p>
-        <h2>Event-driven order processing with SNS, SQS, Lambda, DynamoDB, and DLQ handling</h2>
+        <p class="section-label">ARCHITECTURE DIAGRAM</p>
+        <h2>Live event-driven order processing architecture</h2>
 
-        <pre><code>Project page
-  ↓
-API Gateway
-  ↓
-Publisher Lambda
-  ↓
-DynamoDB: order status = ACCEPTED
-  ↓
-SNS Topic
-  ├── SQS processing queue → Processor Lambda → DynamoDB: order status = PROCESSED
-  └── SQS audit queue
+        <p class="section-intro">
+          The diagram shows how the project page sends a demo order into an AWS workflow that accepts
+          the request quickly, publishes the order event, processes it asynchronously, tracks status
+          and idempotency in DynamoDB, and exposes logs, metrics, and audit evidence.
+        </p>
 
-Failure path:
-SQS processing queue
-  ↓
-Dead-letter queue
-
-Visibility:
-CloudWatch Logs and metrics</code></pre>
+        <img
+          src="asynchronous-saas-order-processing-workflow.png"
+          alt="Asynchronous SaaS order processing workflow architecture diagram"
+          class="project-diagram"
+        >
       </div>
     </section>
 
