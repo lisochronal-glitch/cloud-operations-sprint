@@ -15,13 +15,13 @@
 
       <p class="lead">
         A SaaS company needs to accept customer orders quickly while slower follow-up work,
-        such as confirmation processing, audit logging, and internal workflow handling,
+        such as confirmation processing, audit logging, status updates, and failure handling,
         happens reliably in the background.
       </p>
 
       <p class="lead">
-        This project will build a live AWS event-driven workflow using API Gateway, Lambda,
-        SNS, SQS, DynamoDB, a dead-letter queue, and CloudWatch.
+        This project demonstrates an event-driven AWS order workflow using API Gateway, Lambda,
+        SNS, SQS, DynamoDB, CloudWatch, CloudTrail, and a dead-letter queue.
       </p>
 
       <div class="hero-actions">
@@ -41,38 +41,29 @@
   <main>
     <section class="section muted">
       <div class="container">
-        <p class="section-label">BUSINESS PROBLEM</p>
-        <h2>Customer orders should be accepted quickly, even when background processing takes longer</h2>
+        <p class="section-label">SOLUTION ARCHITECTURE</p>
+        <h2>Accept the order immediately, then process it asynchronously</h2>
 
         <p class="section-intro">
-          In a SaaS application, the customer-facing request should not wait for every follow-up task
-          to finish. Order confirmation, internal processing, audit logging, and failure handling can
-          happen asynchronously after the order has been accepted.
+          The diagram shows how a live project page can submit a demo order into an AWS workflow.
+          The request is accepted quickly, published as an event, processed in the background,
+          tracked in DynamoDB, and monitored through CloudWatch and CloudTrail.
         </p>
 
-        <p>
-          The goal of this project is to demonstrate how AWS services can decouple the immediate
-          customer request from slower backend processing work.
-        </p>
-      </div>
-    </section>
-
-    <section class="section">
-      <div class="container">
-        <p class="section-label">LIVE DEMO</p>
-        <h2>Test the order workflow</h2>
-
-        <p class="section-intro">
-          This section will contain a live demo button. When clicked, the page will create a safe
-          demo order and send it through the AWS event workflow.
-        </p>
+        <img
+          src="asynchronous-saas-order-processing-workflow.png"
+          alt="Asynchronous SaaS order processing workflow architecture diagram"
+          class="project-diagram"
+        >
 
         <div class="hero-actions">
           <button class="button primary" type="button" disabled>Test order workflow</button>
         </div>
 
         <p>
-          Planned result:
+          When the live demo is connected, this button will create a safe sample order and send it
+          through the AWS event workflow. The page will return an order ID and show the order moving
+          from accepted to processed status.
         </p>
 
         <pre><code>Order accepted.
@@ -82,76 +73,40 @@ Status: Processed successfully.</code></pre>
       </div>
     </section>
 
-    <section class="section muted">
-      <div class="container">
-        <p class="section-label">ARCHITECTURE DIAGRAM</p>
-        <h2>Live event-driven order processing architecture</h2>
-
-        <p class="section-intro">
-          The diagram shows how the project page sends a demo order into an AWS workflow that accepts
-          the request quickly, publishes the order event, processes it asynchronously, tracks status
-          and idempotency in DynamoDB, and exposes logs, metrics, and audit evidence.
-        </p>
-
-        <img
-          src="asynchronous-saas-order-processing-workflow.png"
-          alt="Asynchronous SaaS order processing workflow architecture diagram"
-          class="project-diagram"
-        >
-      </div>
-    </section>
-
     <section class="section">
       <div class="container">
-        <p class="section-label">AWS SERVICES</p>
-        <h2>Services planned for this project</h2>
-
-        <ul class="check-list">
-          <li>API Gateway for accepting demo order requests from the project page</li>
-          <li>Lambda publisher function for validation and event publishing</li>
-          <li>SNS topic for event fanout</li>
-          <li>SQS processing queue for asynchronous backend work</li>
-          <li>SQS audit queue for retaining an independent copy of order events</li>
-          <li>Processor Lambda for background order handling</li>
-          <li>DynamoDB for order status tracking</li>
-          <li>Dead-letter queue for repeated processing failures</li>
-          <li>CloudWatch Logs and metrics for operational visibility</li>
-          <li>CloudFormation for repeatable deployment and cleanup</li>
-        </ul>
-      </div>
-    </section>
-
-    <section class="section muted">
-      <div class="container">
-        <p class="section-label">EVIDENCE TO CAPTURE</p>
-        <h2>Verification plan</h2>
+        <p class="section-label">HOW IT WORKS</p>
+        <h2>Event fanout, queue buffering, status tracking, and failure isolation</h2>
 
         <p class="section-intro">
-          After the AWS resources are built, this page will be updated with implementation evidence.
+          API Gateway receives the order request from the project page and invokes a publisher Lambda.
+          The publisher creates or checks the DynamoDB order record, uses the order ID for idempotency,
+          and publishes the order event to SNS.
         </p>
 
-        <ul class="check-list">
-          <li>Successful demo order request from the live project page</li>
-          <li>API Gateway request reaching the publisher Lambda</li>
-          <li>SNS topic publishing the order event</li>
-          <li>SQS processing queue receiving the message</li>
-          <li>Processor Lambda handling the message</li>
-          <li>DynamoDB status changing from accepted to processed</li>
-          <li>Audit queue receiving a copy of the event</li>
-          <li>Failed message behavior and DLQ verification</li>
-          <li>CloudWatch logs showing the event flow</li>
-        </ul>
+        <p>
+          SNS fans the event out to two SQS queues. The processing queue triggers a processor Lambda
+          that performs the background order work and updates the order status in DynamoDB. The audit
+          queue keeps an independent copy of the event for inspection and troubleshooting.
+        </p>
+
+        <p>
+          If processing repeatedly fails, the message is moved to a dead-letter queue instead of being
+          lost. CloudWatch provides logs and metrics for runtime behavior, while CloudTrail provides
+          an AWS API audit trail for account-level activity.
+        </p>
       </div>
     </section>
 
-    <section class="section" id="github">
+    <section class="section muted" id="github">
       <div class="container">
-        <p class="section-label">GITHUB</p>
-        <h2>Implementation details</h2>
+        <p class="section-label">IMPLEMENTATION EVIDENCE</p>
+        <h2>Detailed build notes and proof will live in GitHub</h2>
 
         <p class="section-intro">
-          The repository will contain the project README, CloudFormation template, Lambda source code,
-          verification notes, evidence screenshots, and cleanup documentation.
+          The repository will contain the project README, Lambda source code, manual build notes,
+          architecture evidence, CloudWatch and CloudTrail screenshots, DLQ verification, cleanup
+          notes, and a CloudFormation version after the manual build is understood.
         </p>
 
         <a
