@@ -5,6 +5,39 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Asynchronous SaaS Order Processing Workflow | AWS / Cloud Operations Portfolio</title>
   <link rel="stylesheet" href="../../style.css">
+
+<style>
+  .demo-result {
+    margin-top: 1rem;
+    padding: 1rem;
+    border: 1px solid rgba(148, 163, 184, 0.35);
+    border-radius: 0.75rem;
+    background: rgba(15, 23, 42, 0.035);
+  }
+
+  .demo-result p {
+    margin: 0.25rem 0;
+  }
+
+  .demo-result-muted {
+    color: #64748b;
+  }
+
+  .demo-result-strong {
+    font-weight: 700;
+  }
+
+  .demo-result-error {
+    color: #b91c1c;
+    font-weight: 700;
+  }
+
+  #project3-demo-button:disabled {
+    cursor: wait;
+    opacity: 0.7;
+  }
+</style>
+
 </head>
 <body>
   <header class="site-header">
@@ -57,7 +90,12 @@
         >
 
         <div class="hero-actions">
-          <button class="button primary" type="button" disabled>Test order workflow</button>
+          <button id="project3-demo-button" class="button primary" type="button" >Test order workflow</button>
+
+<div id="project3-demo-result" class="demo-result" aria-live="polite">
+  <p class="demo-result-muted">Click the button to create a demo order and watch the asynchronous workflow complete.</p>
+</div>
+
         </div>
 
         <p>
@@ -126,5 +164,134 @@ Status: Processed successfully.</code></pre>
       <p>Powered by Amazon CloudFront</p>
     </div>
   </footer>
+
+<script>
+  const project3ApiBaseUrl = "https://4grisgfd4l.execute-api.ap-northeast-1.amazonaws.com";
+  const project3DemoEnabled = true;
+
+  const project3DemoButton = document.getElementById("project3-demo-button");
+  const project3DemoResult = document.getElementById("project3-demo-result");
+
+  function setProject3DemoHtml(lines, isError = false) {
+    project3DemoResult.innerHTML = "";
+    for (const line of lines) {
+      const paragraph = document.createElement("p");
+      paragraph.textContent = line.text;
+      if (line.strong) paragraph.classList.add("demo-result-strong");
+      if (isError) paragraph.classList.add("demo-result-error");
+      project3DemoResult.appendChild(paragraph);
+    }
+  }
+
+  function createDemoOrderId() {
+    const randomPart = Math.random().toString(16).slice(2, 8).toUpperCase();
+    return `ORD-WEB-${Date.now()}-${randomPart}`;
+  }
+
+  async function createDemoOrder(orderId) {
+    const response = await fetch(`${project3ApiBaseUrl}/orders`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        orderId,
+        idempotencyKey: orderId,
+        items: [
+          {
+            name: "Demo SaaS order from live portfolio page",
+            quantity: 1
+          }
+        ]
+      })
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.message || "Failed to create demo order.");
+    }
+
+    return data;
+  }
+
+  async function getDemoOrderStatus(orderId) {
+    const response = await fetch(`${project3ApiBaseUrl}/orders/${encodeURIComponent(orderId)}`);
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.message || "Failed to retrieve demo order status.");
+    }
+
+    return data;
+  }
+
+  async function waitForWorkflowCompletion(orderId) {
+    for (let attempt = 1; attempt <= 10; attempt += 1) {
+      const status = await getDemoOrderStatus(orderId);
+
+      setProject3DemoHtml([
+        { text: "Order confirmed.", strong: true },
+        { text: `Order ID: ${orderId}` },
+        { text: `Order status: ${status.orderStatus || "UNKNOWN"}` },
+        { text: `Background workflow: ${status.backgroundStatus || "UNKNOWN"}` }
+      ]);
+
+      if (status.backgroundStatus === "COMPLETED") {
+        return status;
+      }
+
+      await new Promise((resolve) => setTimeout(resolve, 1500));
+    }
+
+    throw new Error("The order was created, but the background workflow did not complete before polling ended.");
+  }
+
+  if (project3DemoButton && project3DemoResult) {
+    project3DemoButton.addEventListener("click", async () => {
+      if (!project3DemoEnabled) {
+        setProject3DemoHtml([
+          { text: "The live demo is temporarily disabled." }
+        ]);
+        return;
+      }
+
+      const originalButtonText = project3DemoButton.textContent;
+      const orderId = createDemoOrderId();
+
+      project3DemoButton.disabled = true;
+      project3DemoButton.textContent = "Creating demo order...";
+
+      try {
+        setProject3DemoHtml([
+          { text: "Creating demo order..." },
+          { text: `Order ID: ${orderId}` }
+        ]);
+
+        const createdOrder = await createDemoOrder(orderId);
+
+        setProject3DemoHtml([
+          { text: "Order confirmed.", strong: true },
+          { text: `Order ID: ${createdOrder.orderId || orderId}` },
+          { text: `Order status: ${createdOrder.orderStatus || "CONFIRMED"}` },
+          { text: `Background workflow: ${createdOrder.backgroundStatus || "PENDING"}` }
+        ]);
+
+        await waitForWorkflowCompletion(createdOrder.orderId || orderId);
+
+      } catch (error) {
+        setProject3DemoHtml([
+          { text: "Demo request failed." },
+          { text: error.message }
+        ], true);
+
+      } finally {
+        project3DemoButton.disabled = false;
+        project3DemoButton.textContent = originalButtonText;
+      }
+    });
+  }
+</script>
+
 </body>
 </html>
