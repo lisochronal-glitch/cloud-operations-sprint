@@ -317,7 +317,7 @@ const translations = {
     "project3.solutionLabel": "ソリューション構成",
     "project3.solutionHeading": "注文をすぐに受け付け、その後非同期で処理する",
     "project3.solutionText": "この図は、稼働中のプロジェクトページからデモ注文をAWSワークフローへ送信する流れを示しています。リクエストはすばやく受け付けられ、イベントとして発行され、バックグラウンドで処理され、DynamoDBでステータス管理され、Amazon SESを使った確認メール分岐を通り、CloudWatchとCloudTrailで監視・監査されます。",
-    "project3.demoButton": "注文ワークフローをテスト",
+    "project3.demoButton": "注文処理を試す",
     "project3.demoPrompt": "ボタンを押すとデモ注文が作成され、非同期ワークフローが完了するまでの流れを確認できます。",
     "project3.demoText": "安全なサンプル注文を稼働中のAWSワークフローに送信します。ページはAPI Gateway経由で注文を作成し、SQS/Lambdaによる非同期処理がDynamoDBのステータスを完了に更新するまでステータスAPIをポーリングします。",
     "project3.howLabel": "仕組み",
