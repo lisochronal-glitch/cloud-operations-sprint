@@ -167,7 +167,7 @@
         </p>
 
         <p>
-          SNS fans the event out to two SQS queues. The processing queue triggers a processor Lambda
+          SNS fans the event out to three SQS queues: a processing queue, an audit queue, and a notification queue. The processing queue triggers a processor Lambda
           that performs the background order work and updates the order status in DynamoDB. The audit
           queue keeps an independent copy of the event for inspection and troubleshooting.
         </p>
