@@ -184,3 +184,27 @@ Evidence was captured separately for:
 - CloudWatch alarm and emergency disable safety mechanism.
 
 Screenshots can be added to this folder later if needed.
+
+## Operational safety for the public demo
+
+Because the demo exposes a public API endpoint, I added operational safeguards around the public publisher Lambda.
+
+A CloudWatch alarm monitors abnormal invocation volume on `project3-order-publisher`. If invocations exceed the configured threshold, the alarm sends an email notification through SNS and invokes an emergency Lambda function.
+
+The emergency Lambda sets reserved concurrency on the public publisher function to `0`, which disables the public demo entry point automatically. This provides automatic containment if the endpoint receives unexpected traffic while keeping the architecture simple and cost-controlled.
+
+The demo can be re-enabled manually by removing the reserved concurrency limit or setting it back to a small safe value.
+
+## SES notification branch
+
+The architecture includes a notification branch using SNS, SQS, Lambda, and Amazon SES.
+
+This branch was implemented and verified by sending a test confirmation email through the path:
+
+`SNS topic → SQS notification queue → Notification Lambda → Amazon SES`
+
+After verification, the notification branch was disconnected from the public demo to avoid unnecessary email sends from repeated public button clicks.
+
+The public demo still demonstrates the core asynchronous workflow:
+
+`API Gateway → Publisher Lambda → DynamoDB → SNS → SQS processing queue → Processor Lambda → DynamoDB status update`
