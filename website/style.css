@@ -656,3 +656,7 @@ html body #project3-demo-button.workflow-demo-button:disabled {
   margin-top: 1.35rem;
 }
 
+/* Project detail language switch */
+.project-detail-top-line .section-label {
+  margin-bottom: 0;
+}
