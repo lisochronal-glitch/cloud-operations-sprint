@@ -1,54 +1,54 @@
-# Asynchronous SaaS Order Processing Workflow
+# 非同期 SaaS 注文処理ワークフロー
 
-This project demonstrates an event-driven order processing workflow on AWS.
+このプロジェクトは、AWS 上で構築したイベント駆動型の注文処理ワークフローです。
 
-A public portfolio page creates a demo order through API Gateway. The backend stores the order state in DynamoDB, publishes an order event to SNS, processes the event asynchronously through SQS and Lambda, and returns the updated order status to the frontend.
+公開ポートフォリオページから API Gateway 経由でデモ注文を作成します。バックエンドでは、注文状態を DynamoDB に保存し、注文イベントを SNS に発行し、SQS と Lambda によって非同期処理を行い、更新された注文状態をフロントエンドへ返します。
 
-The goal is to show a realistic cloud operations pattern: accept a user-facing request quickly, move slower background work into an asynchronous workflow, track state, handle failures with a dead-letter queue, and protect the public entry point with monitoring and automatic containment.
+目的は、実務で使われるクラウド運用パターンを示すことです。ユーザー向けのリクエストは素早く受け付け、時間のかかる後続処理は非同期ワークフローに移し、状態を追跡し、失敗時にはデッドレターキューで処理し、公開エンドポイントには監視と自動的な封じ込めを追加しています。
 
-## Architecture
+## アーキテクチャ
 
-Normal order workflow:
+通常の注文処理フロー:
 
-    CloudFront portfolio page
+    CloudFront ポートフォリオページ
       -> API Gateway HTTP API
       -> Publisher Lambda
-      -> DynamoDB order record
-      -> SNS order event topic
-      -> SQS processing queue
+      -> DynamoDB 注文レコード
+      -> SNS 注文イベントトピック
+      -> SQS 処理キュー
       -> Processor Lambda
-      -> DynamoDB status update
+      -> DynamoDB 状態更新
 
-Status lookup workflow:
+注文状態の確認フロー:
 
-    CloudFront portfolio page
+    CloudFront ポートフォリオページ
       -> API Gateway HTTP API
       -> Status Lambda
-      -> DynamoDB status read
+      -> DynamoDB 状態読み取り
 
-Additional branches and controls:
+追加ブランチと運用制御:
 
-    SNS order event topic
-      -> SQS audit queue
+    SNS 注文イベントトピック
+      -> SQS 監査キュー
 
-    SNS order event topic
-      -> SQS notification queue
+    SNS 注文イベントトピック
+      -> SQS 通知キュー
       -> Notifier Lambda
       -> Amazon SES
-      -> Verified email address
-      -> Disabled after proof test
+      -> 検証済みメールアドレス
+      -> 検証後に無効化
 
-    SQS processing queue
-      -> retry attempts
-      -> dead-letter queue
+    SQS 処理キュー
+      -> 再試行
+      -> デッドレターキュー
 
-    CloudWatch alarm
-      -> SNS safety alert topic
-      -> email notification
-      -> emergency disable Lambda
-      -> reserved concurrency on public publisher Lambda set to 0
+    CloudWatch アラーム
+      -> SNS 安全通知トピック
+      -> メール通知
+      -> 緊急停止 Lambda
+      -> 公開 Publisher Lambda の予約済み同時実行数を 0 に設定
 
-## AWS services used
+## 使用した AWS サービス
 
 - Amazon API Gateway
 - AWS Lambda
@@ -60,151 +60,151 @@ Additional branches and controls:
 - AWS IAM
 - Amazon CloudFront
 
-## What the demo does
+## デモの動作
 
-The live project page includes a test button that creates a demo order.
+公開プロジェクトページには、デモ注文を作成するテストボタンがあります。
 
-When the button is clicked:
+ボタンをクリックすると、次の処理が行われます。
 
-1. The browser sends a POST /orders request to API Gateway.
-2. API Gateway invokes project3-order-publisher.
-3. The publisher Lambda writes an order item to DynamoDB with backgroundStatus = PENDING.
-4. The publisher Lambda publishes an ORDER_CONFIRMED event to SNS.
-5. SNS fans the event out to SQS queues.
-6. The processing queue invokes project3-order-processor.
-7. The processor Lambda updates the DynamoDB item to backgroundStatus = COMPLETED.
-8. The frontend polls GET /orders/{orderId} through API Gateway.
-9. The status Lambda reads DynamoDB and returns the current order status.
-10. The page displays the completed background workflow.
+1. ブラウザが API Gateway に POST /orders リクエストを送信します。
+2. API Gateway が project3-order-publisher を呼び出します。
+3. Publisher Lambda が backgroundStatus = PENDING の注文アイテムを DynamoDB に書き込みます。
+4. Publisher Lambda が ORDER_CONFIRMED イベントを SNS に発行します。
+5. SNS がイベントを複数の SQS キューへ配信します。
+6. 処理キューが project3-order-processor を呼び出します。
+7. Processor Lambda が DynamoDB アイテムを backgroundStatus = COMPLETED に更新します。
+8. フロントエンドが API Gateway 経由で GET /orders/{orderId} をポーリングします。
+9. Status Lambda が DynamoDB から現在の注文状態を読み取ります。
+10. ページにバックグラウンドワークフローの完了状態が表示されます。
 
-## Main resources
+## 主なリソース
 
-| Resource | Name |
+| リソース | 名前 |
 |---|---|
-| DynamoDB table | project3-orders |
-| SNS topic | project3-order-events |
-| Processing queue | project3-order-processing-queue |
-| Audit queue | project3-order-audit-queue |
-| Notification queue | project3-order-notification-queue |
-| Dead-letter queue | project3-order-dlq |
+| DynamoDB テーブル | project3-orders |
+| SNS トピック | project3-order-events |
+| 処理キュー | project3-order-processing-queue |
+| 監査キュー | project3-order-audit-queue |
+| 通知キュー | project3-order-notification-queue |
+| デッドレターキュー | project3-order-dlq |
 | Publisher Lambda | project3-order-publisher |
 | Processor Lambda | project3-order-processor |
 | Status Lambda | project3-order-status |
 | Notifier Lambda | project3-order-notifier |
-| Emergency Lambda | project3-emergency-disable-demo |
+| 緊急停止 Lambda | project3-emergency-disable-demo |
 | HTTP API | project3-order-workflow-api |
 
-## Failure handling
+## 失敗処理
 
-The processing queue is configured with a dead-letter queue.
+処理キューにはデッドレターキューを設定しています。
 
-If the processor Lambda fails to process a message repeatedly, the message is not deleted from the queue. SQS retries delivery. After the configured receive limit is reached, SQS moves the message to project3-order-dlq.
+Processor Lambda がメッセージ処理に繰り返し失敗した場合、そのメッセージはキューから削除されません。SQS は配信を再試行します。設定された受信回数の上限に達すると、SQS はそのメッセージを project3-order-dlq に移動します。
 
-This was verified with a deliberate poison test message containing:
+これは、次のような意図的な poison test message で検証しました。
 
     {
       "orderId": "ORD-DLQ-TEST-001",
       "simulateFailure": true
     }
 
-The processor Lambda raised an intentional error, the message was retried, and the failed message was moved to the dead-letter queue.
+Processor Lambda は意図的にエラーを発生させ、メッセージは再試行された後、デッドレターキューへ移動されました。
 
-## Notification branch
+## 通知ブランチ
 
-A notification branch was implemented and verified using Amazon SES:
+Amazon SES を使用した通知ブランチも実装し、検証しました。
 
-    SNS topic
-      -> SQS notification queue
+    SNS トピック
+      -> SQS 通知キュー
       -> Notifier Lambda
       -> Amazon SES
-      -> verified email inbox
+      -> 検証済みメール受信箱
 
-The branch successfully sent a test email for:
+このブランチでは、次のテスト注文についてメール送信に成功しました。
 
     ORD-SES-TEST-001
 
-After verification, the notification branch was disconnected from the public demo to avoid sending unnecessary emails every time a visitor clicks the demo button.
+検証後、この通知ブランチは公開デモから切り離しました。訪問者がデモボタンをクリックするたびに不要なメールが送信されることを防ぐためです。
 
-This is the intended final state: the notification path was implemented and proven, but it is not left active for public traffic.
+最終状態としては、通知パスは実装・検証済みですが、公開トラフィックに対しては有効化していません。
 
-## Operational safety
+## 運用上の安全対策
 
-Because the project exposes a public API endpoint, the public publisher Lambda is monitored with a CloudWatch alarm.
+このプロジェクトでは公開 API エンドポイントを使用しているため、公開 Publisher Lambda を CloudWatch アラームで監視しています。
 
-Safety control:
+安全制御:
 
-    Metric: project3-order-publisher Invocations
-    Threshold: greater than 50 invocations in 5 minutes
-    Action 1: send email notification
-    Action 2: invoke emergency disable Lambda
+    メトリクス: project3-order-publisher Invocations
+    しきい値: 5 分間で 50 回を超える呼び出し
+    アクション 1: メール通知を送信
+    アクション 2: 緊急停止 Lambda を呼び出す
 
-The emergency Lambda calls PutFunctionConcurrency and sets reserved concurrency on project3-order-publisher to 0.
+緊急停止 Lambda は PutFunctionConcurrency を呼び出し、project3-order-publisher の予約済み同時実行数を 0 に設定します。
 
-This immediately throttles the public order creation function if abnormal traffic is detected. The function can be manually re-enabled later by removing or changing the reserved concurrency setting.
+これにより、異常なトラフィックが検出された場合、公開注文作成関数を即座にスロットリングできます。復旧時には、予約済み同時実行数の設定を削除または変更することで手動で再有効化できます。
 
-This control is intentionally simple, but it demonstrates operational foresight: public cloud entry points should have monitoring, alerting, and containment.
+この制御はシンプルですが、公開クラウドエントリーポイントには監視、通知、封じ込めが必要であるという運用上の考慮を示しています。
 
-## IAM design
+## IAM 設計
 
-Each Lambda function uses its own execution role with only the permissions required for its job.
+各 Lambda 関数には、その役割に必要な権限だけを持つ専用の実行ロールを使用しています。
 
-Examples:
+例:
 
-- The publisher Lambda can write to the order table and publish to SNS.
-- The processor Lambda can read from the processing queue and update DynamoDB.
-- The status Lambda can read from DynamoDB.
-- The notifier Lambda can read from the notification queue and send email through SES.
-- The emergency Lambda can only change concurrency on the public publisher Lambda.
+- Publisher Lambda は注文テーブルへの書き込みと SNS への発行ができます。
+- Processor Lambda は処理キューからの読み取りと DynamoDB の更新ができます。
+- Status Lambda は DynamoDB からの読み取りができます。
+- Notifier Lambda は通知キューからの読み取りと SES によるメール送信ができます。
+- 緊急停止 Lambda は公開 Publisher Lambda の同時実行数設定だけを変更できます。
 
-This keeps permissions scoped to the function’s responsibility.
+これにより、各関数の責任範囲に合わせて権限を絞っています。
 
-## Cost and cleanup notes
+## コストとクリーンアップ
 
-The project is designed to stay very low cost:
+このプロジェクトは、非常に低コストで維持できるように設計しています。
 
-- Lambda usage is minimal.
-- DynamoDB uses small test items.
-- SQS and SNS traffic are tiny.
-- SES was tested once and then disconnected from the public demo.
-- CloudWatch monitoring is used for operational visibility.
-- AWS Budgets remain active as a cost-level safety net.
+- Lambda の利用量は最小限です。
+- DynamoDB には小さなテストアイテムのみを保存しています。
+- SQS と SNS のトラフィックは非常に少量です。
+- SES は一度検証し、その後公開デモから切り離しました。
+- CloudWatch は運用可視性のために使用しています。
+- AWS Budgets はコストレベルの安全対策として有効です。
 
-The public demo remains active, but the SES notification branch is disabled to prevent unnecessary email sends.
+公開デモは有効なままですが、SES 通知ブランチは不要なメール送信を防ぐため無効化しています。
 
-## Evidence captured
+## 証跡
 
-Evidence was captured separately for:
+以下の証跡を別途取得しました。
 
-- Live project page creating a demo order.
-- API Gateway returning successful POST /orders and GET /orders/{orderId} responses.
-- DynamoDB item moving from PENDING to COMPLETED.
-- Processor Lambda CloudWatch logs.
-- DLQ test message and retry behavior.
-- SES email delivery proof.
-- CloudWatch alarm and emergency disable safety mechanism.
+- 公開プロジェクトページによるデモ注文作成
+- API Gateway の POST /orders と GET /orders/{orderId} の成功レスポンス
+- DynamoDB アイテムが PENDING から COMPLETED へ変化したこと
+- Processor Lambda の CloudWatch Logs
+- DLQ テストメッセージと再試行動作
+- SES メール配信の証跡
+- CloudWatch アラームと緊急停止 Lambda による安全対策
 
-Screenshots can be added to this folder later if needed.
+必要に応じて、後でスクリーンショットをこのフォルダに追加できます。
 
-## Operational safety for the public demo
+## 公開デモの運用上の安全対策
 
-Because the demo exposes a public API endpoint, I added operational safeguards around the public publisher Lambda.
+このデモでは公開APIエンドポイントを使用しているため、公開側の Publisher Lambda に対して運用上の安全対策を追加しました。
 
-A CloudWatch alarm monitors abnormal invocation volume on `project3-order-publisher`. If invocations exceed the configured threshold, the alarm sends an email notification through SNS and invokes an emergency Lambda function.
+CloudWatch アラームで `project3-order-publisher` の異常な呼び出し数を監視しています。設定したしきい値を超えた場合、アラームは SNS を通じてメール通知を送信し、緊急停止用の Lambda 関数を実行します。
 
-The emergency Lambda sets reserved concurrency on the public publisher function to `0`, which disables the public demo entry point automatically. This provides automatic containment if the endpoint receives unexpected traffic while keeping the architecture simple and cost-controlled.
+緊急停止用 Lambda は、公開 Publisher 関数の reserved concurrency を `0` に設定します。これにより、公開デモの入口を自動的に停止できます。予期しないアクセスが発生した場合でも、シンプルでコストを抑えた構成のまま、自動的な封じ込めが可能になります。
 
-The demo can be re-enabled manually by removing the reserved concurrency limit or setting it back to a small safe value.
+デモを再開する場合は、reserved concurrency の制限を削除するか、小さい安全な値に戻します。
 
-## SES notification branch
+## SES 通知ブランチ
 
-The architecture includes a notification branch using SNS, SQS, Lambda, and Amazon SES.
+このアーキテクチャには、SNS、SQS、Lambda、Amazon SES を使用した通知ブランチも含まれています。
 
-This branch was implemented and verified by sending a test confirmation email through the path:
+このブランチは実装し、次の経路でテスト確認済みです。
 
 `SNS topic → SQS notification queue → Notification Lambda → Amazon SES`
 
-After verification, the notification branch was disconnected from the public demo to avoid unnecessary email sends from repeated public button clicks.
+確認後、公開デモからはこの通知ブランチを切り離しました。これにより、公開ボタンが繰り返し押された場合でも、不要なメール送信が発生しないようにしています。
 
-The public demo still demonstrates the core asynchronous workflow:
+公開デモでは、引き続き中核となる非同期ワークフローを確認できます。
 
 `API Gateway → Publisher Lambda → DynamoDB → SNS → SQS processing queue → Processor Lambda → DynamoDB status update`
