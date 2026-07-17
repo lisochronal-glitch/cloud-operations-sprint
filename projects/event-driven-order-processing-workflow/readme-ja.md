@@ -184,3 +184,27 @@ Amazon SES を使用した通知ブランチも実装し、検証しました。
 - CloudWatch アラームと緊急停止 Lambda による安全対策
 
 必要に応じて、後でスクリーンショットをこのフォルダに追加できます。
+
+## 公開デモの運用上の安全対策
+
+このデモでは公開APIエンドポイントを使用しているため、公開側の Publisher Lambda に対して運用上の安全対策を追加しました。
+
+CloudWatch アラームで `project3-order-publisher` の異常な呼び出し数を監視しています。設定したしきい値を超えた場合、アラームは SNS を通じてメール通知を送信し、緊急停止用の Lambda 関数を実行します。
+
+緊急停止用 Lambda は、公開 Publisher 関数の reserved concurrency を `0` に設定します。これにより、公開デモの入口を自動的に停止できます。予期しないアクセスが発生した場合でも、シンプルでコストを抑えた構成のまま、自動的な封じ込めが可能になります。
+
+デモを再開する場合は、reserved concurrency の制限を削除するか、小さい安全な値に戻します。
+
+## SES 通知ブランチ
+
+このアーキテクチャには、SNS、SQS、Lambda、Amazon SES を使用した通知ブランチも含まれています。
+
+このブランチは実装し、次の経路でテスト確認済みです。
+
+`SNS topic → SQS notification queue → Notification Lambda → Amazon SES`
+
+確認後、公開デモからはこの通知ブランチを切り離しました。これにより、公開ボタンが繰り返し押された場合でも、不要なメール送信が発生しないようにしています。
+
+公開デモでは、引き続き中核となる非同期ワークフローを確認できます。
+
+`API Gateway → Publisher Lambda → DynamoDB → SNS → SQS processing queue → Processor Lambda → DynamoDB status update`
