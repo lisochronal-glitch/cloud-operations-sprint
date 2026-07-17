@@ -642,3 +642,18 @@ html body #project3-demo-button.workflow-demo-button:disabled {
   opacity: 0.72 !important;
   cursor: wait !important;
 }
+
+
+/* Project 3 text polish start */
+.project-section p {
+  color: var(--muted);
+  font-size: 1rem;
+  line-height: 1.75;
+  max-width: 980px;
+}
+
+.project-section p + p {
+  margin-top: 1.35rem;
+}
+/* Project 3 text polish end */
+
