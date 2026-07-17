@@ -644,16 +644,15 @@ html body #project3-demo-button.workflow-demo-button:disabled {
 }
 
 
-/* Project 3 text polish start */
-.project-section p {
-  color: var(--muted);
+/* Project detail body copy */
+.project-copy-text {
+  color: var(--muted) !important;
   font-size: 1rem;
   line-height: 1.75;
   max-width: 980px;
 }
 
-.project-section p + p {
+.project-copy-text + .project-copy-text {
   margin-top: 1.35rem;
 }
-/* Project 3 text polish end */
 

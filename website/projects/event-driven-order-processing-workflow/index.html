@@ -86,21 +86,6 @@
     }
   }
 </style>
-
-
-<style>
-  body .project-section p,
-  body .project-section li {
-    color: var(--muted) !important;
-    font-size: 1rem !important;
-    line-height: 1.75 !important;
-  }
-
-  body .project-section p + p {
-    margin-top: 1.35rem !important;
-  }
-</style>
-
 </head>
 <body>
   <header class="site-header">
@@ -140,11 +125,9 @@
         <p class="section-label">SOLUTION ARCHITECTURE</p>
         <h2>Accept the order immediately, then process it asynchronously</h2>
 
-        <p class="section-intro">
-          The diagram shows how a live project page can submit a demo order into an AWS workflow.
+        <p class="project-copy-text">The diagram shows how a live project page can submit a demo order into an AWS workflow.
           The request is accepted quickly, published as an event, processed in the background,
-          tracked in DynamoDB, and monitored through CloudWatch and CloudTrail.
-        </p>
+          tracked in DynamoDB, and monitored through CloudWatch and CloudTrail.</p>
 
         <img
           src="asynchronous-saas-order-processing-workflow.png"
@@ -158,14 +141,12 @@
           </button>
 
           <div id="project3-demo-result" class="workflow-demo-result" aria-live="polite">
-            <p>Click the button to create a demo order and watch the asynchronous workflow complete.</p>
+            <p class="project-copy-text">Click the button to create a demo order and watch the asynchronous workflow complete.</p>
           </div>
         </div>
 
-        <p>
-          Run a safe sample order through the live AWS workflow. The page creates an order through API Gateway,
-          then polls the status API until the asynchronous SQS/Lambda processing step updates DynamoDB to completed.
-        </p>
+        <p class="project-copy-text">Run a safe sample order through the live AWS workflow. The page creates an order through API Gateway,
+          then polls the status API until the asynchronous SQS/Lambda processing step updates DynamoDB to completed.</p>
       </div>
     </section>
 
@@ -174,23 +155,17 @@
         <p class="section-label">HOW IT WORKS</p>
         <h2>Event fanout, queue buffering, status tracking, and failure isolation</h2>
 
-        <p class="section-intro">
-          API Gateway receives the order request from the project page and invokes a publisher Lambda.
+        <p class="project-copy-text">API Gateway receives the order request from the project page and invokes a publisher Lambda.
           The publisher creates or checks the DynamoDB order record, uses the order ID for idempotency,
-          and publishes the order event to SNS.
-        </p>
+          and publishes the order event to SNS.</p>
 
-        <p>
-          SNS fans the event out to three SQS queues: a processing queue, an audit queue, and a notification queue. The processing queue triggers a processor Lambda
+        <p class="project-copy-text">SNS fans the event out to three SQS queues: a processing queue, an audit queue, and a notification queue. The processing queue triggers a processor Lambda
           that performs the background order work and updates the order status in DynamoDB. The audit
-          queue keeps an independent copy of the event for inspection and troubleshooting.
-        </p>
+          queue keeps an independent copy of the event for inspection and troubleshooting.</p>
 
-        <p>
-          If processing repeatedly fails, the message is moved to a dead-letter queue instead of being
+        <p class="project-copy-text">If processing repeatedly fails, the message is moved to a dead-letter queue instead of being
           lost. CloudWatch provides logs and metrics for runtime behavior, while CloudTrail provides
-          an AWS API audit trail for account-level activity.
-        </p>
+          an AWS API audit trail for account-level activity.</p>
       </div>
     </section>
 
@@ -199,11 +174,7 @@
         <p class="section-label">IMPLEMENTATION EVIDENCE</p>
         <h2>Detailed build notes and implementation proof are documented in GitHub</h2>
 
-        <p class="section-intro">
-          The repository will contain the project README, Lambda source code, manual build notes,
-          architecture evidence, CloudWatch and CloudTrail screenshots, DLQ verification, cleanup
-          notes, and a CloudFormation version after the manual build is understood.
-        </p>
+        <p class="project-copy-text">The repository documents the project README, Lambda source code, manual build notes, architecture evidence, CloudWatch and CloudTrail screenshots, DLQ verification, SES notification proof, operational safety notes, and cleanup notes.</p>
 
         <a
           href="https://github.com/lisochronal-glitch/cloud-operations-sprint/tree/main/projects/event-driven-order-processing-workflow"
