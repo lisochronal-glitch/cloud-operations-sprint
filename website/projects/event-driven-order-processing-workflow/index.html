@@ -102,10 +102,7 @@
 
       <p class="lead" data-i18n="project3.lead1">A SaaS company needs to accept customer orders quickly while slower follow-up work, such as confirmation processing, audit logging, status updates, and failure handling, happens reliably in the background.</p>
 
-      <p class="lead">
-        This project demonstrates an event-driven AWS order workflow using API Gateway, Lambda,
-        SNS, SQS, DynamoDB, CloudWatch, CloudTrail, and a dead-letter queue.
-      </p>
+      <p class="lead" data-i18n="project3.lead2">This project demonstrates an event-driven AWS order workflow using API Gateway, Lambda, SNS, SQS, DynamoDB, Amazon SES, CloudWatch, CloudTrail, and a dead-letter queue.</p>
 
       <div class="hero-actions">
         <a href="../../index.html#projects" class="button secondary" data-i18n="project3.backButton">Back to Projects</a>
@@ -125,9 +122,7 @@
         <p class="section-label" data-i18n="project3.solutionLabel">SOLUTION ARCHITECTURE</p>
         <h2 data-i18n="project3.solutionHeading">Accept the order immediately, then process it asynchronously</h2>
 
-        <p class="project-copy-text">The diagram shows how a live project page can submit a demo order into an AWS workflow.
-          The request is accepted quickly, published as an event, processed in the background,
-          tracked in DynamoDB, and monitored through CloudWatch and CloudTrail.</p>
+        <p class="project-copy-text" data-i18n="project3.solutionText">The diagram shows how a live project page can submit a demo order into an AWS workflow. The request is accepted quickly, published as an event, processed in the background, tracked in DynamoDB, sent through a confirmation email branch using Amazon SES, and monitored through CloudWatch and CloudTrail.</p>
 
         <img
           src="asynchronous-saas-order-processing-workflow.png"
