@@ -6,25 +6,64 @@
   <title>Asynchronous SaaS Order Processing Workflow | AWS / Cloud Operations Portfolio</title>
   <link rel="stylesheet" href="../../style.css">
 
+
+
+
+
+
+
+
 <style>
-  .demo-result {
-    margin-top: 1rem;
-    padding: 1rem;
-    border: 1px solid rgba(148, 163, 184, 0.35);
-    border-radius: 0.75rem;
-    background: rgba(15, 23, 42, 0.035);
+  .workflow-demo-panel {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin: 1.5rem 0 1rem;
   }
 
-  .demo-result p {
-    margin: 0.25rem 0;
+  .workflow-demo-button {
+    appearance: none;
+    border: 0;
+    border-radius: 999px;
+    background: #2563eb;
+    color: #ffffff;
+    padding: 0.85rem 1.25rem;
+    font: inherit;
+    font-size: 0.95rem;
+    font-weight: 800;
+    line-height: 1;
+    cursor: pointer;
+    box-shadow: 0 10px 22px rgba(37, 99, 235, 0.24);
+    white-space: nowrap;
   }
 
-  .demo-result-muted {
-    color: #64748b;
+  .workflow-demo-button:hover {
+    background: #1d4ed8;
+  }
+
+  .workflow-demo-button:disabled {
+    opacity: 0.72;
+    cursor: wait;
+  }
+
+  .workflow-demo-result {
+    width: min(100%, 26rem);
+    padding: 1rem 1.1rem;
+    border: 1px solid rgba(148, 163, 184, 0.45);
+    border-radius: 0.9rem;
+    background: rgba(255, 255, 255, 0.78);
+    box-shadow: 0 12px 28px rgba(15, 23, 42, 0.08);
+  }
+
+  .workflow-demo-result p {
+    margin: 0.35rem 0;
+    font-size: 0.95rem;
   }
 
   .demo-result-strong {
-    font-weight: 700;
+    color: #0f172a;
+    font-weight: 800;
   }
 
   .demo-result-error {
@@ -32,149 +71,18 @@
     font-weight: 700;
   }
 
-  #project3-demo-button:disabled {
-    cursor: wait;
-    opacity: 0.7;
-  }
-</style>
-
-
-<style>
-  #project3-demo-button {
-    width: auto !important;
-    height: auto !important;
-    min-width: 11rem !important;
-    min-height: 0 !important;
-    border-radius: 999px !important;
-    padding: 0.85rem 1.25rem !important;
-    display: inline-flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    font-size: 0.95rem !important;
-    font-weight: 700 !important;
-    line-height: 1 !important;
-    box-shadow: 0 10px 24px rgba(37, 99, 235, 0.22) !important;
-    vertical-align: top !important;
-  }
-
-  #project3-demo-button:disabled {
-    opacity: 0.72 !important;
-    cursor: wait !important;
-  }
-
-  #project3-demo-result {
-    display: inline-block !important;
-    vertical-align: top !important;
-    width: min(100%, 25rem) !important;
-    min-height: 0 !important;
-    margin: 0 0 0 1rem !important;
-    padding: 1rem 1.1rem !important;
-    border: 1px solid rgba(148, 163, 184, 0.45) !important;
-    border-radius: 0.9rem !important;
-    background: rgba(255, 255, 255, 0.72) !important;
-    box-shadow: 0 12px 28px rgba(15, 23, 42, 0.08) !important;
-  }
-
-  #project3-demo-result p {
-    margin: 0.35rem 0 !important;
-    font-size: 0.95rem !important;
-  }
-
-  #project3-demo-result p:first-child {
-    margin-top: 0 !important;
-  }
-
-  #project3-demo-result p:last-child {
-    margin-bottom: 0 !important;
-  }
-
-  .demo-result-muted {
-    color: #64748b !important;
-  }
-
-  .demo-result-strong {
-    color: #0f172a !important;
-    font-weight: 800 !important;
-  }
-
-  .demo-result-error {
-    color: #b91c1c !important;
-    font-weight: 700 !important;
-  }
-
   @media (max-width: 720px) {
-    #project3-demo-button,
-    #project3-demo-result {
-      display: block !important;
-      width: 100% !important;
-      margin-left: 0 !important;
+    .workflow-demo-panel {
+      display: block;
     }
 
-    #project3-demo-result {
-      margin-top: 0.85rem !important;
-    }
-  }
-</style>
-
-
-<style>
-  .workflow-demo-button {
-    all: unset !important;
-    box-sizing: border-box !important;
-    display: inline-flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    width: auto !important;
-    height: auto !important;
-    min-width: 0 !important;
-    min-height: 0 !important;
-    max-width: none !important;
-    max-height: none !important;
-    padding: 0.85rem 1.25rem !important;
-    border-radius: 999px !important;
-    background: #2563eb !important;
-    color: white !important;
-    font: inherit !important;
-    font-size: 0.95rem !important;
-    font-weight: 700 !important;
-    line-height: 1 !important;
-    cursor: pointer !important;
-    box-shadow: 0 10px 22px rgba(37, 99, 235, 0.24) !important;
-    white-space: nowrap !important;
-  }
-
-  .workflow-demo-button:disabled {
-    opacity: 0.72 !important;
-    cursor: wait !important;
-  }
-
-  #project3-demo-result {
-    display: inline-block !important;
-    vertical-align: top !important;
-    width: min(100%, 26rem) !important;
-    margin: 0 0 0 1rem !important;
-    padding: 1rem 1.1rem !important;
-    border: 1px solid rgba(148, 163, 184, 0.45) !important;
-    border-radius: 0.9rem !important;
-    background: rgba(255, 255, 255, 0.75) !important;
-    box-shadow: 0 12px 28px rgba(15, 23, 42, 0.08) !important;
-  }
-
-  #project3-demo-result p {
-    margin: 0.35rem 0 !important;
-    font-size: 0.95rem !important;
-  }
-
-  @media (max-width: 720px) {
     .workflow-demo-button,
-    #project3-demo-result {
-      display: block !important;
-      width: 100% !important;
-      margin-left: 0 !important;
+    .workflow-demo-result {
+      width: 100%;
     }
 
-    #project3-demo-result {
-      margin-top: 0.85rem !important;
+    .workflow-demo-result {
+      margin-top: 0.85rem;
     }
   }
 </style>
@@ -230,25 +138,20 @@
           class="project-diagram"
         >
 
-        <div class="hero-actions">
-          <button id="project3-demo-button" class="workflow-demo-button" type="button">Test order workflow</button>
+        <div class="workflow-demo-panel">
+          <button id="project3-demo-button" class="workflow-demo-button" type="button">
+            Test order workflow
+          </button>
 
-<div id="project3-demo-result" class="demo-result" aria-live="polite">
-  <p class="demo-result-muted">Click the button to create a demo order and watch the asynchronous workflow complete.</p>
-</div>
-
+          <div id="project3-demo-result" class="workflow-demo-result" aria-live="polite">
+            <p>Click the button to create a demo order and watch the asynchronous workflow complete.</p>
+          </div>
         </div>
 
         <p>
-          When the live demo is connected, this button will create a safe sample order and send it
-          through the AWS event workflow. The page will return an order ID and show the order moving
-          from accepted to processed status.
+          Run a safe sample order through the live AWS workflow. The page creates an order through API Gateway,
+          then polls the status API until the asynchronous SQS/Lambda processing step updates DynamoDB to completed.
         </p>
-
-        <pre><code>Order accepted.
-Order ID: ORD-EXAMPLE-1234
-Status: Processing...
-Status: Processed successfully.</code></pre>
       </div>
     </section>
 
