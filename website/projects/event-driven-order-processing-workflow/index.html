@@ -87,18 +87,20 @@
   }
 </style>
 </head>
-<body>
+<body data-page-title-key="project3.pageTitle">
   <header class="site-header">
     <div class="container">
-      <p class="eyebrow">AWS Event-Driven Workflow Project</p>
+      <div class="top-line">
+        <p class="eyebrow" data-i18n="project3.eyebrow">AWS EVENT-DRIVEN WORKFLOW PROJECT</p>
+        <div class="language-switch" aria-label="Language selection">
+          <button type="button" class="lang-button active" data-lang="en">EN</button>
+          <button type="button" class="lang-button" data-lang="ja">日本語</button>
+        </div>
+      </div>
 
-      <h1>Asynchronous SaaS Order Processing Workflow</h1>
+      <h1 data-i18n="project3.title">Asynchronous SaaS Order Processing Workflow</h1>
 
-      <p class="lead">
-        A SaaS company needs to accept customer orders quickly while slower follow-up work,
-        such as confirmation processing, audit logging, status updates, and failure handling,
-        happens reliably in the background.
-      </p>
+      <p class="lead" data-i18n="project3.lead1">A SaaS company needs to accept customer orders quickly while slower follow-up work, such as confirmation processing, audit logging, status updates, and failure handling, happens reliably in the background.</p>
 
       <p class="lead">
         This project demonstrates an event-driven AWS order workflow using API Gateway, Lambda,
@@ -106,15 +108,13 @@
       </p>
 
       <div class="hero-actions">
-        <a href="../../index.html#projects" class="button secondary">Back to Projects</a>
+        <a href="../../index.html#projects" class="button secondary" data-i18n="project3.backButton">Back to Projects</a>
         <a
           href="https://github.com/lisochronal-glitch/cloud-operations-sprint/tree/main/projects/event-driven-order-processing-workflow"
           class="button primary"
           target="_blank"
           rel="noopener noreferrer"
-        >
-          View on GitHub
-        </a>
+         data-i18n="project3.githubButton">View on GitHub</a>
       </div>
     </div>
   </header>
@@ -122,8 +122,8 @@
   <main>
     <section class="section muted">
       <div class="container">
-        <p class="section-label">SOLUTION ARCHITECTURE</p>
-        <h2>Accept the order immediately, then process it asynchronously</h2>
+        <p class="section-label" data-i18n="project3.solutionLabel">SOLUTION ARCHITECTURE</p>
+        <h2 data-i18n="project3.solutionHeading">Accept the order immediately, then process it asynchronously</h2>
 
         <p class="project-copy-text">The diagram shows how a live project page can submit a demo order into an AWS workflow.
           The request is accepted quickly, published as an event, processed in the background,
@@ -136,61 +136,50 @@
         >
 
         <div class="workflow-demo-panel">
-          <button id="project3-demo-button" class="workflow-demo-button" type="button">
-            Test order workflow
-          </button>
+          <button id="project3-demo-button" class="workflow-demo-button" type="button" data-i18n="project3.demoButton">Test order workflow</button>
 
           <div id="project3-demo-result" class="workflow-demo-result" aria-live="polite">
-            <p class="project-copy-text">Click the button to create a demo order and watch the asynchronous workflow complete.</p>
+            <p class="project-copy-text" data-i18n="project3.demoPrompt">Click the button to create a demo order and watch the asynchronous workflow complete.</p>
           </div>
         </div>
 
-        <p class="project-copy-text">Run a safe sample order through the live AWS workflow. The page creates an order through API Gateway,
-          then polls the status API until the asynchronous SQS/Lambda processing step updates DynamoDB to completed.</p>
+        <p class="project-copy-text" data-i18n="project3.demoText">Run a safe sample order through the live AWS workflow. The page creates an order through API Gateway, then polls the status API until the asynchronous SQS/Lambda processing step updates DynamoDB to completed.</p>
       </div>
     </section>
 
     <section class="section">
       <div class="container">
-        <p class="section-label">HOW IT WORKS</p>
-        <h2>Event fanout, queue buffering, status tracking, and failure isolation</h2>
+        <p class="section-label" data-i18n="project3.howLabel">HOW IT WORKS</p>
+        <h2 data-i18n="project3.howHeading">Event fanout, queue buffering, status tracking, and failure isolation</h2>
 
-        <p class="project-copy-text">API Gateway receives the order request from the project page and invokes a publisher Lambda.
-          The publisher creates or checks the DynamoDB order record, uses the order ID for idempotency,
-          and publishes the order event to SNS.</p>
+        <p class="project-copy-text" data-i18n="project3.howText1">API Gateway receives the order request from the project page and invokes a publisher Lambda. The publisher creates or checks the DynamoDB order record, uses the order ID for idempotency, and publishes the order event to SNS.</p>
 
-        <p class="project-copy-text">SNS fans the event out to three SQS queues: a processing queue, an audit queue, and a notification queue. The processing queue triggers a processor Lambda
-          that performs the background order work and updates the order status in DynamoDB. The audit
-          queue keeps an independent copy of the event for inspection and troubleshooting.</p>
+        <p class="project-copy-text" data-i18n="project3.howText2">SNS fans the event out to three SQS queues: a processing queue, an audit queue, and a notification queue. The processing queue triggers a processor Lambda that performs the background order work and updates the order status in DynamoDB. The audit queue keeps an independent copy of the event for inspection and troubleshooting. The notification queue triggers a notification Lambda that sends a customer confirmation email through Amazon SES.</p>
 
-        <p class="project-copy-text">If processing repeatedly fails, the message is moved to a dead-letter queue instead of being
-          lost. CloudWatch provides logs and metrics for runtime behavior, while CloudTrail provides
-          an AWS API audit trail for account-level activity.</p>
+        <p class="project-copy-text" data-i18n="project3.howText3">If processing repeatedly fails, the message is moved to a dead-letter queue instead of being lost. CloudWatch provides logs and metrics for runtime behavior, while CloudTrail provides an AWS API audit trail for account-level activity.</p>
       </div>
     </section>
 
     <section class="section muted" id="github">
       <div class="container">
-        <p class="section-label">IMPLEMENTATION EVIDENCE</p>
-        <h2>Detailed build notes and implementation proof are documented in GitHub</h2>
+        <p class="section-label" data-i18n="project3.evidenceLabel">IMPLEMENTATION EVIDENCE</p>
+        <h2 data-i18n="project3.evidenceHeading">Detailed build notes and implementation proof are documented in GitHub</h2>
 
-        <p class="project-copy-text">The repository documents the project README, Lambda source code, manual build notes, architecture evidence, CloudWatch and CloudTrail screenshots, DLQ verification, SES notification proof, operational safety notes, and cleanup notes.</p>
+        <p class="project-copy-text" data-i18n="project3.evidenceText">The repository documents the project README, Lambda source code, manual build notes, architecture evidence, CloudWatch and CloudTrail screenshots, DLQ verification, SES notification proof, operational safety notes, and cleanup notes.</p>
 
         <a
           href="https://github.com/lisochronal-glitch/cloud-operations-sprint/tree/main/projects/event-driven-order-processing-workflow"
           class="button primary"
           target="_blank"
           rel="noopener noreferrer"
-        >
-          View project on GitHub
-        </a>
+         data-i18n="project3.viewProjectGithub">View project on GitHub</a>
       </div>
     </section>
   </main>
 
   <footer class="site-footer">
     <div class="container">
-      <p>Powered by Amazon CloudFront</p>
+      <p data-i18n="project3.footer">Powered by Amazon CloudFront</p>
     </div>
   </footer>
 
@@ -321,7 +310,6 @@
     });
   }
 </script>
-
-  <script src="project3-i18n.js"></script>
+  <script src="../../script.js"></script>
 </body>
 </html>

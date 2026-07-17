@@ -138,6 +138,30 @@ const translations = {
     "contact.linkedin": "LinkedIn / Placeholder",
     "contact.cv": "CV available on request",
 
+    "project3.pageTitle": "Asynchronous SaaS Order Processing Workflow | AWS Portfolio Project",
+    "project3.eyebrow": "AWS EVENT-DRIVEN WORKFLOW PROJECT",
+    "project3.title": "Asynchronous SaaS Order Processing Workflow",
+    "project3.lead1": "A SaaS company needs to accept customer orders quickly while slower follow-up work, such as confirmation processing, audit logging, status updates, and failure handling, happens reliably in the background.",
+    "project3.lead2": "This project demonstrates an event-driven AWS order workflow using API Gateway, Lambda, SNS, SQS, DynamoDB, Amazon SES, CloudWatch, CloudTrail, and a dead-letter queue.",
+    "project3.backButton": "Back to Projects",
+    "project3.githubButton": "View on GitHub",
+    "project3.solutionLabel": "SOLUTION ARCHITECTURE",
+    "project3.solutionHeading": "Accept the order immediately, then process it asynchronously",
+    "project3.solutionText": "The diagram shows how a live project page can submit a demo order into an AWS workflow. The request is accepted quickly, published as an event, processed in the background, tracked in DynamoDB, sent through a confirmation email branch using Amazon SES, and monitored through CloudWatch and CloudTrail.",
+    "project3.demoButton": "Test order workflow",
+    "project3.demoPrompt": "Click the button to create a demo order and watch the asynchronous workflow complete.",
+    "project3.demoText": "Run a safe sample order through the live AWS workflow. The page creates an order through API Gateway, then polls the status API until the asynchronous SQS/Lambda processing step updates DynamoDB to completed.",
+    "project3.howLabel": "HOW IT WORKS",
+    "project3.howHeading": "Event fanout, queue buffering, status tracking, and failure isolation",
+    "project3.howText1": "API Gateway receives the order request from the project page and invokes a publisher Lambda. The publisher creates or checks the DynamoDB order record, uses the order ID for idempotency, and publishes the order event to SNS.",
+    "project3.howText2": "SNS fans the event out to three SQS queues: a processing queue, an audit queue, and a notification queue. The processing queue triggers a processor Lambda that performs the background order work and updates the order status in DynamoDB. The audit queue keeps an independent copy of the event for inspection and troubleshooting. The notification queue triggers a notification Lambda that sends a customer confirmation email through Amazon SES.",
+    "project3.howText3": "If processing repeatedly fails, the message is moved to a dead-letter queue instead of being lost. CloudWatch provides logs and metrics for runtime behavior, while CloudTrail provides an AWS API audit trail for account-level activity.",
+    "project3.evidenceLabel": "IMPLEMENTATION EVIDENCE",
+    "project3.evidenceHeading": "Detailed build notes and implementation proof are documented in GitHub",
+    "project3.evidenceText": "The repository documents the project README, Lambda source code, manual build notes, architecture evidence, CloudWatch and CloudTrail screenshots, DLQ verification, SES notification proof, operational safety notes, and cleanup notes.",
+    "project3.viewProjectGithub": "View project on GitHub",
+    "project3.footer": "Powered by Amazon CloudFront",
+
     "footer.text": "Built as part of a practical AWS / cloud operations portfolio project.",
     "footer.updated": "Last updated:",
     "footer.visits": "Visits:",
@@ -283,6 +307,30 @@ const translations = {
     "contact.linkedin": "LinkedIn / 準備中",
     "contact.cv": "履歴書・職務経歴書は依頼に応じて共有",
 
+    "project3.pageTitle": "非同期SaaS注文処理ワークフロー | AWSポートフォリオプロジェクト",
+    "project3.eyebrow": "AWSイベント駆動ワークフロープロジェクト",
+    "project3.title": "非同期SaaS注文処理ワークフロー",
+    "project3.lead1": "SaaS企業では、顧客注文をすばやく受け付けながら、確認処理、監査ログ、ステータス更新、障害対応などの後続処理をバックグラウンドで確実に実行する必要があります。",
+    "project3.lead2": "このプロジェクトでは、API Gateway、Lambda、SNS、SQS、DynamoDB、Amazon SES、CloudWatch、CloudTrail、デッドレターキューを使用したイベント駆動型のAWS注文処理ワークフローを示しています。",
+    "project3.backButton": "プロジェクト一覧に戻る",
+    "project3.githubButton": "GitHubで見る",
+    "project3.solutionLabel": "ソリューション構成",
+    "project3.solutionHeading": "注文をすぐに受け付け、その後非同期で処理する",
+    "project3.solutionText": "この図は、稼働中のプロジェクトページからデモ注文をAWSワークフローへ送信する流れを示しています。リクエストはすばやく受け付けられ、イベントとして発行され、バックグラウンドで処理され、DynamoDBでステータス管理され、Amazon SESを使った確認メール分岐を通り、CloudWatchとCloudTrailで監視・監査されます。",
+    "project3.demoButton": "注文ワークフローをテスト",
+    "project3.demoPrompt": "ボタンを押すとデモ注文が作成され、非同期ワークフローが完了するまでの流れを確認できます。",
+    "project3.demoText": "安全なサンプル注文を稼働中のAWSワークフローに送信します。ページはAPI Gateway経由で注文を作成し、SQS/Lambdaによる非同期処理がDynamoDBのステータスを完了に更新するまでステータスAPIをポーリングします。",
+    "project3.howLabel": "仕組み",
+    "project3.howHeading": "イベント分配、キューバッファリング、ステータス追跡、障害分離",
+    "project3.howText1": "API Gatewayがプロジェクトページから注文リクエストを受け取り、Publisher Lambdaを呼び出します。PublisherはDynamoDBの注文レコードを作成または確認し、注文IDを使って冪等性を確保したうえで、注文イベントをSNSに発行します。",
+    "project3.howText2": "SNSはイベントを3つのSQSキューに分配します。処理キューはProcessor Lambdaを起動し、バックグラウンドの注文処理を行ってDynamoDBの注文ステータスを更新します。監査キューは、確認やトラブルシューティング用にイベントの独立したコピーを保持します。通知キューはNotification Lambdaを起動し、Amazon SESを通じて顧客確認メールを送信します。",
+    "project3.howText3": "処理が繰り返し失敗した場合、メッセージは失われずにデッドレターキューへ移動されます。CloudWatchは実行時のログとメトリクスを提供し、CloudTrailはアカウントレベルのAWS API操作履歴を提供します。",
+    "project3.evidenceLabel": "実装証拠",
+    "project3.evidenceHeading": "詳細な構築メモと実装証拠はGitHubに記録",
+    "project3.evidenceText": "リポジトリには、プロジェクトREADME、Lambdaソースコード、手動構築メモ、構成証拠、CloudWatchとCloudTrailのスクリーンショット、DLQ検証、SES通知の証拠、運用上の安全対策、クリーンアップメモを記録しています。",
+    "project3.viewProjectGithub": "GitHubでプロジェクトを見る",
+    "project3.footer": "Amazon CloudFrontで配信",
+
     "footer.text": "実践的なAWS / クラウド運用ポートフォリオプロジェクトとして作成。",
     "footer.updated": "最終更新：",
     "footer.visits": "訪問数：",
@@ -341,7 +389,8 @@ function applyLanguage(language) {
   });
 
   document.documentElement.lang = language;
-  document.title = dictionary.pageTitle;
+  const pageTitleKey = document.body.dataset.pageTitleKey;
+  document.title = pageTitleKey && dictionary[pageTitleKey] ? dictionary[pageTitleKey] : dictionary.pageTitle;
 
   languageButtons.forEach((button) => {
     const isActive = button.dataset.lang === language;
