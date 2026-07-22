@@ -6,6 +6,10 @@
 
 目的は、実務で使われるクラウド運用パターンを示すことです。ユーザー向けのリクエストは素早く受け付け、時間のかかる後続処理は非同期ワークフローに移し、状態を追跡し、失敗時にはデッドレターキューで処理し、公開エンドポイントには監視と自動的な封じ込めを追加しています。
 
+ライブデモ:
+
+https://d1rzzxjs182iar.cloudfront.net/projects/event-driven-order-processing-workflow/index.html
+
 ## アーキテクチャ
 
 通常の注文処理フロー:
@@ -57,6 +61,7 @@
 - Amazon SQS
 - Amazon SES
 - Amazon CloudWatch
+- AWS CloudTrail
 - AWS IAM
 - Amazon CloudFront
 
@@ -171,40 +176,46 @@ Amazon SES を使用した通知ブランチも実装し、検証しました。
 
 公開デモは有効なままですが、SES 通知ブランチは不要なメール送信を防ぐため無効化しています。
 
-## 証跡
+## エビデンス
 
-以下の証跡を別途取得しました。
+### ライブワークフローの完了
 
-- 公開プロジェクトページによるデモ注文作成
-- API Gateway の POST /orders と GET /orders/{orderId} の成功レスポンス
-- DynamoDB アイテムが PENDING から COMPLETED へ変化したこと
-- Processor Lambda の CloudWatch Logs
-- DLQ テストメッセージと再試行動作
-- SES メール配信の証跡
-- CloudWatch アラームと緊急停止 Lambda による安全対策
+ライブポートフォリオページからAPI Gateway経由で注文を作成し、非同期ワークフローが完了した結果を表示しています。
 
-必要に応じて、後でスクリーンショットをこのフォルダに追加できます。
+![完了した注文ワークフローを表示するライブプロジェクトページ](evidence/live-demo-completed-order.png)
 
-## 公開デモの運用上の安全対策
+### DynamoDBの注文状態
 
-このデモでは公開APIエンドポイントを使用しているため、公開側の Publisher Lambda に対して運用上の安全対策を追加しました。
+保存された注文レコードには、確定済みの注文状態、完了したバックグラウンド処理、冪等性キー、処理Lambda、処理時刻が記録されています。
 
-CloudWatch アラームで `project3-order-publisher` の異常な呼び出し数を監視しています。設定したしきい値を超えた場合、アラームは SNS を通じてメール通知を送信し、緊急停止用の Lambda 関数を実行します。
+![バックグラウンド処理の完了を示すDynamoDB注文アイテム](evidence/dynamodb-completed-order.png)
 
-緊急停止用 Lambda は、公開 Publisher 関数の reserved concurrency を `0` に設定します。これにより、公開デモの入口を自動的に停止できます。予期しないアクセスが発生した場合でも、シンプルでコストを抑えた構成のまま、自動的な封じ込めが可能になります。
+### デッドレターキューの検証
 
-デモを再開する場合は、reserved concurrency の制限を削除するか、小さい安全な値に戻します。
+意図的に失敗させたテストメッセージは複数回再試行された後、設定済みのデッドレターキューへ移動しました。
 
-## SES 通知ブランチ
+![再試行後にデッドレターキューへ移動した失敗メッセージ](evidence/dlq-message-after-retries.png)
 
-このアーキテクチャには、SNS、SQS、Lambda、Amazon SES を使用した通知ブランチも含まれています。
+テストペイロードでは、処理失敗を発生させる設定を明示的に有効化しています。
 
-このブランチは実装し、次の経路でテスト確認済みです。
+![simulateFailureを有効化したテストメッセージ](evidence/dlq-simulated-failure-payload.png)
 
-`SNS topic → SQS notification queue → Notification Lambda → Amazon SES`
+### SES通知ブランチ
 
-確認後、公開デモからはこの通知ブランチを切り離しました。これにより、公開ボタンが繰り返し押された場合でも、不要なメール送信が発生しないようにしています。
+通知ブランチを公開デモから切り離す前に、SNS、SQS、Lambda、Amazon SESを通じて確認メールが正常に配信されることを検証しました。
 
-公開デモでは、引き続き中核となる非同期ワークフローを確認できます。
+![Amazon SESによって配信された注文確認メール](evidence/ses-confirmation-email.png)
 
-`API Gateway → Publisher Lambda → DynamoDB → SNS → SQS processing queue → Processor Lambda → DynamoDB status update`
+### 公開デモの安全対策
+
+CloudWatchアラームは、公開Publisher Lambdaの呼び出し回数を監視します。
+
+![Publisher Lambdaの呼び出し回数を監視するCloudWatchアラーム](evidence/cloudwatch-publisher-safety-alarm.png)
+
+アラームは、メール通知と緊急Lambdaを購読させたSNS安全通知トピックへメッセージを発行します。
+
+![SNS安全通知トピックのサブスクリプション](evidence/sns-safety-alert-subscriptions.png)
+
+緊急Lambdaは、公開Publisher Lambdaの予約済み同時実行数を0に設定してデモ入口を無効化します。
+
+![公開Publisher Lambdaを無効化する緊急Lambda](evidence/emergency-lambda-disables-publisher.png)

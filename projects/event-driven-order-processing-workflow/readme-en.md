@@ -178,16 +178,44 @@ The public demo remains active, but the SES notification branch is disabled to p
 
 ## Evidence
 
-The following screenshots are included in this folder:
+### Live workflow completion
 
-- Live project page creating and completing a demo order.
-- API Gateway successfully handling `POST /orders`.
-- API Gateway successfully handling `GET /orders/{orderId}`.
-- DynamoDB order state moving from `PENDING` to `COMPLETED`.
-- Processor Lambda execution logs in CloudWatch.
-- Failed-message retries and delivery to the dead-letter queue.
-- Successful Amazon SES confirmation email delivery.
-- CloudWatch invocation alarm configuration.
-- Emergency Lambda automatically disabling the public publisher Lambda.
+The live portfolio page creates an order through API Gateway and displays the completed asynchronous workflow.
 
-Together, these screenshots document the working end-to-end workflow, asynchronous processing, state tracking, failure handling, notification branch, monitoring, and automatic containment controls.
+![Live project page showing a completed order workflow](evidence/live-demo-completed-order.png)
+
+### DynamoDB order state
+
+The stored order record shows the confirmed order state, completed background processing, idempotency key, processor function, and processing timestamps.
+
+![DynamoDB order item showing completed background processing](evidence/dynamodb-completed-order.png)
+
+### Dead-letter queue verification
+
+A deliberate poison message was retried repeatedly and moved to the configured dead-letter queue.
+
+![Failed message present in the dead-letter queue after retries](evidence/dlq-message-after-retries.png)
+
+The test payload explicitly enabled simulated processing failure.
+
+![Poison message payload with simulated failure enabled](evidence/dlq-simulated-failure-payload.png)
+
+### SES notification branch
+
+The notification branch successfully delivered a confirmation email through SNS, SQS, Lambda, and Amazon SES before being disconnected from the public demo.
+
+![Delivered Amazon SES confirmation email](evidence/ses-confirmation-email.png)
+
+### Public demo safety controls
+
+A CloudWatch alarm monitors invocation volume on the public publisher Lambda.
+
+![CloudWatch publisher invocation safety alarm](evidence/cloudwatch-publisher-safety-alarm.png)
+
+The alarm publishes to an SNS safety topic with confirmed email and Lambda subscribers.
+
+![SNS safety topic subscriptions](evidence/sns-safety-alert-subscriptions.png)
+
+The emergency Lambda disables the public publisher by setting its reserved concurrency to zero.
+
+![Emergency Lambda disabling the public publisher](evidence/emergency-lambda-disables-publisher.png)

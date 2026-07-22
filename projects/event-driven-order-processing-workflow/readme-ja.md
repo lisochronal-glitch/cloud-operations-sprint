@@ -176,18 +176,46 @@ Amazon SES を使用した通知ブランチも実装し、検証しました。
 
 公開デモは有効なままですが、SES 通知ブランチは不要なメール送信を防ぐため無効化しています。
 
-## 証跡
+## エビデンス
 
-このフォルダには、次のスクリーンショットが含まれています。
+### ライブワークフローの完了
 
-- 公開プロジェクトページでデモ注文を作成し、処理が完了するまでの画面。
-- API Gateway が `POST /orders` を正常に処理したこと。
-- API Gateway が `GET /orders/{orderId}` を正常に処理したこと。
-- DynamoDB の注文状態が `PENDING` から `COMPLETED` に変化したこと。
-- Processor Lambda の CloudWatch 実行ログ。
-- 失敗メッセージの再試行とデッドレターキューへの移動。
-- Amazon SES による確認メールの正常な配信。
-- CloudWatch 呼び出しアラームの設定。
-- 緊急停止 Lambda が公開 Publisher Lambda を自動停止したこと。
+ライブポートフォリオページからAPI Gateway経由で注文を作成し、非同期ワークフローが完了した結果を表示しています。
 
-これらのスクリーンショットにより、動作するエンドツーエンドのワークフロー、非同期処理、状態追跡、失敗処理、通知ブランチ、監視、自動封じ込め制御を記録しています。
+![完了した注文ワークフローを表示するライブプロジェクトページ](evidence/live-demo-completed-order.png)
+
+### DynamoDBの注文状態
+
+保存された注文レコードには、確定済みの注文状態、完了したバックグラウンド処理、冪等性キー、処理Lambda、処理時刻が記録されています。
+
+![バックグラウンド処理の完了を示すDynamoDB注文アイテム](evidence/dynamodb-completed-order.png)
+
+### デッドレターキューの検証
+
+意図的に失敗させたテストメッセージは複数回再試行された後、設定済みのデッドレターキューへ移動しました。
+
+![再試行後にデッドレターキューへ移動した失敗メッセージ](evidence/dlq-message-after-retries.png)
+
+テストペイロードでは、処理失敗を発生させる設定を明示的に有効化しています。
+
+![simulateFailureを有効化したテストメッセージ](evidence/dlq-simulated-failure-payload.png)
+
+### SES通知ブランチ
+
+通知ブランチを公開デモから切り離す前に、SNS、SQS、Lambda、Amazon SESを通じて確認メールが正常に配信されることを検証しました。
+
+![Amazon SESによって配信された注文確認メール](evidence/ses-confirmation-email.png)
+
+### 公開デモの安全対策
+
+CloudWatchアラームは、公開Publisher Lambdaの呼び出し回数を監視します。
+
+![Publisher Lambdaの呼び出し回数を監視するCloudWatchアラーム](evidence/cloudwatch-publisher-safety-alarm.png)
+
+アラームは、メール通知と緊急Lambdaを購読させたSNS安全通知トピックへメッセージを発行します。
+
+![SNS安全通知トピックのサブスクリプション](evidence/sns-safety-alert-subscriptions.png)
+
+緊急Lambdaは、公開Publisher Lambdaの予約済み同時実行数を0に設定してデモ入口を無効化します。
+
+![公開Publisher Lambdaを無効化する緊急Lambda](evidence/emergency-lambda-disables-publisher.png)
