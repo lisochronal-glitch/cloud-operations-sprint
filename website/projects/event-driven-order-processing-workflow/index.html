@@ -122,7 +122,7 @@
         <p class="section-label" data-i18n="project3.solutionLabel">SOLUTION ARCHITECTURE</p>
         <h2 data-i18n="project3.solutionHeading">Accept the order immediately, then process it asynchronously</h2>
 
-        <p class="project-copy-text" data-i18n="project3.solutionText">The diagram shows how a live project page can submit a demo order into an AWS workflow. The request is accepted quickly, published as an event, processed in the background, tracked in DynamoDB, sent through a confirmation email branch using Amazon SES, and monitored through CloudWatch and CloudTrail.</p>
+        <p class="project-copy-text" data-i18n="project3.solutionText">The diagram shows how the live project page submits a demo order to AWS. The request is accepted immediately, published as an event, processed asynchronously, and tracked in DynamoDB. The architecture also includes a verified Amazon SES confirmation-email branch that is disabled for public demo traffic, with CloudWatch monitoring and CloudTrail auditing.</p>
 
         <img
           src="asynchronous-saas-order-processing-workflow.png"
@@ -149,7 +149,7 @@
 
         <p class="project-copy-text" data-i18n="project3.howText1">API Gateway receives the order request from the project page and invokes a publisher Lambda. The publisher creates or checks the DynamoDB order record, uses the order ID for idempotency, and publishes the order event to SNS.</p>
 
-        <p class="project-copy-text" data-i18n="project3.howText2">SNS fans the event out to three SQS queues: a processing queue, an audit queue, and a notification queue. The processing queue triggers a processor Lambda that performs the background order work and updates the order status in DynamoDB. The audit queue keeps an independent copy of the event for inspection and troubleshooting. The notification queue triggers a notification Lambda that sends a customer confirmation email through Amazon SES.</p>
+        <p class="project-copy-text" data-i18n="project3.howText2">In the live demo, SNS fans the event out to the processing and audit SQS queues. The processing queue triggers a processor Lambda that performs the background work and updates DynamoDB, while the audit queue keeps an independent copy for inspection and troubleshooting. A separate notification queue and notifier Lambda were also implemented and verified with Amazon SES, then disconnected from public demo traffic to prevent unnecessary email sends.</p>
 
         <p class="project-copy-text" data-i18n="project3.howText3">If processing repeatedly fails, the message is moved to a dead-letter queue instead of being lost. CloudWatch provides logs and metrics for runtime behavior, while CloudTrail provides an AWS API audit trail for account-level activity.</p>
       </div>
@@ -160,7 +160,7 @@
         <p class="section-label" data-i18n="project3.evidenceLabel">IMPLEMENTATION EVIDENCE</p>
         <h2 data-i18n="project3.evidenceHeading">Detailed build notes and implementation proof are documented in GitHub</h2>
 
-        <p class="project-copy-text" data-i18n="project3.evidenceText">The repository documents the project README, Lambda source code, manual build notes, architecture evidence, CloudWatch and CloudTrail screenshots, DLQ verification, SES notification proof, operational safety notes, and cleanup notes.</p>
+        <p class="project-copy-text" data-i18n="project3.evidenceText">The repository includes the project README, Lambda source code, build notes, architecture diagram, live-demo completion proof, DynamoDB state evidence, DLQ verification, SES delivery proof, the CloudWatch safety alarm, SNS safety-topic subscriptions, the emergency-disable Lambda, and cleanup notes.</p>
 
         <a
           href="https://github.com/lisochronal-glitch/cloud-operations-sprint/tree/main/projects/event-driven-order-processing-workflow"
@@ -184,6 +184,48 @@
 
   const project3DemoButton = document.getElementById("project3-demo-button");
   const project3DemoResult = document.getElementById("project3-demo-result");
+
+  const project3DemoCopy = {
+    en: {
+      buttonLabel: "Test order workflow",
+      temporarilyDisabled: "The live demo is temporarily disabled.",
+      creating: "Creating demo order...",
+      orderConfirmed: "Order confirmed.",
+      orderId: "Order ID",
+      orderStatus: "Order status",
+      backgroundWorkflow: "Background workflow",
+      unknown: "UNKNOWN",
+      requestFailed: "Demo request failed.",
+      createFailed: "Failed to create demo order.",
+      statusFailed: "Failed to retrieve demo order status.",
+      timeout: "The order was created, but the background workflow did not complete before polling ended."
+    },
+    ja: {
+      buttonLabel: "注文処理を試す",
+      temporarilyDisabled: "ライブデモは一時的に無効になっています。",
+      creating: "デモ注文を作成しています...",
+      orderConfirmed: "注文を受け付けました。",
+      orderId: "注文ID",
+      orderStatus: "注文ステータス",
+      backgroundWorkflow: "バックグラウンド処理",
+      unknown: "不明",
+      requestFailed: "デモリクエストに失敗しました。",
+      createFailed: "デモ注文の作成に失敗しました。",
+      statusFailed: "注文ステータスの取得に失敗しました。",
+      timeout: "注文は作成されましたが、ポーリング終了前にバックグラウンド処理が完了しませんでした。"
+    }
+  };
+
+  function getProject3DemoCopy() {
+    const activeLanguageButton = document.querySelector(
+      ".lang-button.active"
+    );
+
+    const language =
+      activeLanguageButton?.dataset.lang === "ja" ? "ja" : "en";
+
+    return project3DemoCopy[language];
+  }
 
   function setProject3DemoHtml(lines, isError = false) {
     project3DemoResult.innerHTML = "";
@@ -222,7 +264,7 @@
     const data = await response.json();
 
     if (!response.ok) {
-      throw new Error(data.message || "Failed to create demo order.");
+      throw new Error(data.message || getProject3DemoCopy().createFailed);
     }
 
     return data;
@@ -233,7 +275,7 @@
     const data = await response.json();
 
     if (!response.ok) {
-      throw new Error(data.message || "Failed to retrieve demo order status.");
+      throw new Error(data.message || getProject3DemoCopy().statusFailed);
     }
 
     return data;
@@ -242,12 +284,21 @@
   async function waitForWorkflowCompletion(orderId) {
     for (let attempt = 1; attempt <= 10; attempt += 1) {
       const status = await getDemoOrderStatus(orderId);
+      const copy = getProject3DemoCopy();
 
       setProject3DemoHtml([
-        { text: "Order confirmed.", strong: true },
-        { text: `Order ID: ${orderId}` },
-        { text: `Order status: ${status.orderStatus || "UNKNOWN"}` },
-        { text: `Background workflow: ${status.backgroundStatus || "UNKNOWN"}` }
+        { text: copy.orderConfirmed, strong: true },
+        { text: `${copy.orderId}: ${orderId}` },
+        {
+          text:
+            `${copy.orderStatus}: ` +
+            `${status.orderStatus || copy.unknown}`
+        },
+        {
+          text:
+            `${copy.backgroundWorkflow}: ` +
+            `${status.backgroundStatus || copy.unknown}`
+        }
       ]);
 
       if (status.backgroundStatus === "COMPLETED") {
@@ -257,50 +308,69 @@
       await new Promise((resolve) => setTimeout(resolve, 1500));
     }
 
-    throw new Error("The order was created, but the background workflow did not complete before polling ended.");
+    throw new Error(getProject3DemoCopy().timeout);
   }
 
   if (project3DemoButton && project3DemoResult) {
     project3DemoButton.addEventListener("click", async () => {
+      const copy = getProject3DemoCopy();
+
       if (!project3DemoEnabled) {
         setProject3DemoHtml([
-          { text: "The live demo is temporarily disabled." }
+          { text: copy.temporarilyDisabled }
         ]);
         return;
       }
 
-      const originalButtonText = project3DemoButton.textContent;
       const orderId = createDemoOrderId();
 
       project3DemoButton.disabled = true;
-      project3DemoButton.textContent = "Creating demo order...";
+      project3DemoButton.textContent = copy.creating;
 
       try {
         setProject3DemoHtml([
-          { text: "Creating demo order..." },
-          { text: `Order ID: ${orderId}` }
+          { text: copy.creating },
+          { text: `${copy.orderId}: ${orderId}` }
         ]);
 
         const createdOrder = await createDemoOrder(orderId);
+        const currentCopy = getProject3DemoCopy();
 
         setProject3DemoHtml([
-          { text: "Order confirmed.", strong: true },
-          { text: `Order ID: ${createdOrder.orderId || orderId}` },
-          { text: `Order status: ${createdOrder.orderStatus || "CONFIRMED"}` },
-          { text: `Background workflow: ${createdOrder.backgroundStatus || "PENDING"}` }
+          { text: currentCopy.orderConfirmed, strong: true },
+          {
+            text:
+              `${currentCopy.orderId}: ` +
+              `${createdOrder.orderId || orderId}`
+          },
+          {
+            text:
+              `${currentCopy.orderStatus}: ` +
+              `${createdOrder.orderStatus || "CONFIRMED"}`
+          },
+          {
+            text:
+              `${currentCopy.backgroundWorkflow}: ` +
+              `${createdOrder.backgroundStatus || "PENDING"}`
+          }
         ]);
 
-        await waitForWorkflowCompletion(createdOrder.orderId || orderId);
+        await waitForWorkflowCompletion(
+          createdOrder.orderId || orderId
+        );
 
       } catch (error) {
+        const currentCopy = getProject3DemoCopy();
+
         setProject3DemoHtml([
-          { text: "Demo request failed." },
+          { text: currentCopy.requestFailed },
           { text: error.message }
         ], true);
 
       } finally {
         project3DemoButton.disabled = false;
-        project3DemoButton.textContent = originalButtonText;
+        project3DemoButton.textContent =
+          getProject3DemoCopy().buttonLabel;
       }
     });
   }
