@@ -6,6 +6,10 @@
 
 目的は、実務で使われるクラウド運用パターンを示すことです。ユーザー向けのリクエストは素早く受け付け、時間のかかる後続処理は非同期ワークフローに移し、状態を追跡し、失敗時にはデッドレターキューで処理し、公開エンドポイントには監視と自動的な封じ込めを追加しています。
 
+ライブデモ:
+
+https://d1rzzxjs182iar.cloudfront.net/projects/event-driven-order-processing-workflow/index.html
+
 ## アーキテクチャ
 
 通常の注文処理フロー:
@@ -57,6 +61,7 @@
 - Amazon SQS
 - Amazon SES
 - Amazon CloudWatch
+- AWS CloudTrail
 - AWS IAM
 - Amazon CloudFront
 
@@ -173,38 +178,16 @@ Amazon SES を使用した通知ブランチも実装し、検証しました。
 
 ## 証跡
 
-以下の証跡を別途取得しました。
+このフォルダには、次のスクリーンショットが含まれています。
 
-- 公開プロジェクトページによるデモ注文作成
-- API Gateway の POST /orders と GET /orders/{orderId} の成功レスポンス
-- DynamoDB アイテムが PENDING から COMPLETED へ変化したこと
-- Processor Lambda の CloudWatch Logs
-- DLQ テストメッセージと再試行動作
-- SES メール配信の証跡
-- CloudWatch アラームと緊急停止 Lambda による安全対策
+- 公開プロジェクトページでデモ注文を作成し、処理が完了するまでの画面。
+- API Gateway が `POST /orders` を正常に処理したこと。
+- API Gateway が `GET /orders/{orderId}` を正常に処理したこと。
+- DynamoDB の注文状態が `PENDING` から `COMPLETED` に変化したこと。
+- Processor Lambda の CloudWatch 実行ログ。
+- 失敗メッセージの再試行とデッドレターキューへの移動。
+- Amazon SES による確認メールの正常な配信。
+- CloudWatch 呼び出しアラームの設定。
+- 緊急停止 Lambda が公開 Publisher Lambda を自動停止したこと。
 
-必要に応じて、後でスクリーンショットをこのフォルダに追加できます。
-
-## 公開デモの運用上の安全対策
-
-このデモでは公開APIエンドポイントを使用しているため、公開側の Publisher Lambda に対して運用上の安全対策を追加しました。
-
-CloudWatch アラームで `project3-order-publisher` の異常な呼び出し数を監視しています。設定したしきい値を超えた場合、アラームは SNS を通じてメール通知を送信し、緊急停止用の Lambda 関数を実行します。
-
-緊急停止用 Lambda は、公開 Publisher 関数の reserved concurrency を `0` に設定します。これにより、公開デモの入口を自動的に停止できます。予期しないアクセスが発生した場合でも、シンプルでコストを抑えた構成のまま、自動的な封じ込めが可能になります。
-
-デモを再開する場合は、reserved concurrency の制限を削除するか、小さい安全な値に戻します。
-
-## SES 通知ブランチ
-
-このアーキテクチャには、SNS、SQS、Lambda、Amazon SES を使用した通知ブランチも含まれています。
-
-このブランチは実装し、次の経路でテスト確認済みです。
-
-`SNS topic → SQS notification queue → Notification Lambda → Amazon SES`
-
-確認後、公開デモからはこの通知ブランチを切り離しました。これにより、公開ボタンが繰り返し押された場合でも、不要なメール送信が発生しないようにしています。
-
-公開デモでは、引き続き中核となる非同期ワークフローを確認できます。
-
-`API Gateway → Publisher Lambda → DynamoDB → SNS → SQS processing queue → Processor Lambda → DynamoDB status update`
+これらのスクリーンショットにより、動作するエンドツーエンドのワークフロー、非同期処理、状態追跡、失敗処理、通知ブランチ、監視、自動封じ込め制御を記録しています。
