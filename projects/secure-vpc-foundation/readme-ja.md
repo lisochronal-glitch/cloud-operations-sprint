@@ -2,7 +2,7 @@
 
 このプロジェクトでは、小規模 Web アプリケーション向けの安全な AWS ネットワーク基盤を構築しました。アプリケーションはパブリックな Application Load Balancer を通じてインターネットからアクセスできますが、アプリケーションサーバーとデータベースはプライベートサブネットに分離されています。
 
-最初に AWS コンソールで手動構築を行い、アーキテクチャの検証、証跡の取得、削除手順の確認を行いました。その後、同じアーキテクチャを CloudFormation で再現し、インフラをコードとして反復可能にデプロイ、検証、削除できることを確認しました。
+最初に AWS コンソールで手動構築を行い、アーキテクチャの検証、証跡の取得、削除手順の確認を行いました。その後、同じアーキテクチャを CloudFormation と Terraform の両方で再現し、インフラをコードとして反復可能にデプロイ、検証、削除できることを確認しました。
 
 ## シナリオ
 
@@ -104,7 +104,7 @@ RDS データベースはパブリックアクセスを無効化し、プライ�
 
 テンプレート:
 
-* [`secure-vpc-foundation-template.yaml`](./secure-vpc-foundation-template.yaml)
+* [`secure-vpc-foundation-template.yaml`](./template/secure-vpc-foundation-template.yaml)
 
 CloudFormation デプロイにより、VPC、6 つのサブネット、ルートテーブル、Internet Gateway、NAT Gateway、S3 Gateway Endpoint、Security Group、Application Load Balancer、Target Group、Launch Template、Auto Scaling Group、EC2 インスタンス、DB subnet group、プライベート RDS PostgreSQL インスタンスを作成しました。
 
@@ -116,6 +116,48 @@ CloudFormation デプロイにより、VPC、6 つのサブネット、ルート
 * RDS インスタンスの public access が disabled であること
 * テスト後に CloudFormation スタックを削除できること
 * 削除後に課金対象のプロジェクトリソースが残っていないこと
+
+## Terraform による再現
+
+第三段階では、同じアーキテクチャを Terraform で再構築しました。
+
+Terraform 構成:
+
+- [`terraform/`](./terraform/)
+- Terraform CLI 1.15.8
+- HashiCorp AWS provider 6.57.1
+- AWS リージョンや主要なインフラサイズを変数として定義
+- データベースパスワードを ephemeral かつ sensitive な変数として渡し、RDS の write-only password 引数を使用
+- Terraform state やローカル作業ファイルを必要に応じて Git の追跡対象外に設定
+- `.terraform.lock.hcl` で provider の依存バージョンを記録
+
+ローカルからの Terraform 実行には、長期間有効な IAM user access key ではなく、AWS IAM Identity Center の一時認証情報を使用しました。
+
+確認済みの Terraform plan には 39 個のリソースが含まれていました。
+
+![Terraform plan resources 1-20](./evidence/terraform-plan-resources-01-20.png)
+
+![Terraform plan resources 21-39 and summary](./evidence/terraform-plan-resources-21-39-summary.png)
+
+保存した plan を正常に apply しました。
+
+![Terraform apply complete](./evidence/terraform-apply-complete.png)
+
+実行時の検証では、パブリック ALB を経由してプライベートアプリケーション層のテストページへアクセスできることを確認しました。
+
+![Terraform ALB browser test](./evidence/terraform-alb-browser-success.png)
+
+2 台のアプリケーションインスタンスが ALB の healthy target として正常に登録されていることを確認しました。
+
+![Terraform healthy targets](./evidence/terraform-targets-healthy.png)
+
+AWS CLI による確認では、アプリケーションインスタンスがプライベート IP アドレスのみを持ちパブリック IPv4 アドレスを持たないこと、および RDS データベースが public access を許可していないことを確認しました。
+
+![Terraform private resource verification](./evidence/terraform-private-resources-proof.png)
+
+検証後、Terraform を使用して環境全体を正常に削除しました。
+
+![Terraform destroy complete](./evidence/terraform-destroy-complete.png)
 
 ## 検証
 
@@ -167,13 +209,16 @@ CloudFormation デプロイにより、VPC、6 つのサブネット、ルート
 
 CloudFormation による infrastructure-as-code 検証後も、スタックを正常に削除しました。追加確認として、NAT Gateway が削除されていること、プロジェクト用 Elastic IP が残っていないこと、RDS インスタンスが削除されていること、EC2 インスタンスが terminated 状態であることを確認しました。
 
+Terraform 環境についても、Terraform を使用して作成、検証、削除を行いました。実行時の証跡を取得した後、最終的な destroy が正常に完了しました。
+
 ## 成果
 
 このプロジェクトでは、安全な AWS ネットワーク基盤を設計、検証、文書化、再現、削除できることを示しました。
 
-完成したプロジェクトには以下が含まれます。
+完成したプロジェクトには、同じアーキテクチャに対する 3 種類の実装が含まれます。
 
-* 証跡スクリーンショット付きの AWS コンソール手動構築
-* 反復可能なインフラデプロイ用 CloudFormation テンプレート
+- 証跡スクリーンショット付きの AWS コンソール手動構築
+- 反復可能なインフラデプロイ用 CloudFormation テンプレート
+- plan、apply、実行時検証、destroy の証跡を含む Terraform 実装
 
 このアーキテクチャは、小規模 Web アプリケーション向けの実用的な基盤です。パブリックな入口を Application Load Balancer のみに限定し、アプリケーション層とデータベース層をプライベートに維持します。

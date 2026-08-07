@@ -2,7 +2,7 @@
 
 This project demonstrates a secure AWS network foundation for a small web application. The application is reachable from the internet through a public Application Load Balancer, while the application servers and database are isolated in private subnets.
 
-The environment was first built manually in the AWS Console to validate the architecture, capture evidence, and confirm the cleanup process. The same architecture was then reproduced with CloudFormation so the environment could be deployed, verified, and deleted repeatably as infrastructure as code.
+The environment was first built manually in the AWS Console to validate the architecture, capture evidence, and confirm the cleanup process. The same architecture was then reproduced with both CloudFormation and Terraform so the environment could be deployed, verified, and deleted repeatably as infrastructure as code.
 
 ## Scenario
 
@@ -104,7 +104,7 @@ The second phase reproduced the same architecture with CloudFormation.
 
 Template:
 
-* [`secure-vpc-foundation-template.yaml`](./secure-vpc-foundation-template.yaml)
+* [`secure-vpc-foundation-template.yaml`](./template/secure-vpc-foundation-template.yaml)
 
 The CloudFormation deployment created the VPC, six subnets, route tables, Internet Gateway, NAT Gateway, S3 Gateway Endpoint, security groups, Application Load Balancer, target group, launch template, Auto Scaling Group, EC2 instances, DB subnet group, and private RDS PostgreSQL instance.
 
@@ -116,6 +116,48 @@ The stack was deployed successfully and verified with the same operational check
 * The RDS instance had public access disabled.
 * The CloudFormation stack was deleted after testing.
 * Post-deletion checks confirmed that billable project resources were removed.
+
+## Terraform Reproduction
+
+The third phase rebuilt the same architecture with Terraform.
+
+Terraform configuration:
+
+- [`terraform/`](./terraform/)
+- Terraform CLI 1.15.8
+- HashiCorp AWS provider 6.57.1
+- AWS region and key infrastructure sizes exposed as variables
+- Database password supplied as an ephemeral sensitive variable and passed through the RDS write-only password argument
+- Terraform state and local working files excluded from Git where appropriate
+- Provider dependency version recorded in `.terraform.lock.hcl`
+
+Local Terraform access used AWS IAM Identity Center with temporary credentials rather than long-lived IAM user access keys.
+
+The reviewed Terraform plan contained 39 resources:
+
+![Terraform plan resources 1-20](./evidence/terraform-plan-resources-01-20.png)
+
+![Terraform plan resources 21-39 and summary](./evidence/terraform-plan-resources-21-39-summary.png)
+
+The saved plan was applied successfully:
+
+![Terraform apply complete](./evidence/terraform-apply-complete.png)
+
+Runtime verification confirmed that the public ALB served the test page from the private application tier:
+
+![Terraform ALB browser test](./evidence/terraform-alb-browser-success.png)
+
+Both application instances registered successfully as healthy ALB targets:
+
+![Terraform healthy targets](./evidence/terraform-targets-healthy.png)
+
+CLI verification confirmed that the application instances had private addresses with no public IPv4 addresses and that the RDS database was not publicly accessible:
+
+![Terraform private resource verification](./evidence/terraform-private-resources-proof.png)
+
+After verification, Terraform destroyed the environment successfully:
+
+![Terraform destroy complete](./evidence/terraform-destroy-complete.png)
 
 ## Verification
 
@@ -167,13 +209,16 @@ Post-cleanup checks confirmed that no `project2` resources remained in EC2, RDS,
 
 The CloudFormation stack was also deleted successfully after the infrastructure-as-code validation. Additional checks confirmed that the NAT Gateway was deleted, no project Elastic IP remained allocated, the RDS instance was removed, and the EC2 instances were terminated.
 
+The Terraform environment was independently created, verified, and destroyed through Terraform. The final destroy completed successfully after runtime evidence was captured.
+
 ## Outcome
 
 This project demonstrates the ability to design, validate, document, reproduce, and clean up a secure AWS network foundation.
 
-The completed project includes both:
+The completed project includes three implementations of the same architecture:
 
-* A manual AWS Console build with evidence screenshots
-* A CloudFormation template for repeatable infrastructure deployment
+- A manual AWS Console build with evidence screenshots
+- A CloudFormation template for repeatable infrastructure deployment
+- A Terraform implementation with plan, apply, runtime verification, and destroy evidence
 
 The architecture provides a practical foundation for a small web application where the public entry point is limited to an Application Load Balancer, while the application and database tiers remain private.
