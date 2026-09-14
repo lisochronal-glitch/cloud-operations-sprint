@@ -535,7 +535,7 @@ website/                    Deployed to S3, served via CloudFront
 ├── style.css
 ├── script.js
 └── projects/
-    ├── vpc-network-lab/
+    ├── secure-vpc-foundation/
     └── event-driven-order-processing-workflow/
 
 readme.md                   English

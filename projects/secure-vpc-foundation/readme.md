@@ -21,7 +21,7 @@ The requirements are:
 
 ## Architecture
 
-![Secure VPC Foundation architecture](../../website/projects/vpc-network-lab/secure-vpc-foundation-diagram.png)
+![Secure VPC Foundation architecture](../../website/projects/secure-vpc-foundation/secure-vpc-foundation-diagram.png)
 
 The lab was built in the Tokyo region (`ap-northeast-1`).
 
