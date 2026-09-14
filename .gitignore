@@ -16,3 +16,8 @@ override.tf
 override.tf.json
 *_override.tf
 *_override.tf.json
+
+# Lambda export artifacts
+*.zip
+lambda-config-full.json
+**/env.json
