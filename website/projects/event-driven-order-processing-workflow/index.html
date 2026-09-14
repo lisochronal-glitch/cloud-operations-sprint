@@ -4,88 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Asynchronous SaaS Order Processing Workflow | AWS / Cloud Operations Portfolio</title>
+  <meta name="description" content="Asynchronous AWS order workflow with API Gateway, Lambda, SNS, SQS and DynamoDB, a live demo, verified dead-letter handling, and automated emergency containment.">
+  <link rel="icon" href="../../favicon.ico" sizes="any">
   <link rel="stylesheet" href="../../style.css">
-
-
-
-
-
-
-
-
-<style>
-  .workflow-demo-panel {
-    display: flex;
-    align-items: flex-start;
-    gap: 1rem;
-    flex-wrap: wrap;
-    margin: 1.5rem 0 1rem;
-  }
-
-  .workflow-demo-button {
-    appearance: none;
-    border: 0;
-    border-radius: 999px;
-    background: #2563eb;
-    color: #ffffff;
-    padding: 0.85rem 1.25rem;
-    font: inherit;
-    font-size: 0.95rem;
-    font-weight: 800;
-    line-height: 1;
-    cursor: pointer;
-    box-shadow: 0 10px 22px rgba(37, 99, 235, 0.24);
-    white-space: nowrap;
-  }
-
-  .workflow-demo-button:hover {
-    background: #1d4ed8;
-  }
-
-  .workflow-demo-button:disabled {
-    opacity: 0.72;
-    cursor: wait;
-  }
-
-  .workflow-demo-result {
-    width: min(100%, 26rem);
-    padding: 1rem 1.1rem;
-    border: 1px solid rgba(148, 163, 184, 0.45);
-    border-radius: 0.9rem;
-    background: rgba(255, 255, 255, 0.78);
-    box-shadow: 0 12px 28px rgba(15, 23, 42, 0.08);
-  }
-
-  .workflow-demo-result p {
-    margin: 0.35rem 0;
-    font-size: 0.95rem;
-  }
-
-  .demo-result-strong {
-    color: #0f172a;
-    font-weight: 800;
-  }
-
-  .demo-result-error {
-    color: #b91c1c;
-    font-weight: 700;
-  }
-
-  @media (max-width: 720px) {
-    .workflow-demo-panel {
-      display: block;
-    }
-
-    .workflow-demo-button,
-    .workflow-demo-result {
-      width: 100%;
-    }
-
-    .workflow-demo-result {
-      margin-top: 0.85rem;
-    }
-  }
-</style>
 </head>
 <body data-page-title-key="project3.pageTitle">
   <header class="site-header">

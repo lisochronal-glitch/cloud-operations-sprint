@@ -616,37 +616,76 @@ p {
   border-top: 1px solid var(--line);
 }
 
-/* Project 3 live demo button: match normal portfolio buttons */
-html body #project3-demo-button.workflow-demo-button {
-  display: inline-block !important;
-  width: auto !important;
-  height: auto !important;
-  min-width: 0 !important;
-  min-height: 0 !important;
-  max-width: none !important;
-  max-height: none !important;
-  border-radius: 999px !important;
-  padding: 11px 18px !important;
-  font: inherit !important;
-  font-weight: 700 !important;
-  line-height: 1.7 !important;
-  border: 1px solid var(--accent) !important;
-  background: var(--accent) !important;
-  color: white !important;
-  box-shadow: none !important;
-  cursor: pointer !important;
-  white-space: nowrap !important;
-  text-align: center !important;
+/* Live demo panel (project detail pages) */
+.workflow-demo-panel {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin: 24px 0 16px;
 }
 
-html body #project3-demo-button.workflow-demo-button:hover {
-  background: var(--accent-dark) !important;
-  text-decoration: none !important;
+.workflow-demo-button {
+  display: inline-block;
+  border-radius: 999px;
+  padding: 11px 18px;
+  font: inherit;
+  font-weight: 700;
+  line-height: 1.7;
+  border: 1px solid var(--accent);
+  background: var(--accent);
+  color: white;
+  cursor: pointer;
+  white-space: nowrap;
 }
 
-html body #project3-demo-button.workflow-demo-button:disabled {
-  opacity: 0.72 !important;
-  cursor: wait !important;
+.workflow-demo-button:hover {
+  background: var(--accent-dark);
+}
+
+.workflow-demo-button:disabled {
+  opacity: 0.72;
+  cursor: wait;
+}
+
+.workflow-demo-result {
+  width: min(100%, 26rem);
+  padding: 16px 18px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  box-shadow: var(--shadow);
+}
+
+.workflow-demo-result p {
+  margin: 6px 0;
+  font-size: 15px;
+  color: var(--muted);
+}
+
+.demo-result-strong {
+  color: var(--text);
+  font-weight: 800;
+}
+
+.demo-result-error {
+  color: #b3261e;
+  font-weight: 700;
+}
+
+@media (max-width: 720px) {
+  .workflow-demo-panel {
+    display: block;
+  }
+
+  .workflow-demo-button,
+  .workflow-demo-result {
+    width: 100%;
+  }
+
+  .workflow-demo-result {
+    margin-top: 14px;
+  }
 }
 
 
