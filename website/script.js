@@ -133,10 +133,11 @@ const translations = {
 
     "contact.label": "CONTACT",
     "contact.heading": "Links and contact",
-    "contact.text": "This section will include the live GitHub repository, deployed AWS site, LinkedIn profile, and downloadable CV once the project is ready for external review.",
+    "contact.text": "Open to cloud engineering and cloud operations roles in Japan. Feel free to reach out in English or Japanese.",
     "contact.github": "GitHub",
-    "contact.linkedin": "LinkedIn / Placeholder",
-    "contact.cv": "CV available on request",
+    "contact.linkedin": "LinkedIn",
+    "contact.email": "Email",
+    "contact.cv": "Download CV (PDF)",
 
     "project3.pageTitle": "Asynchronous SaaS Order Processing Workflow | AWS Portfolio Project",
     "project3.eyebrow": "AWS EVENT-DRIVEN WORKFLOW PROJECT",
@@ -302,10 +303,11 @@ const translations = {
 
     "contact.label": "連絡先",
     "contact.heading": "リンクと連絡先",
-    "contact.text": "このセクションには、外部レビューに出せる段階になった時点で、GitHubリポジトリ、デプロイ済みのAWSサイト、LinkedInプロフィール、ダウンロード可能なCVを掲載します。",
+    "contact.text": "日本国内のクラウドエンジニア / クラウド運用ポジションを探しています。日本語・英語どちらでもご連絡ください。",
     "contact.github": "GitHub",
-    "contact.linkedin": "LinkedIn / 準備中",
-    "contact.cv": "履歴書・職務経歴書は依頼に応じて共有",
+    "contact.linkedin": "LinkedIn",
+    "contact.email": "メール",
+    "contact.cv": "履歴書・職務経歴書（PDF）",
 
     "project3.pageTitle": "非同期SaaS注文処理ワークフロー | AWSポートフォリオプロジェクト",
     "project3.eyebrow": "AWSイベント駆動ワークフロープロジェクト",

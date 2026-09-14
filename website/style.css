@@ -404,6 +404,12 @@ p {
   margin-bottom: 0;
 }
 
+.contact-panel p {
+  margin: 10px 0 0;
+  color: var(--muted);
+  max-width: 60ch;
+}
+
 .contact-links {
   display: flex;
   flex-wrap: wrap;
