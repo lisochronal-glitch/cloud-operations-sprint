@@ -1,53 +1,53 @@
-# クラウド運用ポートフォリオ
+# Cloud Operations Portfolio
 
-[English version](readme-en.md)
+[日本語版](readme-ja.md)
 
 
-クラウドデプロイ、Linuxでの作業、Git/GitHubの利用、IAM権限、ドキュメント作成、運用上のトラブルシューティングを示すために作成した、実践的なAWS / クラウド運用ポートフォリオプロジェクトです。
+A practical AWS / cloud operations portfolio project built to demonstrate cloud deployment, Linux workflow, Git/GitHub usage, IAM permissions, documentation, and operational troubleshooting.
 
 Live site:
 
 https://d1rzzxjs182iar.cloudfront.net
 
-## プロジェクト概要
+## Project Overview
 
-このプロジェクトは、AWS上にデプロイされたバイリンガルのポートフォリオサイトです。Git履歴、プロジェクトメモ、可視化されたデプロイ進捗を通じて作業内容を明確に記録しながら、小規模ながら実際に動作するクラウドホスト型システムを構築することを目的としています。
+This project is a bilingual portfolio site deployed on AWS. The goal is to build a small but real cloud-hosted system while documenting the workflow clearly through Git history, project notes, and visible deployment progress.
 
-サイトはバニラHTML、CSS、JavaScriptで構成されています。英語 / 日本語の言語切り替え、認定資格の確認リンク、現在のプロジェクト進捗を示すビルドステータスを含んでいます。
+The site is built with vanilla HTML, CSS, and JavaScript. It includes English/Japanese language switching, certification verification links, and a build status section showing current project progress.
 
-このプロジェクトは、実践的な運用ラボとしても使用しています。デプロイ、権限、キャッシュ無効化、アカウント保護、運用上のガードレールを、構築作業の一部として意図的にドキュメント化しています。
+The project is also used as a practical operations lab: deployment, permissions, cache invalidation, account security, and operational guardrails are intentionally documented as part of the build.
 
-## 現在の構成
+## Current Architecture
 
-* 静的サイトファイルは、プライベートなAmazon S3バケットに保存しています。
-* CloudFrontが公開HTTPSエンドポイントを提供しています。
-* S3バケットはパブリックに公開していません。
-* バケットポリシーにより、CloudFrontがプライベートS3バケットから読み取れるようにしています。
-* 通常運用ではCloudFrontキャッシュを有効にしています。
-* S3上のファイルを更新した場合、デプロイ済みサイトを更新するためにCloudFront invalidationを一度だけ作成します。
+* Static site files are stored in a private Amazon S3 bucket.
+* CloudFront provides the public HTTPS endpoint.
+* The S3 bucket is not publicly exposed.
+* CloudFront is allowed to read from the private S3 bucket through the bucket policy.
+* CloudFront caching remains enabled for normal operation.
+* When files are updated in S3, a one-time CloudFront invalidation is created to refresh the deployed site.
 
-## サーバーレス訪問者カウンターのバックエンド
+## Serverless Visitor Counter Backend
 
-このポートフォリオサイトには、小さなサーバーレスバックエンド機能として、サイトフッターに表示される訪問者カウンターを実装しています。
+This portfolio site now includes a small serverless backend feature: a visible visitor counter displayed in the site footer.
 
-サイトが読み込まれると、ブラウザのJavaScriptがAPI Gateway HTTP APIのルートに対して`POST`リクエストを送信します。
+When the site loads, browser JavaScript sends a `POST` request to an API Gateway HTTP API route:
 
 ```text
 POST /visit
 ```
 
-API GatewayはPython Lambda関数を呼び出します。Lambda関数はAPI Gatewayのリクエストメタデータから訪問者の送信元IPを取得し、Lambda環境変数として保存しているsaltと組み合わせ、SHA-256でハッシュ化します。その結果のハッシュのみをDynamoDBに保存します。
+API Gateway invokes a Python Lambda function. The Lambda function extracts the visitor source IP from the API Gateway request metadata, combines it with a salt stored as a Lambda environment variable, hashes it with SHA-256, and stores only the resulting hash in DynamoDB.
 
-生のIPアドレスは保存していません。
+The raw IP address is not stored.
 
-DynamoDBテーブルには、2種類のレコードを保存しています。
+The DynamoDB table stores two types of records:
 
 ```text
-visitor_hash = ハッシュ化された訪問者識別子
+visitor_hash = hashed visitor identifier
 visitor_hash = "__stats__"
 ```
 
-通常の訪問者レコードでは、次の情報を記録します。
+Normal visitor records track:
 
 ```text
 first_seen
@@ -55,7 +55,7 @@ last_seen
 visit_count
 ```
 
-`__stats__`レコードでは、サイト全体の集計値を記録します。
+The `__stats__` record tracks global site totals:
 
 ```text
 total_visits
@@ -63,74 +63,76 @@ unique_visitors
 last_updated
 ```
 
-Lambda関数は、訪問者ごとのレコードとグローバル集計レコードの両方を更新し、その後、最新の集計値をフロントエンドに返します。JavaScriptはレスポンスを受け取り、ライブサイトのフッターに表示される訪問者カウンターを更新します。
+The Lambda function updates both the per-visitor record and the global stats record, then returns the latest totals to the frontend. JavaScript receives the response and updates the footer visitor counter on the live site.
 
-現在のバックエンドフローは次の通りです。
+Current backend flow:
 
 ```text
-ブラウザがCloudFrontサイトを読み込む
-→ script.jsがAPI Gateway /visit にPOSTリクエストを送信
-→ API GatewayがVisitorCounterFunctionを呼び出す
-→ Lambdaが訪問者識別子をハッシュ化する
-→ LambdaがDynamoDBの訪問者レコードを更新する
-→ LambdaがDynamoDBの__stats__レコードを更新する
-→ Lambdaがtotal_visitsとunique_visitorsを返す
-→ JavaScriptがフッターにカウンターを表示する
+Browser loads CloudFront site
+→ script.js sends POST request to API Gateway /visit
+→ API Gateway invokes VisitorCounterFunction
+→ Lambda hashes visitor identifier
+→ Lambda updates DynamoDB visitor record
+→ Lambda updates DynamoDB __stats__ record
+→ Lambda returns total_visits and unique_visitors
+→ JavaScript displays the counter in the footer
 ```
 
-この機能では、次の内容を示しています。
+This feature demonstrates:
 
-* API Gateway HTTP APIのルーティング
-* Lambda統合
-* Python Lambdaによるバックエンド処理
-* DynamoDBによる状態管理
-* 新規訪問者判定のための条件付き書き込み
-* アトミックなカウンター更新
-* Lambda環境変数
-* LambdaからDynamoDBへの最小権限IAMアクセス
-* ブラウザからAPIへの通信に必要なCORS設定
-* JavaScript `fetch`を使ったフロントエンド / バックエンド連携
-* 開発中のCloudWatchログ確認とトラブルシューティング
+* API Gateway HTTP API routing
+* Lambda integration
+* Python Lambda backend logic
+* DynamoDB state management
+* conditional writes for new visitor detection
+* atomic counter updates
+* Lambda environment variables
+* IAM least-privilege access from Lambda to DynamoDB
+* CORS configuration for browser-to-API communication
+* frontend/backend integration using JavaScript `fetch`
+* CloudWatch logging and troubleshooting during development
 
-フッターのカウンターは、意図的にサイト上に表示しています。これは、背後にあるバックエンドスタックの小さな証拠として機能します。表示される数値はハードコードではなく、API GatewayとLambdaを経由してDynamoDBから返される値です。
+The footer counter is intentionally visible on the site. It acts as a small proof surface for the underlying backend stack: the displayed number is not hardcoded, but returned from DynamoDB through the API Gateway and Lambda path.
 
-## ホスティング方針
 
-このプロジェクトでは、S3 static website hostingを意図的に無効にしています。
+## Hosting Decision
 
-このサイトは、プライベートS3バケットをオリジンとして、CloudFront経由で配信しています。これにより、S3バケットをプライベートに保ちながら、CloudFrontが公開HTTPSエンドポイントを提供します。
+S3 static website hosting is intentionally disabled for this project.
 
-AWS Amplify Hostingも使用していません。Amplifyは便利なマネージドホスティングですが、このプロジェクトでは、基礎となるクラウド運用作業を示すために、S3とCloudFrontを直接使用しています。具体的には、プライベートバケットアクセス、CloudFront配信、バケットポリシー設定、キャッシュ無効化、IAMガードレール、将来のデプロイ自動化を扱っています。
+This site is delivered through CloudFront using a private S3 bucket as the origin. This keeps the S3 bucket private while CloudFront provides the public HTTPS endpoint.
 
-## IAMと権限モデル
+AWS Amplify Hosting is also not used for this project. Amplify would be a convenient managed hosting option, but this project intentionally uses S3 and CloudFront directly in order to demonstrate the underlying cloud operations work: private bucket access, CloudFront delivery, bucket policy configuration, cache invalidation, IAM guardrails, and future deployment automation.
 
-このプロジェクトでは、通常のコンソール作業にAWS root accountを使用していません。
 
-現在のアクセスモデルは次の通りです。
+## IAM and Permissions Model
+
+This project no longer uses the AWS root account for normal console work.
+
+Current access model:
 
 * Root account:
 
-  * アカウントレベルまたは緊急時のタスクにのみ使用します。
-  * MFAを有効にしています。
-  * 通常のプロジェクト作業には使用しません。
+  * Used only for account-level or emergency tasks.
+  * MFA is enabled.
+  * Not used for normal project work.
 
 * IAM admin user:
 
-  * 通常のAWSコンソール管理に使用します。
-  * 学習およびプロジェクト構築作業のため、広い権限を持つadminグループに追加しています。
-  * 通常利用においてMFAを有効にするべきです。
+  * Used for normal AWS console administration.
+  * Added to an admin group with broad permissions for learning and project build work.
+  * MFA should be enabled for normal use.
 
 * Deployment automation:
 
-  * 可能な限り、ロールベースのアクセスと一時的な権限を使用します。
-  * PythonデプロイツールとGitHub Actionsワークフローを使用しています。
-  * デプロイ権限は、S3へのウェブサイトファイルアップロードやCloudFront invalidation作成など、必要な操作に限定しています。
+  * Uses role-based access and temporary permissions where possible.
+  * Python deployment tool and GitHub Actions workflow.
+  * Deployment permissions are scoped to the required actions only, such as uploading website files to S3 and creating CloudFront invalidations.
 
-## デプロイ認証モデル
+## Deployment Authentication Model
 
-このプロジェクトでは、意図的に分離したデプロイ認証モデルを使用しています。
+The project uses a deliberately separated deployment authentication model.
 
-ローカルでのデプロイテストにおけるチェーンは次の通りです。
+For local deployment testing, the deploy chain is:
 
 ```text
 Local AWS profile
@@ -141,29 +143,29 @@ Local AWS profile
 → CloudFront invalidation
 ```
 
-これは、1つのIAMユーザーに直接デプロイ権限を与えるよりも複雑です。しかし、これは意図的な設計です。目的は、**認証元**と**デプロイ権限セット**を分離し、同じデプロイロールをGitHub Actionsでも再利用できるようにすることです。
+This is more complex than giving one IAM user direct deployment permissions, but it is intentional. The goal is to separate **authentication source** from **deployment permission set**, so the deploy role could be reused by GitHub Actions.
 
-### コンポーネント
+### Components
 
-| コンポーネント                 | 種類                    | 目的                                                                   |
-| ----------------------- | --------------------- | -------------------------------------------------------------------- |
-| `portfolio-role-runner` | AWS IAM user          | 長期アクセスキーを持つローカル用のブートストラップID                                          |
-| `portfolio-runner`      | Local AWS CLI profile | IAMユーザーの認証情報を保存・使用するローカルUbuntuプロファイル                                 |
-| `PortfolioDeployRole`   | AWS IAM role          | S3アップロードとCloudFront invalidation権限を持つ一時的なデプロイID                      |
-| `portfolio-deploy`      | Local AWS CLI profile | `portfolio-runner`を使って`PortfolioDeployRole`をassumeするローカルUbuntuプロファイル |
+| Component               | Type                  | Purpose                                                                              |
+| ----------------------- | --------------------- | ------------------------------------------------------------------------------------ |
+| `portfolio-role-runner` | AWS IAM user          | Local bootstrap identity with a long-lived access key                                |
+| `portfolio-runner`      | Local AWS CLI profile | Local Ubuntu profile that stores/uses the IAM user credentials                       |
+| `PortfolioDeployRole`   | AWS IAM role          | Temporary deployment identity with S3 upload and CloudFront invalidation permissions |
+| `portfolio-deploy`      | Local AWS CLI profile | Local Ubuntu profile that uses `portfolio-runner` to assume `PortfolioDeployRole`    |
 
-似た名前のコンポーネントは、それぞれ別のものです。
+The similarly named components are different things:
 
 ```text
 portfolio-role-runner = AWS IAM user
-portfolio-runner      = そのユーザーのアクセスキーを使うローカルAWSプロファイル
-PortfolioDeployRole   = デプロイ権限を持つAWS IAMロール
-portfolio-deploy      = デプロイロールをassumeするローカルAWSプロファイル
+portfolio-runner      = local AWS profile using that user's access key
+PortfolioDeployRole   = AWS IAM role with deployment permissions
+portfolio-deploy      = local AWS profile that assumes the deploy role
 ```
 
-### IAMユーザーが直接デプロイしない理由
+### Why the IAM user does not deploy directly
 
-より単純なローカル専用設計であれば、次のようにすることもできます。
+A simpler local-only design would be:
 
 ```text
 IAM user access key
@@ -171,9 +173,9 @@ IAM user access key
 → CloudFront invalidation
 ```
 
-これは機能しますし、小規模なローカル専用プロジェクトであれば、より簡単です。
+That would work, and for a small local-only project it would be simpler.
 
-しかし、このプロジェクトでは次の流れを使用しています。
+This project instead uses:
 
 ```text
 IAM user access key
@@ -183,24 +185,24 @@ IAM user access key
 → CloudFront invalidation
 ```
 
-IAMユーザー`portfolio-role-runner`は、デプロイ権限を直接所有するためのものではありません。その目的は、ローカルで認証し、`PortfolioDeployRole`の一時的な認証情報をリクエストすることだけです。
+The IAM user `portfolio-role-runner` is not intended to own the deployment permissions directly. Its purpose is only to authenticate locally and request temporary credentials for `PortfolioDeployRole`.
 
-実際のデプロイ権限は`PortfolioDeployRole`にあります。
+The actual deployment permissions live on `PortfolioDeployRole`.
 
-つまり、デプロイ権限セットはロールに付与されており、特定のローカルIAMユーザーに恒久的に紐づいているわけではありません。現在、GitHub ActionsはOIDCを使用して同じロールをassumeしており、デプロイ元としてのローカルIAMユーザーアクセスキーを置き換えています。
+This means the deployment permission set is attached to a role, not permanently tied to one local IAM user. GitHub Actions now assumes the same role using OIDC, replacing the local IAM user access key as the deployment source.
 
-### ローカルプロファイルの流れ
+### Local profile flow
 
-ローカルプロファイル`portfolio-runner`には、開始地点となる認証情報が含まれています。
+The local profile `portfolio-runner` contains the starting credentials.
 
-ローカルプロファイル`portfolio-deploy`には、ロールをassumeするための設定が含まれています。
+The local profile `portfolio-deploy` contains the role-assumption recipe:
 
 ```text
 source_profile = portfolio-runner
 role_arn       = PortfolioDeployRole
 ```
 
-Python/boto3が`portfolio-deploy`プロファイルを使用すると、boto3は次のチェーンを実行します。
+When Python/boto3 uses the `portfolio-deploy` profile, boto3 performs the following chain:
 
 ```text
 Python deploy script starts
@@ -226,38 +228,38 @@ Python uploads files to S3
 Python creates a CloudFront invalidation
 ```
 
-重要な点は次の通りです。
+The important point is:
 
 ```text
-ロールは直接認証しない。
-IAMユーザーが先に認証する。
-その後、AWSがロール用の一時的な認証情報を発行する。
+The role does not authenticate directly.
+The IAM user authenticates first.
+AWS then issues temporary credentials for the role.
 ```
 
-### 必要な権限
+### Required permissions
 
-IAMユーザー`portfolio-role-runner`に必要なのは、次の操作を呼び出す権限だけです。
+The IAM user `portfolio-role-runner` only needs permission to call:
 
 ```text
 sts:AssumeRole
 ```
 
-対象は次のロールです。
+on:
 
 ```text
 PortfolioDeployRole
 ```
 
-ロール`PortfolioDeployRole`には、実際のデプロイ権限があります。
+The role `PortfolioDeployRole` contains the actual deployment permissions:
 
 ```text
 s3:PutObject
 cloudfront:CreateInvalidation
 ```
 
-これらは、ポートフォリオ用S3バケットとCloudFrontディストリビューションにスコープされています。
+These are scoped to the portfolio S3 bucket and CloudFront distribution.
 
-デプロイIDには、次の権限は不要です。
+The deploy identity does not require:
 
 ```text
 s3:DeleteObject
@@ -267,13 +269,13 @@ s3:DeleteBucketPolicy
 s3:PutLifecycleConfiguration
 ```
 
-### トレードオフ
+### Tradeoff
 
-ローカル専用デプロイであれば、この設計は必要以上に複雑です。
+For local-only deployment, this design is more complicated than necessary.
 
-`S3:PutObject`と`cloudfront:CreateInvalidation`だけを許可したIAMユーザーを直接使用する設計でも有効です。
+A direct IAM user with narrowly scoped `s3:PutObject` and `cloudfront:CreateInvalidation` permissions would also be valid.
 
-それでもこのプロジェクトでロールベースの設計を使っている理由は、意図している最終構成により近いからです。
+This project uses the role-based design anyway because it better matches the intended final architecture:
 
 ```text
 today:
@@ -287,11 +289,11 @@ GitHub Actions OIDC
 → run Python deployment
 ```
 
-ローカルIAMユーザーは、学習とローカルテストのための一時的な足場でした。現在、通常のデプロイはGitHub Actionsに移行しているため、通常運用のデプロイは恒久的なローカルIAMユーザーアクセスキーに依存していません。
+The local IAM user was temporary scaffolding for learning and local testing. Routine deployment has now moved to GitHub Actions, so normal deployment no longer depends on a permanent local IAM user access key.
 
-### 望ましい最終デプロイフロー
+### Desired final deployment flow
 
-意図している最終ワークフローは次の通りです。
+The intended final workflow is:
 
 ```text
 git push
@@ -302,7 +304,7 @@ git push
 → CloudFront invalidation is created
 ```
 
-この段階では、通常のデプロイに必要なのは次の操作だけになります。
+At that point, routine deployment should require only:
 
 ```bash
 git add .
@@ -310,66 +312,69 @@ git commit -m "Update portfolio"
 git push
 ```
 
-通常のデプロイにおいて、AWSコンソールへの手動ログインは不要です。
+No manual AWS Console login should be required for normal deployment.
 
-## S3保護ガードレール
 
-この小規模な静的デプロイ用バケットでは、S3 Bucket Versioningは意図的に有効にしていません。
+## S3 Protection Guardrail
 
-理由は次の通りです。
+S3 Bucket Versioning is intentionally not enabled for this small static deployment bucket.
 
-* Git/GitHubをウェブサイトファイルのsource of truthとして扱います。
-* S3はデプロイ先であり、主要なバージョン履歴ではありません。
-* 通常のデプロイでは、既存ファイルを上書きできる必要があります。
-* S3 Versioningを有効にすると、現在のプロジェクトには不要なライフサイクル管理とストレージ管理の複雑さが増えます。
+Reasoning:
 
-代わりに、IAM admin userによる誤操作のリスクを下げるため、バケットポリシーに明示的なdenyガードレールを含めています。
+* Git/GitHub is treated as the source of truth for website files.
+* S3 is treated as the deployment target, not the primary version history.
+* Normal deployment requires the ability to overwrite existing files.
+* Enabling S3 Versioning would add lifecycle and storage-management complexity that is not currently needed for this project.
 
-IAM admin userはデプロイ済みファイルを更新できますが、次のような操作は拒否されます。
+Instead, the bucket policy includes an explicit deny guardrail for the IAM admin user to reduce accidental damage.
 
-* デプロイ済みオブジェクトの削除
-* バケットの削除
-* バケットポリシーの削除または変更
-* オブジェクトを削除し得るライフサイクル設定
+The IAM admin user can still update deployed files, but is denied actions such as:
 
-IAM admin userセッションから`script.js`の削除とバケットポリシー削除を試みることでテストしました。どちらの操作も拒否されました。
+* deleting deployed objects
+* deleting the bucket
+* deleting or modifying the bucket policy
+* configuring lifecycle behavior that could remove objects
 
-## 現在のビルドステータス
+This was tested by attempting to delete `script.js` and attempting to delete the bucket policy from the IAM admin user session. Both actions were denied.
 
-完了済み:
 
-* Ubuntu VMセットアップ
-* Git/GitHubワークフロー
-* ローカルポートフォリオページ
-* プライベートS3とCloudFrontによるAWS静的ホスティング
-* 認定資格バッジリンクの確認
-* Root MFA設定
-* IAM admin user設定
-* S3バケット削除ガードレール
-* ローカルPythonデプロイスクリプト
-* 自動S3アップロードとCloudFront invalidation
-* GitHub Actions CI/CDデプロイワークフロー
-* サーバーレスバックエンド
+## Current Build Status
+
+Completed:
+
+* Ubuntu VM setup
+* Git/GitHub workflow
+* Local portfolio page
+* Static AWS hosting with private S3 and CloudFront
+* Verified certification badge links
+* Root MFA setup
+* IAM admin user setup
+* S3 bucket deletion guardrail
+* Local Python deployment script
+* Automated S3 upload and CloudFront invalidation
+* GitHub Actions CI/CD deployment workflow
+* Serverless backend
 * API Gateway HTTP API
-* Lambda訪問者カウンター関数
-* DynamoDB訪問者カウンターテーブル
-* 表示されるフッター訪問者カウンター
-* ブラウザからAPIへのCORS設定
-* CloudWatchログ確認とトラブルシューティング
+* Lambda visitor counter function
+* DynamoDB visitor counter table
+* Visible footer visitor counter
+* Browser-to-API CORS configuration
+* CloudWatch logging and troubleshooting verification
 
-予定:
+Planned:
 
-* バックエンドドキュメントの整理
-* アーキテクチャ図
-* コストと運用上のガードレールメモ
-* 追加のプロジェクトスクリーンショット
-* 次のプロジェクト: VPC / ネットワーク / セキュリティ運用ラボ
+* Backend documentation cleanup
+* Architecture diagram
+* Cost and operational guardrail notes
+* Additional project screenshots
+* Next project: VPC / networking / security operations lab
 
-## デプロイワークフロー
 
-通常のデプロイは、現在GitHub Actionsで自動化されています。
+## Deployment Workflow
 
-現在のデプロイフローは次の通りです。
+Routine deployment is now automated through GitHub Actions.
+
+Current deployment flow:
 
 ```text
 git push to main
@@ -381,21 +386,21 @@ git push to main
 → live CloudFront site is updated
 ```
 
-ワークフローファイルの場所は次の通りです。
+The workflow file is located at:
 
 ```text
 .github/workflows/deploy.yml
 ```
 
-Pythonデプロイスクリプトの場所は次の通りです。
+The Python deployment script is located at:
 
 ```text
 tools/deploy.py
 ```
 
-通常のデプロイでは、AWSコンソールからの手動アップロードは不要です。
+For normal deployment, no manual AWS Console upload is required.
 
-通常のデプロイコマンドフローは次の通りです。
+Routine deployment command flow:
 
 ```bash
 git add .
@@ -403,42 +408,42 @@ git commit -m "Update portfolio"
 git push
 ```
 
-push後、GitHub Actionsが自動的にデプロイワークフローを実行します。
+After the push, GitHub Actions runs the deployment workflow automatically.
 
-## ローカルPythonデプロイテスト
+## Local Python Deployment Test
 
-GitHub Actionsへ移行する前に、Pythonデプロイスクリプトをローカルでテストしました。
+Before moving deployment into GitHub Actions, the Python deployment script was tested locally.
 
-スクリプトは2つのデプロイ操作を実行します。
+The script performs two deployment actions:
 
 ```text
-1. website/ 内のウェブサイトファイルをプライベートS3バケットへアップロードする
-2. /* に対してCloudFront invalidationを作成する
+1. Upload website files from website/ to the private S3 bucket
+2. Create a CloudFront invalidation for /*
 ```
 
-スクリプトは`boto3`を使用しており、AWSアクセスキーやシークレット認証情報は含んでいません。
+The script uses `boto3` and does not contain AWS access keys or secret credentials.
 
-ローカルテストでは、AWS認証情報は次のローカルAWSプロファイルから提供されました。
+For the local test, AWS credentials were provided through the local AWS profile:
 
 ```text
 portfolio-deploy
 ```
 
-このプロファイルは、ローカルの`portfolio-runner` source profileを使って、次のAWSロールをassumeしました。
+This profile used the local `portfolio-runner` source profile to assume the AWS role:
 
 ```text
 PortfolioDeployRole
 ```
 
-スクリプトはローカルで次のコマンドにより実行しました。
+The script was run locally with:
 
 ```bash
 AWS_PROFILE=portfolio-deploy python tools/deploy.py
 ```
 
-デプロイは正常に完了しました。
+The deployment completed successfully.
 
-確認された出力:
+Observed output:
 
 ```text
 Files found in website folder:
@@ -448,23 +453,23 @@ Uploaded: index.html (text/html)
 Cache invalidated: IAY301RL9CHESDUIISB7RBYPYM
 ```
 
-これにより、GitHub Actionsへ移行する前に、ローカルデプロイチェーンが動作することを確認しました。
+This confirmed that the local deployment chain worked before moving the workflow into GitHub Actions.
 
-## GitHub Actions CI/CDデプロイ
+## GitHub Actions CI/CD Deployment
 
-現在、GitHub Actionsを自動デプロイに使用しています。
+GitHub Actions is now used for automated deployment.
 
-このワークフローは、`main`ブランチに変更がpushされたときに実行されます。リポジトリをチェックアウトし、Pythonをセットアップし、`boto3`をインストールし、一時的なAWS認証情報を設定して、Pythonデプロイスクリプトを実行します。
+The workflow runs when changes are pushed to the `main` branch. It checks out the repository, sets up Python, installs `boto3`, configures temporary AWS credentials, and runs the Python deployment script.
 
-GitHub ActionsワークフローはOpenID Connect（OIDC）を使用して、次のロールをassumeします。
+The GitHub Actions workflow uses OpenID Connect (OIDC) to assume:
 
 ```text
 PortfolioDeployRole
 ```
 
-GitHubには長期AWSアクセスキーを保存していません。
+No long-lived AWS access key is stored in GitHub.
 
-GitHub Actionsのデプロイチェーンは次の通りです。
+The GitHub Actions deployment chain is:
 
 ```text
 GitHub Actions job
@@ -476,24 +481,24 @@ GitHub Actions job
 → CloudFront invalidation
 ```
 
-これにより、以前の手動デプロイワークフローとローカル専用デプロイ手順を置き換えました。
+This replaces the earlier manual deployment workflow and the local-only deployment step.
 
-## 自動化の進化
+## Automation Progression
 
-デプロイワークフローは段階的に進化しました。
+The deployment workflow evolved in stages:
 
-1. 手動デプロイ
-   ファイルをS3へ手動でアップロードし、CloudFront invalidationを手動で作成していました。
+1. Manual deployment
+   Files were uploaded to S3 manually, and CloudFront invalidation was created manually.
 
-2. ローカルPython自動化
-   Pythonデプロイスクリプトが、ローカルマシンからサイトファイルをS3へアップロードし、CloudFront invalidationを作成しました。
+2. Local Python automation
+   A Python deployment script uploaded the site files to S3 and created the CloudFront invalidation from the local machine.
 
 3. GitHub Actions CI/CD
-   同じデプロイロジックが、`main`ブランチへのpush後にGitHub Actionsから自動実行されるようになりました。
+   The same deployment logic now runs automatically from GitHub Actions after changes are pushed to the `main` branch.
 
-この進化は意図的なものです。まず手動プロセスを理解し、その後ローカルで自動化し、最後にCI/CDパターンへ移行しました。
+This progression was intentional: first understand the manual process, then automate it locally, then move the workflow into a CI/CD pattern.
 
-## リポジトリ構成
+## Repository Structure
 
 ```text
 .github/
@@ -511,37 +516,39 @@ website/
 readme.md
 ```
 
-## 示しているスキル
+## Skills Demonstrated
 
-* Linuxターミナルでの作業
-* GitとGitHubによるバージョン管理
-* 静的ウェブサイト開発
-* AWS S3によるプライベートオブジェクトストレージ
-* AWS CloudFrontによるHTTPS配信
-* ホスティング構成の判断: S3 static website hostingやAmplifyではなく、CloudFrontを使ったプライベートS3オリジン
-* IAMユーザー、グループ、ポリシー設定
-* Root account保護とMFA
-* S3バケットポリシーによるガードレール
-* 手動デプロイとキャッシュ無効化
-* 運用ドキュメント作成
-* 英語 / 日本語のバイリンガルサイトコンテンツ
-* 実際のプロジェクト進捗のドキュメント化
-* `boto3`によるPythonデプロイ自動化
-* GitHub Actions CI/CDワークフロー
-* GitHub ActionsからのOIDCベースAWSロールassumption
-* 自動S3アップロードとCloudFront invalidation
-* API Gateway HTTP APIルート設定
-* Python Lambda関数開発
-* 訪問者レコードと集計値のためのDynamoDBテーブル設計
-* DynamoDB条件付き書き込みとアトミックなカウンター更新
-* Lambda環境変数設定
-* LambdaからDynamoDBへの最小権限IAM設定
-* フロントエンドからバックエンドへのブラウザリクエストに必要なCORS設定
-* JavaScript `fetch`を使ったフロントエンド / バックエンド連携
-* Lambda/APIのCloudWatchベーストラブルシューティング
-* ライブポートフォリオサイトに接続された、表示可能なサーバーレスバックエンド機能
+* Linux terminal workflow
+* Git and GitHub version control
+* Static website development
+* AWS S3 private object storage
+* AWS CloudFront HTTPS delivery
+* Hosting architecture decision-making: private S3 origin with CloudFront instead of S3 static website hosting or Amplify
+* IAM user, group, and policy setup
+* Root account protection and MFA
+* S3 bucket policy guardrails
+* Manual deployment and cache invalidation
+* Operational documentation
+* Bilingual English/Japanese site content
+* Documentation of real project progress
+* Python deployment automation with `boto3`
+* GitHub Actions CI/CD workflow
+* OIDC-based AWS role assumption from GitHub Actions
+* Automated S3 upload and CloudFront invalidation
+* API Gateway HTTP API route configuration
+* Python Lambda function development
+* DynamoDB table design for visitor records and aggregate stats
+* DynamoDB conditional writes and atomic counter updates
+* Lambda environment variable configuration
+* IAM least-privilege permissions for Lambda-to-DynamoDB access
+* CORS configuration for frontend-to-backend browser requests
+* Frontend/backend integration using JavaScript `fetch`
+* CloudWatch-based Lambda/API troubleshooting
+* Visible serverless backend feature connected to the live portfolio site
 
-## 認定資格
+
+
+## Certifications
 
 * AWS Solutions Architect – Associate
   https://www.credly.com/badges/d90a629b-7b16-4c0e-8c84-903acc4397c4/public_url
@@ -554,6 +561,7 @@ readme.md
 
 * JLPT N2
 
-## 目的
+## Purpose
 
-このリポジトリは、実践的なクラウド運用学習スプリントの一部です。このプロジェクトは、完成した成果物だけでなく、クラウドホスト型システムを構築し、デプロイし、ドキュメント化し、トラブルシューティングし、保護し、改善していくプロセスそのものを示すことを目的としています。
+This repository is part of a practical cloud operations learning sprint. The project is designed to show not only completed work, but also the process of building, deploying, documenting, troubleshooting, securing, and improving a cloud-hosted system.
+

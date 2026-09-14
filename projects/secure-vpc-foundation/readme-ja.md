@@ -1,5 +1,7 @@
 # セキュアな VPC 基盤
 
+[English version](readme.md)
+
 このプロジェクトでは、小規模 Web アプリケーション向けの安全な AWS ネットワーク基盤を構築しました。アプリケーションはパブリックな Application Load Balancer を通じてインターネットからアクセスできますが、アプリケーションサーバーとデータベースはプライベートサブネットに分離されています。
 
 最初に AWS コンソールで手動構築を行い、アーキテクチャの検証、証跡の取得、削除手順の確認を行いました。その後、同じアーキテクチャを CloudFormation と Terraform の両方で再現し、インフラをコードとして反復可能にデプロイ、検証、削除できることを確認しました。
@@ -18,6 +20,8 @@
 * テスト後に課金対象リソースを削除すること
 
 ## アーキテクチャ
+
+![Secure VPC Foundation architecture](../../website/projects/vpc-network-lab/secure-vpc-foundation-diagram.png)
 
 このラボは東京リージョン（`ap-northeast-1`）で構築しました。
 

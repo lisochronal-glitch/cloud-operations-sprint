@@ -1,5 +1,7 @@
 # 非同期 SaaS 注文処理ワークフロー
 
+[English version](readme.md)
+
 このプロジェクトは、AWS 上で構築したイベント駆動型の注文処理ワークフローです。
 
 公開ポートフォリオページから API Gateway 経由でデモ注文を作成します。バックエンドでは、注文状態を DynamoDB に保存し、注文イベントを SNS に発行し、SQS と Lambda によって非同期処理を行い、更新された注文状態をフロントエンドへ返します。
@@ -11,6 +13,8 @@
 https://d1rzzxjs182iar.cloudfront.net/projects/event-driven-order-processing-workflow/index.html
 
 ## アーキテクチャ
+
+![Asynchronous SaaS order processing workflow architecture](../../website/projects/event-driven-order-processing-workflow/asynchronous-saas-order-processing-workflow.png)
 
 通常の注文処理フロー:
 

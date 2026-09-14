@@ -1,5 +1,7 @@
 # Secure VPC Foundation
 
+[日本語版](readme-ja.md)
+
 This project demonstrates a secure AWS network foundation for a small web application. The application is reachable from the internet through a public Application Load Balancer, while the application servers and database are isolated in private subnets.
 
 The environment was first built manually in the AWS Console to validate the architecture, capture evidence, and confirm the cleanup process. The same architecture was then reproduced with both CloudFormation and Terraform so the environment could be deployed, verified, and deleted repeatably as infrastructure as code.
@@ -18,6 +20,8 @@ The requirements are:
 * Billable resources must be removed after testing.
 
 ## Architecture
+
+![Secure VPC Foundation architecture](../../website/projects/vpc-network-lab/secure-vpc-foundation-diagram.png)
 
 The lab was built in the Tokyo region (`ap-northeast-1`).
 
