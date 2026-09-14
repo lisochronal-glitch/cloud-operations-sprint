@@ -2,12 +2,21 @@
 
 [日本語版](readme-ja.md)
 
+A practical AWS / cloud operations sprint: a set of working, deployed systems built to demonstrate cloud deployment, Linux workflow, Git/GitHub, IAM design, CI/CD, event-driven architecture, infrastructure as code, and operational troubleshooting.
 
-A practical AWS / cloud operations portfolio project built to demonstrate cloud deployment, Linux workflow, Git/GitHub usage, IAM permissions, documentation, and operational troubleshooting.
+**Live site:** https://d1rzzxjs182iar.cloudfront.net
 
-Live site:
+## Projects
 
-https://d1rzzxjs182iar.cloudfront.net
+| Project | What it demonstrates | Status |
+|---|---|---|
+| **[This portfolio site](#project-overview)** — private S3 + CloudFront, GitHub Actions OIDC deploy, serverless visitor counter | S3, CloudFront, IAM roles, OIDC, Python/boto3 automation, API Gateway, Lambda, DynamoDB, CORS, CloudWatch | Live |
+| **[Secure VPC Foundation](projects/secure-vpc-foundation/)** — multi-AZ network with public ALB, private EC2/RDS tiers | VPC, subnets, route tables, security groups, ALB, Auto Scaling, RDS, NAT Gateway, S3 Gateway Endpoint, CloudFormation, Terraform | Built, verified, decommissioned |
+| **[Asynchronous SaaS Order Processing](projects/event-driven-order-processing-workflow/)** — event-driven order workflow with a live public demo | API Gateway, Lambda, SNS, SQS, DynamoDB, SES, dead-letter queue, CloudWatch alarms, automated containment, CloudTrail | Live |
+
+Each project is documented as a complete working system, including the decisions that were rejected and why.
+
+The rest of this document covers the portfolio site itself. Each project above has its own README with architecture, evidence, and cleanup notes.
 
 ## Project Overview
 
@@ -363,11 +372,10 @@ Completed:
 
 Planned:
 
-* Backend documentation cleanup
-* Architecture diagram
+* Custom domain with Route 53 and an ACM certificate
+* Architecture diagram for the portfolio site itself
 * Cost and operational guardrail notes
-* Additional project screenshots
-* Next project: VPC / networking / security operations lab
+* Next project: containers and observability lab
 
 
 ## Deployment Workflow
@@ -503,17 +511,41 @@ This progression was intentional: first understand the manual process, then auto
 ```text
 .github/
 └── workflows/
-    └── deploy.yml
+    └── deploy.yml          CI/CD: OIDC role assumption + Python deploy
+
+backend/
+└── visitor-counter/
+    └── src/                Exported visitor counter Lambda source
+
+projects/                   Per-project documentation and source
+├── secure-vpc-foundation/
+│   ├── readme.md
+│   ├── evidence/
+│   ├── notes/
+│   ├── template/           CloudFormation
+│   └── terraform/
+└── event-driven-order-processing-workflow/
+    ├── readme.md
+    ├── readme-ja.md
+    ├── evidence/
+    ├── notes/
+    └── src/                Exported Lambda source
 
 tools/
-└── deploy.py
+├── deploy.py               boto3: S3 upload + CloudFront invalidation
+└── export_lambdas.sh       Pull console-authored Lambdas into Git
 
-website/
+website/                    Deployed to S3, served via CloudFront
 ├── index.html
 ├── style.css
-└── script.js
+├── script.js
+└── projects/
+    ├── vpc-network-lab/
+    └── event-driven-order-processing-workflow/
 
-readme.md
+readme.md                   English
+readme-ja.md                Japanese
+CONFUSION_LOG.md            Errors encountered and how they were resolved
 ```
 
 ## Skills Demonstrated

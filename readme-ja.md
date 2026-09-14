@@ -2,12 +2,21 @@
 
 [English version](readme.md)
 
+実践的なAWS / クラウド運用スプリントです。クラウドデプロイ、Linuxでの作業、Git/GitHub、IAM設計、CI/CD、イベント駆動アーキテクチャ、Infrastructure as Code、運用トラブルシューティングを示すために、実際に動作するシステムとして構築・デプロイしています。
 
-クラウドデプロイ、Linuxでの作業、Git/GitHubの利用、IAM権限、ドキュメント作成、運用上のトラブルシューティングを示すために作成した、実践的なAWS / クラウド運用ポートフォリオプロジェクトです。
+**ライブサイト:** https://d1rzzxjs182iar.cloudfront.net
 
-Live site:
+## プロジェクト一覧
 
-https://d1rzzxjs182iar.cloudfront.net
+| プロジェクト | 示している内容 | 状態 |
+|---|---|---|
+| **[このポートフォリオサイト](#プロジェクト概要)** — プライベートS3 + CloudFront、GitHub Actions OIDCデプロイ、サーバーレス訪問者カウンター | S3、CloudFront、IAMロール、OIDC、Python/boto3自動化、API Gateway、Lambda、DynamoDB、CORS、CloudWatch | 稼働中 |
+| **[セキュアなVPC基盤](projects/secure-vpc-foundation/)** — パブリックALBとプライベートEC2/RDS層を持つマルチAZネットワーク | VPC、サブネット、ルートテーブル、セキュリティグループ、ALB、Auto Scaling、RDS、NAT Gateway、S3 Gateway Endpoint、CloudFormation、Terraform | 構築・検証・削除済み |
+| **[非同期SaaS注文処理ワークフロー](projects/event-driven-order-processing-workflow/)** — ライブデモ付きのイベント駆動型注文処理 | API Gateway、Lambda、SNS、SQS、DynamoDB、SES、デッドレターキュー、CloudWatchアラーム、自動封じ込め、CloudTrail | 稼働中 |
+
+各プロジェクトは、単発のサービス演習ではなく、採用しなかった選択肢とその理由も含めて、動作するシステムとして文書化しています。
+
+以下はポートフォリオサイト自体の内容です。各プロジェクトには、アーキテクチャ、証跡、クリーンアップ記録を含む個別のREADMEがあります。
 
 ## プロジェクト概要
 
@@ -359,11 +368,10 @@ IAM admin userセッションから`script.js`の削除とバケットポリシ�
 
 予定:
 
-* バックエンドドキュメントの整理
-* アーキテクチャ図
+* Route 53とACM証明書によるカスタムドメイン
+* ポートフォリオサイト自体のアーキテクチャ図
 * コストと運用上のガードレールメモ
-* 追加のプロジェクトスクリーンショット
-* 次のプロジェクト: VPC / ネットワーク / セキュリティ運用ラボ
+* 次のプロジェクト: コンテナ / オブザーバビリティラボ
 
 ## デプロイワークフロー
 
@@ -498,17 +506,41 @@ GitHub Actions job
 ```text
 .github/
 └── workflows/
-    └── deploy.yml
+    └── deploy.yml          CI/CD: OIDC role assumption + Python deploy
+
+backend/
+└── visitor-counter/
+    └── src/                Exported visitor counter Lambda source
+
+projects/                   Per-project documentation and source
+├── secure-vpc-foundation/
+│   ├── readme.md
+│   ├── evidence/
+│   ├── notes/
+│   ├── template/           CloudFormation
+│   └── terraform/
+└── event-driven-order-processing-workflow/
+    ├── readme.md
+    ├── readme-ja.md
+    ├── evidence/
+    ├── notes/
+    └── src/                Exported Lambda source
 
 tools/
-└── deploy.py
+├── deploy.py               boto3: S3 upload + CloudFront invalidation
+└── export_lambdas.sh       Pull console-authored Lambdas into Git
 
-website/
+website/                    Deployed to S3, served via CloudFront
 ├── index.html
 ├── style.css
-└── script.js
+├── script.js
+└── projects/
+    ├── vpc-network-lab/
+    └── event-driven-order-processing-workflow/
 
-readme.md
+readme.md                   English
+readme-ja.md                Japanese
+CONFUSION_LOG.md            Errors encountered and how they were resolved
 ```
 
 ## 示しているスキル
