@@ -1,0 +1,16 @@
+{
+  "FunctionName": "project3-order-notifier",
+  "Runtime": "python3.14",
+  "Handler": "lambda_function.lambda_handler",
+  "MemorySize": 128,
+  "Timeout": 10,
+  "Architectures": [
+    "x86_64"
+  ],
+  "ExecutionRole": "project3-order-notifier-role-alqgjf7c",
+  "EnvironmentVariableNames": [
+    "FROM_EMAIL",
+    "TO_EMAIL"
+  ],
+  "_note": "Environment variable VALUES are intentionally not exported."
+}

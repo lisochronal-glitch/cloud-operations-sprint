@@ -1,0 +1,15 @@
+{
+  "FunctionName": "project3-order-status",
+  "Runtime": "python3.14",
+  "Handler": "lambda_function.lambda_handler",
+  "MemorySize": 128,
+  "Timeout": 3,
+  "Architectures": [
+    "x86_64"
+  ],
+  "ExecutionRole": "project3-order-status-role-2bh78fsv",
+  "EnvironmentVariableNames": [
+    "ORDERS_TABLE"
+  ],
+  "_note": "Environment variable VALUES are intentionally not exported."
+}

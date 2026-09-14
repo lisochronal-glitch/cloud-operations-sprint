@@ -1,0 +1,15 @@
+{
+  "FunctionName": "project3-order-processor",
+  "Runtime": "python3.14",
+  "Handler": "lambda_function.lambda_handler",
+  "MemorySize": 128,
+  "Timeout": 3,
+  "Architectures": [
+    "x86_64"
+  ],
+  "ExecutionRole": "project3-order-processor-role-pw800q9u",
+  "EnvironmentVariableNames": [
+    "ORDERS_TABLE"
+  ],
+  "_note": "Environment variable VALUES are intentionally not exported."
+}
