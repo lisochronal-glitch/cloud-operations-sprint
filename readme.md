@@ -596,4 +596,3 @@ CONFUSION_LOG.md            Errors encountered and how they were resolved
 ## Purpose
 
 This repository is part of a practical cloud operations learning sprint. The project is designed to show not only completed work, but also the process of building, deploying, documenting, troubleshooting, securing, and improving a cloud-hosted system.
-
