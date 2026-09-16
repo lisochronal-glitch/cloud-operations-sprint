@@ -431,26 +431,54 @@ Secure VPC Foundation プロジェクトです。
 
 ## 現在のビルドステータス
 
-完了済み:
+完了:
 
-* Ubuntu VMセットアップ
-* Git/GitHubワークフロー
-* ローカルポートフォリオページ
-* プライベートS3とCloudFrontによるAWS静的ホスティング
-* 認定資格バッジリンクの確認
-* Root MFA設定
-* IAM admin user設定
-* S3バケット削除ガードレール
-* ローカルPythonデプロイスクリプト
-* 自動S3アップロードとCloudFront invalidation
-* GitHub Actions CI/CDデプロイワークフロー
-* サーバーレスバックエンド
+**ポートフォリオサイト**
+
+* Ubuntu VM のセットアップ
+* Git / GitHub のワークフロー
+* ローカルでのポートフォリオページ作成
+* プライベート S3 と CloudFront による静的ホスティング
+* 認定バッジの検証リンク
+* ルートアカウントの MFA 設定
+* IAM 管理ユーザーの設定
+* S3 バケット削除ガードレール
+* ローカルの Python デプロイスクリプト
+* S3 アップロードと CloudFront invalidation の自動化
+* GitHub Actions による CI/CD デプロイワークフロー
+* 日英バイリンガル対応
+
+**サーバーレス訪問者カウンター**
+
 * API Gateway HTTP API
-* Lambda訪問者カウンター関数
-* DynamoDB訪問者カウンターテーブル
-* 表示されるフッター訪問者カウンター
-* ブラウザからAPIへのCORS設定
-* CloudWatchログ確認とトラブルシューティング
+* Lambda 訪問者カウンター関数
+* DynamoDB 訪問者カウンターテーブル
+* フッターに表示される訪問者カウンター
+* ブラウザから API への CORS 設定
+* CloudWatch によるログ出力とトラブルシューティングの確認
+* API Gateway のリクエストスロットリング
+* 呼び出し回数アラームと自動封じ込め（エンドツーエンドで検証済み）
+
+**セキュアな VPC 基盤**
+
+* パブリック / アプリケーション / データベースサブネットを持つマルチ AZ VPC
+* インターネット向け ALB と、Auto Scaling Group 内のプライベート EC2 インスタンス
+* パブリックアクセスを無効化したプライベート RDS
+* NAT Gateway と S3 ゲートウェイエンドポイント
+* CloudFormation による再現
+* Terraform による独立した再現
+* 検証、証跡の記録、および削除まで完了
+
+**非同期注文処理ワークフロー**
+
+* Publisher / Status / Processor / Notifier Lambda を備えた API Gateway HTTP API
+* 冪等性を考慮した DynamoDB の注文レコード
+* 処理 / 監査 / 通知キューへの SNS ファンアウト
+* 意図的な poison message で検証したデッドレターキュー
+* 構築・検証後に公開トラフィックから切り離した SES 確認メールブランチ
+* API Gateway のリクエストスロットリング
+* 呼び出し回数アラームと自動封じ込め
+* ポートフォリオサイト上の公開ライブデモ
 
 予定:
 
@@ -601,14 +629,15 @@ backend/
 
 projects/                   Per-project documentation and source
 ├── secure-vpc-foundation/
-│   ├── readme.md
+│   ├── readme.md           日本語
+│   ├── readme-en.md        English
 │   ├── evidence/
 │   ├── notes/
 │   ├── template/           CloudFormation
 │   └── terraform/
 └── event-driven-order-processing-workflow/
-    ├── readme.md
-    ├── readme-ja.md
+    ├── readme.md           日本語
+    ├── readme-en.md        English
     ├── evidence/
     ├── notes/
     └── src/                Exported Lambda source
@@ -625,39 +654,72 @@ website/                    Deployed to S3, served via CloudFront
     ├── secure-vpc-foundation/
     └── event-driven-order-processing-workflow/
 
-readme.md                   English
-readme-ja.md                Japanese
+readme.md                   日本語 (primary)
+readme-en.md                English
 ```
 
-## 示しているスキル
+## 実証したスキル
 
-* Linuxターミナルでの作業
-* GitとGitHubによるバージョン管理
-* 静的ウェブサイト開発
-* AWS S3によるプライベートオブジェクトストレージ
-* AWS CloudFrontによるHTTPS配信
-* ホスティング構成の判断: S3 static website hostingやAmplifyではなく、CloudFrontを使ったプライベートS3オリジン
-* IAMユーザー、グループ、ポリシー設定
-* Root account保護とMFA
-* S3バケットポリシーによるガードレール
-* 手動デプロイとキャッシュ無効化
-* 運用ドキュメント作成
-* 英語 / 日本語のバイリンガルサイトコンテンツ
-* 実際のプロジェクト進捗のドキュメント化
-* `boto3`によるPythonデプロイ自動化
-* GitHub Actions CI/CDワークフロー
-* GitHub ActionsからのOIDCベースAWSロールassumption
-* 自動S3アップロードとCloudFront invalidation
-* API Gateway HTTP APIルート設定
-* Python Lambda関数開発
-* 訪問者レコードと集計値のためのDynamoDBテーブル設計
-* DynamoDB条件付き書き込みとアトミックなカウンター更新
-* Lambda環境変数設定
-* LambdaからDynamoDBへの最小権限IAM設定
-* フロントエンドからバックエンドへのブラウザリクエストに必要なCORS設定
-* JavaScript `fetch`を使ったフロントエンド / バックエンド連携
-* Lambda/APIのCloudWatchベーストラブルシューティング
-* ライブポートフォリオサイトに接続された、表示可能なサーバーレスバックエンド機能
+### クラウドアーキテクチャ
+
+* プライベート S3 をオリジンとする CloudFront の HTTPS 配信
+* ホスティング構成の選定: S3 静的ウェブサイトホスティングや Amplify ではなく、プライベート S3 + CloudFront を採用
+* パブリック / アプリケーション / データベースの 3 層に分けたマルチ AZ VPC 設計
+* インターネット向け Application Load Balancer と、Auto Scaling Group 内のプライベート EC2 インスタンス
+* パブリックアクセスを無効化したプライベート Amazon RDS
+* プライベートサブネットからの外向き通信用 NAT Gateway と、S3 への非公開アクセス用 S3 ゲートウェイエンドポイント
+* API Gateway HTTP API、Lambda、DynamoDB によるサーバーレスバックエンド設計
+* イベント駆動アーキテクチャ: SNS から複数の SQS キューへのファンアウトと、独立したコンシューマー
+* 非同期処理の状態管理とクライアント側のポーリング
+
+### Infrastructure as Code
+
+* CloudFormation テンプレートの作成とスタックのデプロイ
+* ネットワーク、コンピュート、データベース、ロードバランサー、セキュリティごとにファイルを分割した Terraform 構成
+* Terraform の plan / apply / destroy ワークフロー、変数、出力、プロバイダーのバージョン固定
+* 手動で構築したアーキテクチャを、2 つの IaC ツールで独立して再現
+
+### セキュリティと IAM
+
+* ルートアカウントの MFA による保護
+* IAM ユーザー、グループ、ポリシーの設計
+* リソース単位にスコープを絞った、Lambda 関数ごとの実行ロール
+* 長期的なアクセスキーではなく、IAM ユーザー → AssumeRole → 一時認証情報という構成
+* GitHub Actions からの OIDC ベースのロール引き受け
+* ツールへ一時的かつ限定的なアクセスを付与するための IAM Identity Center 許可セット
+* S3 バケットポリシーによる明示的な Deny ガードレールと、拒否される動作の実地検証
+* ロードバランサー / アプリケーション / データベース各層のセキュリティグループ分離
+* 訪問者の IP アドレスをソルト付きでハッシュ化し、生の IP は保存しない設計
+
+### 運用と信頼性
+
+* 公開された未認証エンドポイントに対する API Gateway のリクエストスロットリング
+* Lambda の呼び出し回数に対する CloudWatch アラーム
+* アラーム連動の Lambda による自動封じ込め（予約済み同時実行数を 0 に設定）
+* 復旧経路まで含めた、封じ込めのエンドツーエンドテスト
+* デッドレターキューの設定と、意図的な poison message による検証
+* CloudWatch ログを用いた Lambda / API Gateway のトラブルシューティング
+* CloudTrail によるアカウントレベルの API 監査
+* コスト管理のためのリソース削除とクリーンアップ
+* アカウントレベルのコストガードレールとしての AWS Budgets
+
+### 自動化とデリバリー
+
+* boto3 による Python デプロイ自動化
+* パスフィルタと同時実行制御を備えた GitHub Actions の CI/CD
+* S3 アップロードと CloudFront invalidation の自動化
+* エラー時に誤って成功を報告せず、パイプラインを失敗させるデプロイスクリプト
+* コンソールで作成した Lambda のソースをバージョン管理へ取り込む仕組み
+
+### 開発とドキュメント
+
+* Linux ターミナルでの作業
+* Git と GitHub によるバージョン管理
+* HTML / CSS / JavaScript による静的サイト開発
+* クライアントサイドの言語切り替えを備えた日英バイリンガルコンテンツ
+* ブラウザから API へのリクエストのための CORS 設定
+* 条件付き書き込みとアトミックカウンターを用いた DynamoDB テーブル設計
+* 採用しなかった選択肢とその理由を記録した運用ドキュメント
 
 ## 認定資格
 

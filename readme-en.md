@@ -439,6 +439,8 @@ infrastructure-as-code work in this portfolio.
 
 Completed:
 
+**Portfolio site**
+
 * Ubuntu VM setup
 * Git/GitHub workflow
 * Local portfolio page
@@ -450,13 +452,39 @@ Completed:
 * Local Python deployment script
 * Automated S3 upload and CloudFront invalidation
 * GitHub Actions CI/CD deployment workflow
-* Serverless backend
+* Bilingual Japanese/English content
+
+**Serverless visitor counter**
+
 * API Gateway HTTP API
 * Lambda visitor counter function
 * DynamoDB visitor counter table
 * Visible footer visitor counter
 * Browser-to-API CORS configuration
 * CloudWatch logging and troubleshooting verification
+* API Gateway request throttling
+* Invocation alarm with automated containment, tested end to end
+
+**Secure VPC Foundation**
+
+* Multi-AZ VPC with public, application, and database subnets
+* Internet-facing ALB with private EC2 instances in an Auto Scaling Group
+* Private RDS with public access disabled
+* NAT Gateway and S3 Gateway Endpoint
+* Reproduced with CloudFormation
+* Reproduced independently with Terraform
+* Verified, evidenced, and decommissioned
+
+**Asynchronous order processing workflow**
+
+* API Gateway HTTP API with publisher, status, processor, and notifier Lambdas
+* DynamoDB order records with idempotency handling
+* SNS fanout to processing, audit, and notification queues
+* Dead-letter queue verified with a deliberate poison message
+* SES confirmation branch built, verified, and disconnected from public traffic
+* API Gateway request throttling
+* Invocation alarm with automated containment
+* Live public demo on the portfolio site
 
 Planned:
 
@@ -608,14 +636,15 @@ backend/
 
 projects/                   Per-project documentation and source
 ├── secure-vpc-foundation/
-│   ├── readme.md
+│   ├── readme.md           日本語
+│   ├── readme-en.md        English
 │   ├── evidence/
 │   ├── notes/
 │   ├── template/           CloudFormation
 │   └── terraform/
 └── event-driven-order-processing-workflow/
-    ├── readme.md
-    ├── readme-ja.md
+    ├── readme.md           日本語
+    ├── readme-en.md        English
     ├── evidence/
     ├── notes/
     └── src/                Exported Lambda source
@@ -632,41 +661,72 @@ website/                    Deployed to S3, served via CloudFront
     ├── secure-vpc-foundation/
     └── event-driven-order-processing-workflow/
 
-readme.md                   English
-readme-ja.md                Japanese
+readme.md                   日本語 (primary)
+readme-en.md                English
 ```
 
 ## Skills Demonstrated
 
+### Cloud architecture
+
+* Private S3 origin with CloudFront HTTPS delivery
+* Hosting architecture decision-making: private S3 origin with CloudFront instead of S3 static website hosting or Amplify
+* Multi-AZ VPC design with separate public, application, and database subnet tiers
+* Internet-facing Application Load Balancer with private EC2 instances in an Auto Scaling Group
+* Private Amazon RDS with public access disabled
+* NAT Gateway for private outbound access and S3 Gateway Endpoint for private S3 access
+* Serverless backend design using API Gateway HTTP API, Lambda, and DynamoDB
+* Event-driven architecture: SNS fanout to multiple SQS queues with independent consumers
+* Asynchronous status tracking and client polling
+
+### Infrastructure as Code
+
+* CloudFormation template authoring and stack deployment
+* Terraform configuration split across network, compute, database, load balancer, and security files
+* Terraform plan/apply/destroy workflow, variables, outputs, and provider dependency locking
+* Independent reproduction of a manually built architecture in two separate IaC tools
+
+### Security and IAM
+
+* Root account protection with MFA
+* IAM user, group, and policy setup
+* Per-function Lambda execution roles scoped to individual resources
+* IAM user to AssumeRole to temporary credentials, instead of long-lived access keys
+* OIDC-based AWS role assumption from GitHub Actions
+* IAM Identity Center permission sets for scoped, temporary tooling access
+* S3 bucket policy explicit-deny guardrail, verified by attempting the denied actions
+* Security group isolation between load balancer, application, and database tiers
+* Visitor IP addresses salted and hashed rather than stored
+
+### Operations and reliability
+
+* API Gateway request throttling on public unauthenticated endpoints
+* CloudWatch alarms on Lambda invocation volume
+* Automated containment: alarm-triggered Lambda setting reserved concurrency to zero
+* End-to-end containment testing, including the recovery path
+* Dead-letter queue configuration, verified with a deliberate poison message
+* CloudWatch log-based troubleshooting of Lambda and API Gateway
+* CloudTrail for account-level API auditing
+* Resource cleanup and decommissioning to control cost
+* AWS Budgets as an account-level cost guardrail
+
+### Automation and delivery
+
+* Python deployment automation with boto3
+* GitHub Actions CI/CD with path filtering and concurrency control
+* Automated S3 upload and CloudFront invalidation
+* Deployment scripts that fail the pipeline on error rather than reporting false success
+* Exporting console-authored Lambda source into version control
+
+### Development and documentation
+
 * Linux terminal workflow
 * Git and GitHub version control
-* Static website development
-* AWS S3 private object storage
-* AWS CloudFront HTTPS delivery
-* Hosting architecture decision-making: private S3 origin with CloudFront instead of S3 static website hosting or Amplify
-* IAM user, group, and policy setup
-* Root account protection and MFA
-* S3 bucket policy guardrails
-* Manual deployment and cache invalidation
-* Operational documentation
-* Bilingual English/Japanese site content
-* Documentation of real project progress
-* Python deployment automation with `boto3`
-* GitHub Actions CI/CD workflow
-* OIDC-based AWS role assumption from GitHub Actions
-* Automated S3 upload and CloudFront invalidation
-* API Gateway HTTP API route configuration
-* Python Lambda function development
-* DynamoDB table design for visitor records and aggregate stats
-* DynamoDB conditional writes and atomic counter updates
-* Lambda environment variable configuration
-* IAM least-privilege permissions for Lambda-to-DynamoDB access
-* CORS configuration for frontend-to-backend browser requests
-* Frontend/backend integration using JavaScript `fetch`
-* CloudWatch-based Lambda/API troubleshooting
-* Visible serverless backend feature connected to the live portfolio site
-
-
+* Static website development with vanilla HTML, CSS, and JavaScript
+* Bilingual Japanese/English site content with client-side language switching
+* CORS configuration for browser-to-API requests
+* DynamoDB table design using conditional writes and atomic counter updates
+* Operational documentation that records rejected alternatives and the reasoning behind decisions
 
 ## Certifications
 
