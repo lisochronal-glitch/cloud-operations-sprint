@@ -138,7 +138,36 @@ This is the intended final state: the notification path was implemented and prov
 
 ## Operational safety
 
-Because the project exposes a public API endpoint, the public publisher Lambda is monitored with a CloudWatch alarm.
+Because the project exposes a public, unauthenticated API endpoint, it uses two
+independent controls: a request rate limit that reduces traffic reaching the
+workflow, and an alarm-driven kill switch that contains elevated invocations.
+
+### Request throttling
+
+API Gateway route throttling on the `$default` stage is configured with:
+
+    Rate limit:  2 requests per second
+    Burst limit: 5 requests
+
+A visitor clicking the demo button generates roughly one request every few
+seconds, so this allows ordinary demo use while restricting scripted abuse.
+Throttling was chosen as the first line of defence because it is free to
+configure and reduces downstream work before the alarm needs to react: limiting
+accepted requests reduces Lambda invocations, SNS publishes, SQS messages, and
+DynamoDB writes together. API Gateway throttling is best effort, not a guaranteed
+request ceiling or spending cap. See the [AWS throttling documentation](https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-throttling.html).
+
+AWS WAF was considered and rejected. It offers richer rule matching, but carries
+a monthly charge that is not justified for a portfolio demo whose realistic
+threat is a visitor running a loop, not a targeted attack.
+
+This throttling was configured manually through the AWS CLI. It is not covered
+by infrastructure as code in this repository.
+
+### Monitoring and containment
+
+Throttling limits the rate, but not the duration. The publisher Lambda is
+therefore also monitored with a CloudWatch alarm.
 
 Safety control:
 

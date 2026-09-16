@@ -347,6 +347,91 @@ The IAM admin user can still update deployed files, but is denied actions such a
 This was tested by attempting to delete `script.js` and attempting to delete the bucket policy from the IAM admin user session. Both actions were denied.
 
 
+## Cost and Operational Guardrails
+
+This project aims to keep costs small and predictable. Its public entry points
+use throttling and containment to reduce the cost impact of traffic spikes;
+these controls do not guarantee a fixed bill.
+
+### Account level
+
+* AWS Budgets is configured as an account-level cost alarm.
+* The Secure VPC Foundation lab was fully decommissioned after verification
+  rather than left running, because NAT Gateway and RDS are the two most
+  expensive resources in this portfolio. Cleanup is documented and evidenced in
+  that project.
+* The SES notification branch was implemented, verified, and then disconnected
+  from public demo traffic, so visitor clicks do not send email.
+
+### Public endpoint protection
+
+Two endpoints are public and unauthenticated: the visitor counter
+(`POST /visit`) and the order workflow demo (`POST /orders`). Both use the same
+two-layer approach — a rate limit that reduces traffic reaching the backend,
+and an alarm-driven kill switch that contains elevated invocations.
+
+| Endpoint | Rate limit | Burst | Reasoning |
+|---|---|---|---|
+| Visitor counter | 5 req/sec | 10 | Fires on every page load; updates a visitor record and aggregate counters in DynamoDB |
+| Order workflow | 2 req/sec | 5 | Deliberate button click; each request writes DynamoDB, publishes SNS, fans out to SQS, and triggers a second Lambda |
+
+Throttling was chosen as the first line of defence because it is free to
+configure and reduces downstream work before an alarm needs to react. API
+Gateway throttling is best effort, not a guaranteed request ceiling or spending
+cap. See the [AWS throttling documentation](https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-throttling.html).
+AWS WAF was considered and rejected: richer rule matching, but a monthly charge
+not justified for a portfolio demo.
+
+Throttling limits the request rate but not how long a spike lasts, so both
+functions are also monitored by CloudWatch alarms on invocation count. The
+order workflow uses an SNS safety topic with an email subscriber and a
+containment Lambda subscriber. The visitor-counter alarm sends an SNS
+notification to `project3-demo-safety-alerts` and directly invokes
+`visitor-counter-emergency-disable` as a separate alarm action. Each containment
+Lambda sets reserved concurrency to 0 on its target, stopping invocations until
+a human removes the setting.
+
+Each public entry point has its own single-purpose containment Lambda, and each
+execution role is scoped to `lambda:PutFunctionConcurrency` on exactly one
+function ARN:
+
+| Containment Lambda | Target |
+|---|---|
+| `project3-emergency-disable-demo` | `project3-order-publisher` |
+| `visitor-counter-emergency-disable` | `VisitorCounterFunction` |
+
+A single shared Lambda would need a role covering both targets, so a bug or an
+unexpected event could disable the wrong endpoint. Separate roles mean neither
+function is *able* to affect the other — the constraint sits in IAM rather than
+in application logic, at the cost of a little duplicated code.
+
+The visitor counter containment path was tested end to end, including recovery.
+See [backend/visitor-counter/README.md](backend/visitor-counter/README.md) for
+the test steps, evidence, and known limitations.
+
+### Access for tooling
+
+When an agent needed read access to Lambda in order to export console-authored
+function source into this repository, a scoped IAM Identity Center permission
+set (`CodexLambdaExport-889149079837`) was created rather than issuing a long-lived
+IAM access key. The tooling received temporary credentials limited to that
+permission set, and no permanent AWS credentials were shared.
+
+### Static hosting
+
+The site is served from CloudFront over a private S3 bucket. CloudFront caching
+is enabled, so cache hits are served from the edge rather than generating S3
+requests. Deployments create a single `/*` invalidation, and the deployment
+workflow is filtered by path so documentation-only commits do not trigger an
+upload and invalidation cycle.
+
+### Scope note
+
+The throttling, alarms, and containment Lambdas described above were configured
+manually through the AWS Console and CLI. They are not defined in CloudFormation
+or Terraform in this repository. The Secure VPC Foundation project is the
+infrastructure-as-code work in this portfolio.
+
 ## Current Build Status
 
 Completed:
@@ -374,7 +459,8 @@ Planned:
 
 * Custom domain with Route 53 and an ACM certificate
 * Architecture diagram for the portfolio site itself
-* Cost and operational guardrail notes
+* Tighten the containment Lambda resource policy with SourceAccount and SourceArn conditions
+* Define the serverless backend and its guardrails in infrastructure as code
 * Next project: containers and observability lab
 
 
@@ -515,7 +601,9 @@ This progression was intentional: first understand the manual process, then auto
 
 backend/
 └── visitor-counter/
-    └── src/                Exported visitor counter Lambda source
+    ├── README.md           Endpoint safety, containment test, limitations
+    ├── evidence/           Containment test screenshots
+    └── src/                Exported Lambda source (counter + kill switch)
 
 projects/                   Per-project documentation and source
 ├── secure-vpc-foundation/
