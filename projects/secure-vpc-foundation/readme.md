@@ -1,42 +1,42 @@
-# Secure VPC Foundation
+# セキュアな VPC 基盤
 
-[日本語版](readme-ja.md)
+[English version](readme-en.md)
 
-This project demonstrates a secure AWS network foundation for a small web application. The application is reachable from the internet through a public Application Load Balancer, while the application servers and database are isolated in private subnets.
+このプロジェクトでは、小規模 Web アプリケーション向けの安全な AWS ネットワーク基盤を構築しました。アプリケーションはパブリックな Application Load Balancer を通じてインターネットからアクセスできますが、アプリケーションサーバーとデータベースはプライベートサブネットに分離されています。
 
-The environment was first built manually in the AWS Console to validate the architecture, capture evidence, and confirm the cleanup process. The same architecture was then reproduced with both CloudFormation and Terraform so the environment could be deployed, verified, and deleted repeatably as infrastructure as code.
+最初に AWS コンソールで手動構築を行い、アーキテクチャの検証、証跡の取得、削除手順の確認を行いました。その後、同じアーキテクチャを CloudFormation と Terraform の両方で再現し、インフラをコードとして反復可能にデプロイ、検証、削除できることを確認しました。
 
-## Scenario
+## シナリオ
 
-A small company wants to migrate a simple web application to AWS.
+小規模な会社が、シンプルな Web アプリケーションを AWS へ移行したいとします。
 
-The requirements are:
+要件は以下の通りです。
 
-* Customers must be able to access the web application from the internet.
-* Application servers must not be directly reachable from the public internet.
-* The database must be isolated from direct public access.
-* The application layer should support availability across two Availability Zones.
-* The infrastructure should be reproducible.
-* Billable resources must be removed after testing.
+* 顧客がインターネットから Web アプリケーションへアクセスできること
+* アプリケーションサーバーがパブリックインターネットから直接到達できないこと
+* データベースが直接パブリックアクセスから分離されていること
+* アプリケーション層が 2 つの Availability Zone にまたがる可用性を持つこと
+* インフラを再現可能にすること
+* テスト後に課金対象リソースを削除すること
 
-## Architecture
+## アーキテクチャ
 
 ![Secure VPC Foundation architecture](../../website/projects/secure-vpc-foundation/secure-vpc-foundation-diagram.png)
 
-The lab was built in the Tokyo region (`ap-northeast-1`).
+このラボは東京リージョン（`ap-northeast-1`）で構築しました。
 
-Network design:
+ネットワーク設計:
 
 * VPC: `10.20.0.0/16`
-* Public subnets for the Application Load Balancer
-* Private application subnets for EC2 instances in an Auto Scaling Group
-* Private database subnets for Amazon RDS
-* Internet Gateway for public ALB access
-* NAT Gateway for outbound internet access from the private application tier
-* S3 Gateway Endpoint for private S3 access
-* Security groups controlling traffic between tiers
+* Application Load Balancer 用のパブリックサブネット
+* Auto Scaling Group 内の EC2 インスタンス用プライベートアプリケーションサブネット
+* Amazon RDS 用プライベートデータベースサブネット
+* パブリック ALB アクセス用 Internet Gateway
+* プライベートアプリケーション層からのアウトバウンドインターネットアクセス用 NAT Gateway
+* プライベート S3 アクセス用 S3 Gateway Endpoint
+* 各層間の通信を制御する Security Group
 
-Traffic flow:
+トラフィックフロー:
 
 ```text
 Internet
@@ -50,7 +50,7 @@ Private EC2 application instances
 Private RDS database
 ```
 
-## AWS Services Used
+## 使用した AWS サービス
 
 * Amazon VPC
 * Subnets
@@ -67,111 +67,111 @@ Private RDS database
 * S3 Gateway Endpoint
 * CloudFormation
 
-## Security Design
+## セキュリティ設計
 
-The public entry point is the Application Load Balancer. The EC2 application instances were placed in private subnets and did not use public IPv4 addresses.
+パブリックな入口は Application Load Balancer のみです。EC2 アプリケーションインスタンスはプライベートサブネットに配置し、パブリック IPv4 アドレスは使用しませんでした。
 
-Security group rules were designed so that:
+Security Group は以下のように設計しました。
 
-* The ALB accepts HTTP traffic from the internet.
-* The application tier accepts HTTP traffic only from the ALB security group.
-* The database tier accepts PostgreSQL traffic only from the application security group.
+* ALB はインターネットからの HTTP トラフィックを受け付ける
+* アプリケーション層は ALB の Security Group からの HTTP トラフィックのみを受け付ける
+* データベース層はアプリケーション層の Security Group からの PostgreSQL トラフィックのみを受け付ける
 
-The RDS database was configured with public access disabled and assigned to a private DB subnet group.
+RDS データベースはパブリックアクセスを無効化し、プライベート DB subnet group に割り当てました。
 
-## Availability Design
+## 可用性設計
 
-The architecture used two Availability Zones.
+このアーキテクチャでは 2 つの Availability Zone を使用しました。
 
-The application tier was deployed through an Auto Scaling Group with two EC2 instances across private application subnets. The Auto Scaling Group used a launch-before-terminate maintenance policy to prioritize availability during instance replacement.
+アプリケーション層は、プライベートアプリケーションサブネットにまたがる 2 台の EC2 インスタンスを Auto Scaling Group で構成しました。Auto Scaling Group では、インスタンス置換時の可用性を優先するために launch-before-terminate のメンテナンスポリシーを使用しました。
 
-No automatic scaling policy was configured during the console validation build. A future version could add target tracking, scheduled scaling, or predictive scaling depending on application traffic requirements.
+コンソール検証ビルドでは、自動スケーリングポリシーは設定していません。将来的なバージョンでは、アプリケーションのトラフィック要件に応じて target tracking、scheduled scaling、predictive scaling などを追加できます。
 
-## Manual Console Build
+## 手動コンソール構築
 
-The first phase of the project was built manually in the AWS Console.
+プロジェクトの第一段階では、AWS コンソールで手動構築を行いました。
 
-This phase was used to:
+この段階では以下を行いました。
 
-* Validate the VPC, subnet, route table, and security group design
-* Confirm that the ALB could route traffic to private EC2 instances
-* Confirm that the EC2 instances did not require public IPv4 addresses
-* Configure a private RDS database tier
-* Capture evidence screenshots
-* Practice safe cleanup of billable AWS resources
+* VPC、サブネット、ルートテーブル、Security Group 設計の検証
+* ALB がプライベート EC2 インスタンスへトラフィックをルーティングできることの確認
+* EC2 インスタンスにパブリック IPv4 アドレスが不要であることの確認
+* プライベート RDS データベース層の構成
+* 証跡スクリーンショットの取得
+* 課金対象 AWS リソースの安全な削除手順の確認
 
-The manual build confirmed that the architecture worked before reproducing it as infrastructure as code.
+手動構築によって、インフラをコード化する前にアーキテクチャが正しく動作することを確認しました。
 
-## CloudFormation Reproduction
+## CloudFormation による再現
 
-The second phase reproduced the same architecture with CloudFormation.
+第二段階では、同じアーキテクチャを CloudFormation で再現しました。
 
-Template:
+テンプレート:
 
 * [`secure-vpc-foundation-template.yaml`](./template/secure-vpc-foundation-template.yaml)
 
-The CloudFormation deployment created the VPC, six subnets, route tables, Internet Gateway, NAT Gateway, S3 Gateway Endpoint, security groups, Application Load Balancer, target group, launch template, Auto Scaling Group, EC2 instances, DB subnet group, and private RDS PostgreSQL instance.
+CloudFormation デプロイにより、VPC、6 つのサブネット、ルートテーブル、Internet Gateway、NAT Gateway、S3 Gateway Endpoint、Security Group、Application Load Balancer、Target Group、Launch Template、Auto Scaling Group、EC2 インスタンス、DB subnet group、プライベート RDS PostgreSQL インスタンスを作成しました。
 
-The stack was deployed successfully and verified with the same operational checks as the manual console build:
+スタックは正常にデプロイされ、手動コンソール構築と同じ運用確認を行いました。
 
-* The ALB URL returned the test web page.
-* The target group showed two healthy targets.
-* The EC2 instances had private IP addresses and no public IPv4 addresses.
-* The RDS instance had public access disabled.
-* The CloudFormation stack was deleted after testing.
-* Post-deletion checks confirmed that billable project resources were removed.
+* ALB URL からテスト Web ページが返ること
+* Target Group に 2 つの healthy target が表示されること
+* EC2 インスタンスがプライベート IP アドレスのみを持ち、パブリック IPv4 アドレスを持たないこと
+* RDS インスタンスの public access が disabled であること
+* テスト後に CloudFormation スタックを削除できること
+* 削除後に課金対象のプロジェクトリソースが残っていないこと
 
-## Terraform Reproduction
+## Terraform による再現
 
-The third phase rebuilt the same architecture with Terraform.
+第三段階では、同じアーキテクチャを Terraform で再構築しました。
 
-Terraform configuration:
+Terraform 構成:
 
 - [`terraform/`](./terraform/)
 - Terraform CLI 1.15.8
 - HashiCorp AWS provider 6.57.1
-- AWS region and key infrastructure sizes exposed as variables
-- Database password supplied as an ephemeral sensitive variable and passed through the RDS write-only password argument
-- Terraform state and local working files excluded from Git where appropriate
-- Provider dependency version recorded in `.terraform.lock.hcl`
+- AWS リージョンや主要なインフラサイズを変数として定義
+- データベースパスワードを ephemeral かつ sensitive な変数として渡し、RDS の write-only password 引数を使用
+- Terraform state やローカル作業ファイルを必要に応じて Git の追跡対象外に設定
+- `.terraform.lock.hcl` で provider の依存バージョンを記録
 
-Local Terraform access used AWS IAM Identity Center with temporary credentials rather than long-lived IAM user access keys.
+ローカルからの Terraform 実行には、長期間有効な IAM user access key ではなく、AWS IAM Identity Center の一時認証情報を使用しました。
 
-The reviewed Terraform plan contained 39 resources:
+確認済みの Terraform plan には 39 個のリソースが含まれていました。
 
 ![Terraform plan resources 1-20](./evidence/terraform-plan-resources-01-20.png)
 
 ![Terraform plan resources 21-39 and summary](./evidence/terraform-plan-resources-21-39-summary.png)
 
-The saved plan was applied successfully:
+保存した plan を正常に apply しました。
 
 ![Terraform apply complete](./evidence/terraform-apply-complete.png)
 
-Runtime verification confirmed that the public ALB served the test page from the private application tier:
+実行時の検証では、パブリック ALB を経由してプライベートアプリケーション層のテストページへアクセスできることを確認しました。
 
 ![Terraform ALB browser test](./evidence/terraform-alb-browser-success.png)
 
-Both application instances registered successfully as healthy ALB targets:
+2 台のアプリケーションインスタンスが ALB の healthy target として正常に登録されていることを確認しました。
 
 ![Terraform healthy targets](./evidence/terraform-targets-healthy.png)
 
-CLI verification confirmed that the application instances had private addresses with no public IPv4 addresses and that the RDS database was not publicly accessible:
+AWS CLI による確認では、アプリケーションインスタンスがプライベート IP アドレスのみを持ちパブリック IPv4 アドレスを持たないこと、および RDS データベースが public access を許可していないことを確認しました。
 
 ![Terraform private resource verification](./evidence/terraform-private-resources-proof.png)
 
-After verification, Terraform destroyed the environment successfully:
+検証後、Terraform を使用して環境全体を正常に削除しました。
 
 ![Terraform destroy complete](./evidence/terraform-destroy-complete.png)
 
-## Verification
+## 検証
 
-The application was successfully accessed through the public Application Load Balancer DNS name.
+アプリケーションは、パブリック Application Load Balancer の DNS 名を通じて正常にアクセスできました。
 
-The browser test confirmed that traffic reached a private EC2 instance behind the public ALB. The target group also showed two healthy targets, confirming that the ALB could route traffic to the private application tier.
+ブラウザテストにより、トラフィックがパブリック ALB の背後にあるプライベート EC2 インスタンスへ到達していることを確認しました。また、Target Group には 2 つの healthy target が表示され、ALB がプライベートアプリケーション層へトラフィックをルーティングできることを確認しました。
 
-Key evidence screenshots are stored in the [`evidence/`](./evidence/) folder.
+主要な証跡スクリーンショットは [`evidence/`](./evidence/) フォルダに保存しています。
 
-Selected evidence:
+主な証跡:
 
 * [VPC resource map](./evidence/project2-vpc-resource-map.png)
 * [Subnet layout across two Availability Zones](./evidence/project2-subnets.png)
@@ -188,41 +188,41 @@ Selected evidence:
 * [Launch-before-terminate maintenance policy](./evidence/project2-asg-launch-before-terminating.png)
 * [Successful browser test through the ALB](./evidence/project2-alb-browser-success.png)
 
-## Cleanup
+## クリーンアップ
 
-All billable resources were deleted after verification.
+検証後、すべての課金対象リソースを削除しました。
 
-Deleted resources included:
+削除したリソースは以下の通りです。
 
-* Auto Scaling Group and EC2 instances
+* Auto Scaling Group と EC2 インスタンス
 * Application Load Balancer
-* Target group
-* RDS database
-* RDS snapshot from the manual build
+* Target Group
+* RDS データベース
+* 手動構築時に作成された RDS snapshot
 * NAT Gateway
 * S3 Gateway Endpoint
-* Launch template
+* Launch Template
 * DB subnet group
-* Security groups
+* Security Groups
 * Route tables
 * Subnets
 * Internet Gateway
 * VPC
 
-Post-cleanup checks confirmed that no `project2` resources remained in EC2, RDS, VPC, NAT Gateway, Elastic IP, Load Balancer, Target Group, or Auto Scaling Group views.
+削除後の確認では、EC2、RDS、VPC、NAT Gateway、Elastic IP、Load Balancer、Target Group、Auto Scaling Group の各画面に `project2` リソースが残っていないことを確認しました。
 
-The CloudFormation stack was also deleted successfully after the infrastructure-as-code validation. Additional checks confirmed that the NAT Gateway was deleted, no project Elastic IP remained allocated, the RDS instance was removed, and the EC2 instances were terminated.
+CloudFormation による infrastructure-as-code 検証後も、スタックを正常に削除しました。追加確認として、NAT Gateway が削除されていること、プロジェクト用 Elastic IP が残っていないこと、RDS インスタンスが削除されていること、EC2 インスタンスが terminated 状態であることを確認しました。
 
-The Terraform environment was independently created, verified, and destroyed through Terraform. The final destroy completed successfully after runtime evidence was captured.
+Terraform 環境についても、Terraform を使用して作成、検証、削除を行いました。実行時の証跡を取得した後、最終的な destroy が正常に完了しました。
 
-## Outcome
+## 成果
 
-This project demonstrates the ability to design, validate, document, reproduce, and clean up a secure AWS network foundation.
+このプロジェクトでは、安全な AWS ネットワーク基盤を設計、検証、文書化、再現、削除できることを示しました。
 
-The completed project includes three implementations of the same architecture:
+完成したプロジェクトには、同じアーキテクチャに対する 3 種類の実装が含まれます。
 
-- A manual AWS Console build with evidence screenshots
-- A CloudFormation template for repeatable infrastructure deployment
-- A Terraform implementation with plan, apply, runtime verification, and destroy evidence
+- 証跡スクリーンショット付きの AWS コンソール手動構築
+- 反復可能なインフラデプロイ用 CloudFormation テンプレート
+- plan、apply、実行時検証、destroy の証跡を含む Terraform 実装
 
-The architecture provides a practical foundation for a small web application where the public entry point is limited to an Application Load Balancer, while the application and database tiers remain private.
+このアーキテクチャは、小規模 Web アプリケーション向けの実用的な基盤です。パブリックな入口を Application Load Balancer のみに限定し、アプリケーション層とデータベース層をプライベートに維持します。
