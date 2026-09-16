@@ -400,7 +400,7 @@ CloudWatch アラームでも監視しています。注文ワークフローで
 コードの重複というわずかな代償で影響範囲を小さくしています。
 
 訪問者カウンターの封じ込め経路は、復旧手順まで含めて実際にテストしました。
-テスト内容、証跡、既知の制限は
+テスト内容と証跡は
 [backend/visitor-counter/README.md](backend/visitor-counter/README.md)
 に記載しています。
 
@@ -623,7 +623,7 @@ GitHub Actions job
 
 backend/
 └── visitor-counter/
-    ├── README.md           エンドポイントの安全対策、封じ込めテスト、既知の制限
+    ├── README.md           エンドポイントの安全対策、封じ込めテスト
     ├── evidence/           封じ込めテストのスクリーンショット
     └── src/                エクスポートした Lambda ソース（カウンター + キルスイッチ）
 

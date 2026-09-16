@@ -407,7 +407,7 @@ in application logic, at the cost of a little duplicated code.
 
 The visitor counter containment path was tested end to end, including recovery.
 See [backend/visitor-counter/README.md](backend/visitor-counter/README.md) for
-the test steps, evidence, and known limitations.
+the test steps and evidence.
 
 ### Access for tooling
 
@@ -630,7 +630,7 @@ This progression was intentional: first understand the manual process, then auto
 
 backend/
 └── visitor-counter/
-    ├── README.md           Endpoint safety, containment test, limitations
+    ├── README.md           Endpoint safety, containment test
     ├── evidence/           Containment test screenshots
     └── src/                Exported Lambda source (counter + kill switch)
 
