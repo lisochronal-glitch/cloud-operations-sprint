@@ -15,6 +15,10 @@ Both are exported with:
 
     AWS_PROFILE=<admin-or-CodexLambdaExport-profile> ./tools/export_lambdas.sh
 
+This is a one-way export rather than a deployment pipeline, so the console
+remains the place where changes are made. A change made there is not reflected
+here until the export is re-run.
+
 `function-config.json` records runtime, handler, memory, timeout, execution role
 name, and the *names* of its environment variables. The salt used to hash
 visitor IP addresses is a Lambda environment variable and its value is never
@@ -27,8 +31,3 @@ access to this function for the export.
 
 See the [containment test and its two evidence screenshots](../README.md#containment-test)
 for the alarm action, disabled counter, and recovery verification.
-
-## Known limitation
-
-This is a one-way export, not a deployment pipeline. Changes made in the console
-are not reflected here until the export is re-run.
