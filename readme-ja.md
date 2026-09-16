@@ -540,7 +540,6 @@ website/                    Deployed to S3, served via CloudFront
 
 readme.md                   English
 readme-ja.md                Japanese
-CONFUSION_LOG.md            Errors encountered and how they were resolved
 ```
 
 ## 示しているスキル
