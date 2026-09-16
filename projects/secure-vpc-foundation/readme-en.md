@@ -50,7 +50,7 @@ Private EC2 application instances
 Private RDS database
 ```
 
-## AWS Services Used
+## Services and Tools Used
 
 * Amazon VPC
 * Subnets
@@ -66,6 +66,7 @@ Private RDS database
 * DB subnet group
 * S3 Gateway Endpoint
 * CloudFormation
+* Terraform
 
 ## Security Design
 
