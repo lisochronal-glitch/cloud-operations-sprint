@@ -97,17 +97,3 @@ aws lambda delete-function-concurrency \
   --function-name VisitorCounterFunction \
   --region ap-northeast-1
 ```
-
-## Known limitations
-
-* **The alarm, the throttling, and both containment Lambdas were configured
-  manually**, through the console and the AWS CLI. They are not defined in
-  CloudFormation or Terraform in this repository. The Lambda source is exported
-  into Git by `tools/export_lambdas.sh`, but that is a one-way export, not a
-  deployment pipeline. Both visitor-counter functions now have exported source
-  in this repository; later console changes require another export and review.
-* **Containment stops the endpoint, it does not distinguish causes.** A genuine
-  traffic spike and an abusive one produce the same outcome: the counter stops
-  working until it is manually restored. For a portfolio site that trade is
-  deliberate — an unavailable counter is preferable to continued processing
-  during an unexplained spike.
