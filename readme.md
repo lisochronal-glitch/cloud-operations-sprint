@@ -462,8 +462,6 @@ Planned:
 
 * Custom domain with Route 53 and an ACM certificate
 * Architecture diagram for the portfolio site itself
-* Tighten the containment Lambda resource policy with SourceAccount and SourceArn conditions
-* Define the serverless backend and its guardrails in infrastructure as code
 * Next project: containers and observability lab
 
 

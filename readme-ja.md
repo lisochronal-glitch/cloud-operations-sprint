@@ -456,8 +456,6 @@ Secure VPC Foundation プロジェクトです。
 
 * Route 53とACM証明書によるカスタムドメイン
 * ポートフォリオサイト自体のアーキテクチャ図
-* 封じ込め Lambda のリソースベースポリシーを SourceAccount / SourceArn 条件で限定する
-* サーバーレスバックエンドとそのガードレールを Infrastructure as Code で定義する
 * 次のプロジェクト: コンテナ / オブザーバビリティラボ
 
 ## デプロイワークフロー

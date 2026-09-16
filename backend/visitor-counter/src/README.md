@@ -26,9 +26,7 @@ empty. The scoped Identity Center permission set was updated to include read
 access to this function for the export.
 
 See the [containment test and its two evidence screenshots](../README.md#containment-test)
-for the alarm action, disabled counter, and recovery verification. The
-[known limitations](../README.md#known-limitations) include the deferred
-resource-policy restriction.
+for the alarm action, disabled counter, and recovery verification.
 
 ## Known limitation
 

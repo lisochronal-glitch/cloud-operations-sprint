@@ -100,12 +100,6 @@ aws lambda delete-function-concurrency \
 
 ## Known limitations
 
-* **The resource-based policy on `visitor-counter-emergency-disable` is broader
-  than it needs to be.** It allows `lambda.alarms.cloudwatch.amazonaws.com` to
-  invoke the function without `AWS:SourceAccount` or `AWS:SourceArn` conditions,
-  because that is what the console created. It should be narrowed to account
-  `889149079837` and the `visitor-counter-invocation-spike` alarm ARN. This is
-  known and not yet done.
 * **The alarm, the throttling, and both containment Lambdas were configured
   manually**, through the console and the AWS CLI. They are not defined in
   CloudFormation or Terraform in this repository. The Lambda source is exported
