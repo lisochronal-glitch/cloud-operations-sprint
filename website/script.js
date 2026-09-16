@@ -100,7 +100,7 @@ const translations = {
     "contact.github": "GitHub",
     "contact.linkedin": "LinkedIn",
     "contact.email": "Email",
-    "contact.cv": "Download CV (PDF)",
+    "contact.cv": "CV available on request",
 
     "project3.pageTitle": "Asynchronous SaaS Order Processing Workflow | AWS Portfolio Project",
     "project3.eyebrow": "AWS EVENT-DRIVEN WORKFLOW PROJECT",
@@ -233,7 +233,7 @@ const translations = {
     "contact.github": "GitHub",
     "contact.linkedin": "LinkedIn",
     "contact.email": "メール",
-    "contact.cv": "履歴書・職務経歴書（PDF）",
+    "contact.cv": "履歴書・職務経歴書はご依頼に応じて送付",
 
     "project3.pageTitle": "非同期SaaS注文処理ワークフロー | AWSポートフォリオプロジェクト",
     "project3.eyebrow": "AWSイベント駆動ワークフロープロジェクト",
