@@ -11,14 +11,24 @@ Two functions are exported here:
 Both were authored directly in the AWS Lambda console and were not in version
 control when first written.
 
-It is exported with:
+Both are exported with:
 
-    AWS_PROFILE=<admin-profile> ./tools/export_lambdas.sh
+    AWS_PROFILE=<admin-or-CodexLambdaExport-profile> ./tools/export_lambdas.sh
 
 `function-config.json` records runtime, handler, memory, timeout, execution role
 name, and the *names* of its environment variables. The salt used to hash
 visitor IP addresses is a Lambda environment variable and its value is never
 exported to this repository.
+
+`visitor-counter-emergency-disable` uses a hardcoded `VisitorCounterFunction`
+target and has no environment variables; its `EnvironmentVariableNames` list is
+empty. The scoped Identity Center permission set was updated to include read
+access to this function for the export.
+
+See the [containment test and its two evidence screenshots](../README.md#containment-test)
+for the alarm action, disabled counter, and recovery verification. The
+[known limitations](../README.md#known-limitations) include the deferred
+resource-policy restriction.
 
 ## Known limitation
 

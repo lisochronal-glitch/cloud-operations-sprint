@@ -44,6 +44,12 @@ best-effort targets, not guaranteed request ceilings or a spending cap. See the
 `ReservedConcurrentExecutions=0` on `VisitorCounterFunction`, which stops it
 being invoked at all until concurrency is manually removed.
 
+The [exported containment source](src/visitor-counter-emergency-disable/lambda_function.py)
+hardcodes this target; it does not select a function from the incoming event.
+Its [configuration metadata](src/visitor-counter-emergency-disable/function-config.json)
+records an empty environment-variable name list and contains no environment
+variable values.
+
 ### Why two separate containment Lambdas
 
 The order workflow has its own kill switch, `project3-emergency-disable-demo`.
@@ -104,9 +110,8 @@ aws lambda delete-function-concurrency \
   manually**, through the console and the AWS CLI. They are not defined in
   CloudFormation or Terraform in this repository. The Lambda source is exported
   into Git by `tools/export_lambdas.sh`, but that is a one-way export, not a
-  deployment pipeline. The export of `visitor-counter-emergency-disable` is
-  still pending; until its source is reviewed and committed, it remains
-  single-copy in AWS.
+  deployment pipeline. Both visitor-counter functions now have exported source
+  in this repository; later console changes require another export and review.
 * **Containment stops the endpoint, it does not distinguish causes.** A genuine
   traffic spike and an abusive one produce the same outcome: the counter stops
   working until it is manually restored. For a portfolio site that trade is

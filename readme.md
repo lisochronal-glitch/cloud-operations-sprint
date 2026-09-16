@@ -416,6 +416,9 @@ function source into this repository, a scoped IAM Identity Center permission
 set (`CodexLambdaExport-889149079837`) was created rather than issuing a long-lived
 IAM access key. The tooling received temporary credentials limited to that
 permission set, and no permanent AWS credentials were shared.
+The permission set was subsequently updated to include read access to
+`visitor-counter-emergency-disable`, and its source is now exported into Git
+alongside the other six Lambda functions.
 
 ### Static hosting
 
