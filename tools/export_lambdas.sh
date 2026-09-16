@@ -23,6 +23,7 @@ FUNCTIONS=(
   "project3-order-notifier:projects/event-driven-order-processing-workflow/src"
   "project3-emergency-disable-demo:projects/event-driven-order-processing-workflow/src"
   "VisitorCounterFunction:backend/visitor-counter/src"
+  "visitor-counter-emergency-disable:backend/visitor-counter/src"
 )
 
 for entry in "${FUNCTIONS[@]}"; do

@@ -1,8 +1,15 @@
 # Visitor counter Lambda source
 
-This function backs the visitor counter in the portfolio site footer. It was
-authored directly in the AWS Lambda console and was previously not in version
-control at all.
+Two functions are exported here:
+
+* `VisitorCounterFunction` — backs the visitor counter in the portfolio site
+  footer.
+* `visitor-counter-emergency-disable` — containment. Invoked by the
+  `visitor-counter-invocation-spike` CloudWatch alarm, it sets reserved
+  concurrency on `VisitorCounterFunction` to 0.
+
+Both were authored directly in the AWS Lambda console and were not in version
+control when first written.
 
 It is exported with:
 
