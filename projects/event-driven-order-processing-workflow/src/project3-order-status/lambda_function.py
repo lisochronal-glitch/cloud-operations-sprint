@@ -23,6 +23,8 @@ def response(status_code: int, body: dict) -> dict:
         "statusCode": status_code,
         "headers": {
             "Content-Type": "application/json",
+            # The HTTP API's CORS configuration is authoritative; API Gateway
+            # ignores these legacy backend CORS headers for requests through it.
             "Access-Control-Allow-Origin": "https://d1rzzxjs182iar.cloudfront.net",
             "Access-Control-Allow-Headers": "Content-Type",
             "Access-Control-Allow-Methods": "OPTIONS,GET"
