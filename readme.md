@@ -4,7 +4,7 @@
 
 実践的なAWS / クラウド運用スプリントです。クラウドデプロイ、Linuxでの作業、Git/GitHub、IAM設計、CI/CD、イベント駆動アーキテクチャ、Infrastructure as Code、運用トラブルシューティングを示すために、実際に動作するシステムとして構築・デプロイしています。
 
-**ライブサイト:** https://d1rzzxjs182iar.cloudfront.net
+**ライブサイト:** https://sebastianhoglund.cloud
 
 ## プロジェクト一覧
 

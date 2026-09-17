@@ -4,7 +4,7 @@
 
 A practical AWS / cloud operations sprint: a set of working, deployed systems built to demonstrate cloud deployment, Linux workflow, Git/GitHub, IAM design, CI/CD, event-driven architecture, infrastructure as code, and operational troubleshooting.
 
-**Live site:** https://d1rzzxjs182iar.cloudfront.net
+**Live site:** https://sebastianhoglund.cloud
 
 ## Projects
 

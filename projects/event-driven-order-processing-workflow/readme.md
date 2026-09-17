@@ -10,7 +10,7 @@
 
 ライブデモ:
 
-https://d1rzzxjs182iar.cloudfront.net/projects/event-driven-order-processing-workflow/index.html
+https://sebastianhoglund.cloud/projects/event-driven-order-processing-workflow/index.html
 
 ## アーキテクチャ
 

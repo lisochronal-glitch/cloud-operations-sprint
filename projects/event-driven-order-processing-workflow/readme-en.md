@@ -10,7 +10,7 @@ The goal is to show a realistic cloud operations pattern: accept a user-facing r
 
 Live demo:
 
-https://d1rzzxjs182iar.cloudfront.net/projects/event-driven-order-processing-workflow/index.html
+https://sebastianhoglund.cloud/projects/event-driven-order-processing-workflow/index.html
 
 ## Architecture
 
